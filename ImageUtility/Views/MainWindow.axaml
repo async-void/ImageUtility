@@ -211,19 +211,14 @@
 					</Style>
 				</StackPanel.Styles>
 				<Button Classes="Basic"
-								CommandParameter="https://github.com/kikipoulet/SukiUI"
+								CommandParameter="https://github.com/async-void/ImageUtility"
 								ToolTip.Tip="Open On GitHub.">
 					<avalonia:MaterialIcon Kind="Github" />
 				</Button>
 				<Button Classes="Basic"
-								CommandParameter="https://www.nuget.org/packages/SukiUI"
-								ToolTip.Tip="View On NuGet.">
-					<avalonia:MaterialIcon Kind="Package" />
-				</Button>
-				<Button Classes="Basic"
-								CommandParameter="https://github.com/kikipoulet/CherylUI"
-								ToolTip.Tip="CheryUI - For Mobile">
-					<avalonia:MaterialIcon Kind="Cat" />
+								CommandParameter="https://github.com/async-void/ImageUtility"
+								ToolTip.Tip="Settings.">
+					<avalonia:MaterialIcon Kind="Cog" />
 				</Button>
 			</StackPanel>
 		</suki:SukiSideMenu.FooterContent>

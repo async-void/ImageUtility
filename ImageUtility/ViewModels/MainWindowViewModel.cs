@@ -7,9 +7,12 @@ using ImageUtility.Features.CustomTheme;
 using ImageUtility.Features.Theming;
 using ImageUtility.Services;
 using ImageUtility.Utilities;
+using ImageUtility.Views;
 using SukiUI;
+using SukiUI.Controls;
 using SukiUI.Dialogs;
 using SukiUI.Enums;
+using SukiUI.MessageBox;
 using SukiUI.Models;
 using SukiUI.Theme.Shadcn;
 using SukiUI.Toasts;
@@ -120,7 +123,23 @@ namespace ImageUtility.ViewModels
         [RelayCommand]
         private void ShadCnMode()
         {
-            Shadcn.Configure(Application.Current, Application.Current.ActualThemeVariant);
+            try
+            {
+                var msgBox = new SukiMessageBoxHost
+                {
+                    ActionButtonsPreset = SukiMessageBoxButtons.OK,
+                    IconPreset = SukiMessageBoxIcons.Error,
+                };
+                msgBox.Header = "Work In Progress";
+                msgBox.Content = "Shadcn theme is currently not supported in this version.";
+                using var _ = SukiMessageBox.ShowDialog(msgBox);
+                //Shadcn.Configure(Application.Current, Application.Current.ActualThemeVariant);
+            }
+            catch
+            {
+              
+            }
+           
         }
 
         [RelayCommand]

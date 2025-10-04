@@ -1,7 +1,14 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.LogicalTree;
+using Avalonia.Platform.Storage;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ImageUtility.ViewModels;
+using ImageUtility.Views;
 using Material.Icons;
+using SukiUI.MessageBox;
 using System.ComponentModel.DataAnnotations;
 
 namespace ImageUtility.Features.Renamer
@@ -22,6 +29,12 @@ namespace ImageUtility.Features.Renamer
         [NotifyCanExecuteChangedFor(nameof(RenameCommand))]
         private string? _pattern;
 
+        [ObservableProperty]
+        private bool _useExternalFile;
+
+        [ObservableProperty]
+        private bool _openOnComplete;
+
         public RenamerViewModel() : base("Renamer", MaterialIconKind.Rename, 2)
         {
         }
@@ -35,6 +48,13 @@ namespace ImageUtility.Features.Renamer
         [RelayCommand]
         private void SetSourceDirectory()
         {
+            
+            // Get top level from the current control. Alternatively, you can use Window reference instead.
+            var topLevel = TopLevel.GetTopLevel(((IClassicDesktopStyleApplicationLifetime)Application.Current.ApplicationLifetime).MainWindow);
+
+            // Start async operation to open the dialog.
+            var files = topLevel?.StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions());
+            
         }
 
         [RelayCommand]
@@ -45,6 +65,7 @@ namespace ImageUtility.Features.Renamer
         [RelayCommand]
         private void LoadExternal()
         {
+            UseExternalFile = true;
         }
 
         public bool CanRename() => !string.IsNullOrEmpty(Pattern) && !string.IsNullOrEmpty(SourceDir) && !string.IsNullOrEmpty(DestinationDir);
