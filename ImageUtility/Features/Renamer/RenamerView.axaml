@@ -10,20 +10,72 @@
              x:Class="ImageUtility.RenamerView">
 	<ScrollViewer VerticalScrollBarVisibility="Hidden">
 		<WrapPanel Margin="10" Orientation="Horizontal">
-			<suki:GroupBox Header="Renamer">
-				<StackPanel Spacing="10" Margin="10">
-					<TextBlock Text="Use the following patterns to rename your files:" FontWeight="DemiBold"/>
-				
-					<TextBox Text="{Binding Pattern, UpdateSourceTrigger=PropertyChanged}" 
-									 Watermark="Enter renaming pattern here..." 
-									 suki:TextBoxExtensions.Prefix="{icon:MaterialIconExt Kind=Money}"
-									 Classes="clearButton"/>
-					<Button Command="{Binding RenameCommand}" 
-									Content="Rename Files" 
-									HorizontalAlignment="Right" 
-									IsEnabled="{Binding CanRename}"/>
-				</StackPanel>
+			<!-- Directories -->
+			<suki:GlassCard Margin="10,10" CornerRadius="10">
+				<suki:GroupBox Header="Source/Destination Directories">
+					<StackPanel Spacing="10" Margin="10">
+
+						<StackPanel Spacing="10" Orientation="Horizontal">
+							<TextBox Text="{Binding SourceDir, UpdateSourceTrigger=PropertyChanged}" 
+										 Watermark="Source Directory" 
+										 suki:TextBoxExtensions.Prefix="{icon:MaterialIconExt Kind=Folder}"
+										 Classes="clearButton"
+										 Width="400"/>
+							<Button Command="{Binding SetSourceDirectoryCommand}"
+											Background="Transparent"
+											BorderBrush="Transparent"
+											Cursor="Hand">
+								<Button.Content>
+									<icon:MaterialIcon Kind="FolderOpen" Width="22" Height="22"/>
+								</Button.Content>
+							</Button>
+									  
+						</StackPanel>
+						<StackPanel Spacing="10" Orientation="Horizontal">
+							<TextBox Text="{Binding DestinationDir, UpdateSourceTrigger=PropertyChanged}"
+										 Watermark="Destination Directory"
+										 suki:TextBoxExtensions.Prefix="{icon:MaterialIconExt Kind=Folder}"
+										 Classes="clearButton"
+										 Width="400"/>
+							<Button Command="{Binding SetDestinationDirectoryCommand}"
+											Background="Transparent"
+											BorderBrush="Transparent"
+											Cursor="Hand">
+								<Button.Content>
+									<icon:MaterialIcon Kind="FolderOpen" Width="22" Height="22"/>
+								</Button.Content>
+							</Button>
+						</StackPanel>
+
+					</StackPanel>
+				</suki:GroupBox>
+		 </suki:GlassCard>
+		 <!-- End Directiories -->
+
+		 <!-- Options -->
+			<suki:GlassCard Margin="10,10" CornerRadius="10">
+				<suki:GroupBox Header="Options">
+					<StackPanel Spacing="10" >
+						<suki:GlassCard Height="60" CornerRadius="6">
+							<StackPanel Orientation="Horizontal"
+													Spacing="200">
+								<TextBlock Text="Load External File" VerticalAlignment="Center"/>
+								<Button Command="{Binding LoadExternalCommand}"
+												Background="Transparent"
+												BorderBrush="Transparent"
+												Cursor="Hand"
+												HorizontalAlignment="Right">
+									<Button.Content>
+										<icon:MaterialIcon Kind="FileImport" Width="22" Height="22"/>
+									</Button.Content>
+								</Button>
+					 	 </StackPanel>
+					</suki:GlassCard>
+         </StackPanel>
 			</suki:GroupBox>
+		 </suki:GlassCard>
+		 <!-- End Options -->
+			
 		</WrapPanel>
 	</ScrollViewer>
 </UserControl>

@@ -9,13 +9,22 @@
              d:DesignWidth="800"
              x:DataType="customTheme:CustomThemeDialogViewModel"
              mc:Ignorable="d">
+	<suki:GlassCard Padding="20" CornerRadius="15" Margin="10">
     <suki:GroupBox Header="Create Custom Theme">
         <StackPanel Spacing="20">
             <TextBox Text="{Binding DisplayName}" />
-            <ColorPicker Color="{Binding PrimaryColor}" />
-            <ColorPicker Color="{Binding AccentColor}" />
+
+						<ColorPicker Color="{Binding PrimaryColor}" 
+												 Width="120" 
+												 Content="Primary" 
+												 VerticalContentAlignment="Center"/>
+            <ColorPicker Color="{Binding AccentColor}"
+												 Width="120"
+												 Content="Accent"
+												 VerticalContentAlignment="Center"/>
             <Button Command="{Binding TryCreateThemeCommand}" Content="Create" />
 					  <Button Command="{Binding CloseDialogCommand}" Content="Close" />
         </StackPanel>
     </suki:GroupBox>
+	</suki:GlassCard>
 </UserControl>
