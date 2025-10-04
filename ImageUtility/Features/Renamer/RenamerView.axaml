@@ -1,0 +1,29 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+						 xmlns:renamer="clr-namespace:ImageUtility.Features.Renamer"
+						 xmlns:suki="https://github.com/kikipoulet/SukiUI"
+						 xmlns:icon="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+						 x:DataType="renamer:RenamerViewModel"
+             x:Class="ImageUtility.RenamerView">
+	<ScrollViewer VerticalScrollBarVisibility="Hidden">
+		<WrapPanel Margin="10" Orientation="Horizontal">
+			<suki:GroupBox Header="Renamer">
+				<StackPanel Spacing="10" Margin="10">
+					<TextBlock Text="Use the following patterns to rename your files:" FontWeight="DemiBold"/>
+				
+					<TextBox Text="{Binding Pattern, UpdateSourceTrigger=PropertyChanged}" 
+									 Watermark="Enter renaming pattern here..." 
+									 suki:TextBoxExtensions.Prefix="{icon:MaterialIconExt Kind=Money}"
+									 Classes="clearButton"/>
+					<Button Command="{Binding RenameCommand}" 
+									Content="Rename Files" 
+									HorizontalAlignment="Right" 
+									IsEnabled="{Binding CanRename}"/>
+				</StackPanel>
+			</suki:GroupBox>
+		</WrapPanel>
+	</ScrollViewer>
+</UserControl>
