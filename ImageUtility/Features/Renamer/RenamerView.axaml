@@ -9,8 +9,7 @@
 						 x:DataType="renamer:RenamerViewModel"
              x:Class="ImageUtility.RenamerView">
 	<ScrollViewer VerticalScrollBarVisibility="Hidden"
-								HorizontalAlignment="Left"
-								Width="800">
+								HorizontalAlignment="Left">
 		<WrapPanel Margin="10" Orientation="Horizontal">
 			<Grid>
 			<!-- Directories -->
@@ -156,33 +155,32 @@
 						</suki:GroupBox>
 						<!--End Options-->
 
-						
+						<!-- Commands -->
+						<Grid Width="300" Margin="0 -20 0 0"
+						      VerticalAlignment="Bottom">
+							<Button Command="{Binding RenameCommand}"
+											HorizontalAlignment="Left"
+											VerticalAlignment="Bottom"
+											Classes="Flat Rounded"
+											Content="APPLY"
+											Padding="6"
+											Height="40"
+											Width="140"
+											IsEnabled="{Binding CanRename}"/>
+							<Button Grid.Column="1"
+											Command="{Binding ClearCommand}"
+											HorizontalAlignment="Right"
+											VerticalAlignment="Bottom"
+											Classes="Flat Rounded Danger"
+											Content="CLEAR"
+											Padding="6"
+											Height="40"
+											Width="140"
+											IsEnabled="{Binding CanClear}"/>
+						</Grid>
+						<!-- End Commands -->
 				</StackPanel>		
 			 </suki:GlassCard>
-				<!-- Commands -->
-				<Grid Width="300" Margin="0 20 0 0">
-					<Button Command="{Binding RenameCommand}"
-									HorizontalAlignment="Left"
-								  VerticalAlignment="Bottom"
-									Classes="Flat Rounded"
-									Content="APPLY"
-									Padding="6"
-									Height="40"
-									Width="140"
-									IsEnabled="{Binding CanRename}"/>
-					<Button Grid.Column="1"
-									Command="{Binding ClearCommand}"
-									HorizontalAlignment="Right"
-									VerticalAlignment="Bottom"
-									Classes="Flat Rounded Danger"
-									Content="CLEAR"
-									Padding="6"
-									Height="40"
-									Width="140"
-									IsEnabled="{Binding CanClear}"/>
-				</Grid>
-
-				<!-- End Commands -->
 			</Grid>
 		</WrapPanel>
 	</ScrollViewer>
