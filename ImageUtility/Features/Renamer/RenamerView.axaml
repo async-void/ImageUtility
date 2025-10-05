@@ -133,6 +133,22 @@
 																		Classes="Switch"
 																		IsChecked="{Binding OpenOnComplete, Mode=TwoWay}"/>
 										</Grid>
+										<Grid Margin="0 10">
+											<StackPanel>
+												<TextBlock FontWeight="DemiBold"
+																	 Text="Copy Files"/>
+												<TextBlock Foreground="{DynamicResource SukiLowText}"
+																	 FontSize="12"
+																	 Width="400"
+																	 TextWrapping="Wrap"
+																	 HorizontalAlignment="Left"
+																	 Text="Copy files to destination directory, this will copy [source] files not remove them."/>
+											</StackPanel>
+											<ToggleSwitch HorizontalAlignment="Right"
+																		VerticalAlignment="Center"
+																		Classes="Switch"
+																		IsChecked="{Binding CopyFiles, Mode=TwoWay}"/>
+										</Grid>
 									</StackPanel>
 								</suki:GlassCard>
 								</suki:BusyArea>
@@ -153,7 +169,6 @@
 									Padding="6"
 									Height="40"
 									Width="140"
-									
 									IsEnabled="{Binding CanRename}"/>
 					<Button Grid.Column="1"
 									Command="{Binding ClearCommand}"
