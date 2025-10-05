@@ -8,135 +8,167 @@
              mc:Ignorable="d"
 						 x:DataType="renamer:RenamerViewModel"
              x:Class="ImageUtility.RenamerView">
-	<ScrollViewer VerticalScrollBarVisibility="Hidden">
+	<ScrollViewer VerticalScrollBarVisibility="Hidden"
+								HorizontalAlignment="Left"
+								Width="800">
 		<WrapPanel Margin="10" Orientation="Horizontal">
+			<Grid>
 			<!-- Directories -->
-			<suki:GlassCard Margin="10" 
-											CornerRadius="10">
-				<suki:GroupBox Header="Source/Destination Directories">
-					<StackPanel Spacing="10" Margin="10">
+				<suki:GlassCard Margin="10" 
+												CornerRadius="10">
+					<StackPanel>
+					<suki:GroupBox Header="Source/Destination Directories">
+						<StackPanel Spacing="10" Margin="10">
 
-						<StackPanel Spacing="10" Orientation="Horizontal">
-							<TextBox Text="{Binding SourceDir, UpdateSourceTrigger=PropertyChanged}" 
-										 Watermark="Source Directory" 
-										 suki:TextBoxExtensions.Prefix="{icon:MaterialIconExt Kind=Folder}"
-										 Classes="clearButton"
-										 Width="400"/>
-							<Button Command="{Binding SetSourceDirectoryCommand}"
-											Background="Transparent"
-											BorderBrush="Transparent"
-											Cursor="Hand">
-								<Button.Content>
-									<icon:MaterialIcon Kind="FolderOpen" Width="22" Height="22"/>
-								</Button.Content>
-							</Button>
-									  
-						</StackPanel>
-						<StackPanel Spacing="10" Orientation="Horizontal">
-							<TextBox Text="{Binding DestinationDir, UpdateSourceTrigger=PropertyChanged}"
-										 Watermark="Destination Directory"
-										 suki:TextBoxExtensions.Prefix="{icon:MaterialIconExt Kind=Folder}"
-										 Classes="clearButton"
-										 Width="400"/>
-							<Button Command="{Binding SetDestinationDirectoryCommand}"
-											Background="Transparent"
-											BorderBrush="Transparent"
-											Cursor="Hand">
-								<Button.Content>
-									<icon:MaterialIcon Kind="FolderOpen" Width="22" Height="22"/>
-								</Button.Content>
-							</Button>
-						</StackPanel>
-
-					</StackPanel>
-				</suki:GroupBox>
-		 </suki:GlassCard>
-		 <!-- End Directiories -->
-
-		 <!-- Options -->
-			<suki:GlassCard Margin="10" CornerRadius="10">
-				<suki:GroupBox Header="Options">
-					<StackPanel Spacing="10" >
-						<suki:GlassCard CornerRadius="6" Width="494">
-							<StackPanel>
-								
-							<Grid Margin="0,2,0,0">
-								<ToggleSwitch HorizontalAlignment="Right"
-															VerticalAlignment="Top"
-															Classes="Switch"
-															IsChecked="{Binding UseExternalFile}" />
-								<TextBlock HorizontalAlignment="Left"
-														VerticalAlignment="Top"
-														FontWeight="DemiBold"
-														Text="Use External File" />
-
-								<TextBlock Margin="0,16,0,0"
-													 HorizontalAlignment="Left"
-													 VerticalAlignment="Bottom"
-													 FontSize="12"
-													 Foreground="{DynamicResource SukiLowText}"
-													 Text="Use an external text file for the renaming pattern."
-													 TextWrapping="Wrap" />
-							</Grid>
-							<Grid Margin="0, 10,0,0">
-								<TextBlock HorizontalAlignment="Left"
-													 VerticalAlignment="Top"
-													 FontWeight="DemiBold"
-													 Text="Load External File" />
-								<TextBlock Text="Load an external file for renaming patter."
-													 VerticalAlignment="Bottom"
-													 FontSize="12"
-													 Margin="0, 16, 0, 0"/>
-								<Button Command="{Binding LoadExternalCommand}"
-												HorizontalAlignment="Right"
-												Margin="0 ,0,10,0"
-												Content="..."
-												Padding="6"
-												Height="30"
-												Width="44"
-												IsEnabled="{Binding UseExternalFile}">
-									
+							<StackPanel Spacing="10" Orientation="Horizontal">
+								<TextBox Text="{Binding SourceDir, UpdateSourceTrigger=PropertyChanged}" 
+											 Watermark="Source Directory" 
+											 suki:TextBoxExtensions.Prefix="{icon:MaterialIconExt Kind=Folder}"
+											 Classes="clearButton"
+											 Width="400"/>
+								<Button Command="{Binding SetSourceDirectoryCommand}"
+												Background="Transparent"
+												BorderBrush="Transparent"
+												Cursor="Hand">
+									<Button.Content>
+										<icon:MaterialIcon Kind="FolderOpen" Width="22" Height="22"/>
+									</Button.Content>
 								</Button>
-							</Grid>
-							<Expander Margin="-12,10,0,0"
-												Header="Pattern"
-												IsExpanded="False">
-								<TextBox Text="{Binding Pattern, UpdateSourceTrigger=PropertyChanged}"
-												 IsEnabled="{Binding UseExternalFile}"
-												 suki:TextBoxExtensions.Prefix="{icon:MaterialIconExt Kind=Paperclip}"
-												 suki:TextBoxExtensions.AddDeleteButton="True"
-												 Watermark="filename_number.ext"/>
-							</Expander>
-							<Expander Margin="-12,10,0,0"
-										Header="Numbering"
-										IsExpanded="False">
-								<NumericUpDown suki:NumericUpDownExtensions.Unit="{icon:MaterialIconExt Kind=NumericOneCircle}"
-															 Minimum="0"
-															 Maximum="100000"
-															 Increment="1"
-															 FormatString="F0"
-															 IsEnabled="{Binding UseExternalFile}"/>
-							</Expander>
-							<Grid>
-								<StackPanel>
-									<TextBlock FontWeight="DemiBold"
-														 Text="Open On Completion"/>
-									<TextBlock Foreground="{DynamicResource SukiLowText}"
-														 FontSize="12"
-														 Text="Open the destination folder when the renaming operation is complete."/>
-								</StackPanel>
-								<ToggleSwitch HorizontalAlignment="Right"	
-															VerticalAlignment="Center"
-															Classes="Switch"
-															IsChecked="{Binding OpenOnComplete, Mode=TwoWay}"/>
-							</Grid>
+									  
+							</StackPanel>
+							<StackPanel Spacing="10" Orientation="Horizontal">
+								<TextBox Text="{Binding DestinationDir, UpdateSourceTrigger=PropertyChanged}"
+											 Watermark="Destination Directory"
+											 suki:TextBoxExtensions.Prefix="{icon:MaterialIconExt Kind=Folder}"
+											 Classes="clearButton"
+											 Width="400"/>
+								<Button Command="{Binding SetDestinationDirectoryCommand}"
+												Background="Transparent"
+												BorderBrush="Transparent"
+												Cursor="Hand">
+									<Button.Content>
+										<icon:MaterialIcon Kind="FolderOpen" Width="22" Height="22"/>
+									</Button.Content>
+								</Button>
+							</StackPanel>
 						</StackPanel>
-					</suki:GlassCard>
-         </StackPanel>
-			</suki:GroupBox>
-		 </suki:GlassCard>
-		 <!-- End Options -->
-			
+					</suki:GroupBox>
+					<!-- End Directiories -->
+					<!-- Options -->
+					<suki:GroupBox Header="Options" >
+							<StackPanel Spacing="10" >
+								<suki:BusyArea IsBusy="{Binding IsLoading}"
+															 BusyText="{Binding StatusMessage}">
+								<suki:GlassCard CornerRadius="6" Width="494">
+									<StackPanel>
+
+										<Grid Margin="0,2,0,0">
+											<ToggleSwitch HorizontalAlignment="Right"
+																		VerticalAlignment="Top"
+																		Classes="Switch"
+																		IsChecked="{Binding UseExternalFile}" />
+											<TextBlock HorizontalAlignment="Left"
+																	VerticalAlignment="Top"
+																	FontWeight="DemiBold"
+																	Text="Use External File" />
+
+											<TextBlock Margin="0,16,0,0"
+																 HorizontalAlignment="Left"
+																 VerticalAlignment="Bottom"
+																 FontSize="12"
+																 Foreground="{DynamicResource SukiLowText}"
+																 Text="Use an external text file for the renaming pattern."
+																 TextWrapping="Wrap" />
+										</Grid>
+										<Grid Margin="0, 10,0,0">
+											<TextBlock HorizontalAlignment="Left"
+																 VerticalAlignment="Top"
+																 FontWeight="DemiBold"
+																 Text="Load External File" />
+											<TextBlock Text="Load an external file for renaming patter."
+																 VerticalAlignment="Bottom"
+																 FontSize="12"
+																 Margin="0, 16, 0, 0"/>
+											<Button Command="{Binding LoadExternalCommand}"
+															HorizontalAlignment="Right"
+															Margin="0 ,0,10,0"
+															Content="..."
+															Padding="6"
+															Height="30"
+															Width="44"
+															
+															IsEnabled="{Binding UseExternalFile}">
+
+											</Button>
+										</Grid>
+										<Expander Margin="-12,10,0,0"
+															Header="Pattern"
+															IsExpanded="False">
+											<TextBox Text="{Binding Pattern, UpdateSourceTrigger=PropertyChanged}"
+															 IsEnabled="{Binding !UseExternalFile}"
+															 suki:TextBoxExtensions.Prefix="{icon:MaterialIconExt Kind=Paperclip}"
+															 suki:TextBoxExtensions.AddDeleteButton="True"
+															 Watermark="filename_number.ext"/>
+										</Expander>
+										<Expander Margin="-12,10,0,0"
+													Header="Numbering"
+													IsExpanded="False">
+											<NumericUpDown suki:NumericUpDownExtensions.Unit="{icon:MaterialIconExt Kind=NumericOneCircle}"
+																		 Minimum="0"
+																		 Maximum="100000"
+																		 Increment="1"
+																		 FormatString="F0"
+																		 IsEnabled="{Binding !UseExternalFile}"/>
+										</Expander>
+										<Grid Margin="0 10">
+											<StackPanel>
+												<TextBlock FontWeight="DemiBold"
+																	 Text="Open On Completion"/>
+												<TextBlock Foreground="{DynamicResource SukiLowText}"
+																	 FontSize="12"
+																	 Text="Open the destination folder when the renaming operation is complete."/>
+											</StackPanel>
+											<ToggleSwitch HorizontalAlignment="Right"
+																		VerticalAlignment="Center"
+																		Classes="Switch"
+																		IsChecked="{Binding OpenOnComplete, Mode=TwoWay}"/>
+										</Grid>
+									</StackPanel>
+								</suki:GlassCard>
+								</suki:BusyArea>
+							</StackPanel>
+						</suki:GroupBox>
+						<!--End Options-->
+
+						
+				</StackPanel>		
+			 </suki:GlassCard>
+				<!-- Commands -->
+				<Grid Width="300" Margin="0 20 0 0">
+					<Button Command="{Binding RenameCommand}"
+									HorizontalAlignment="Left"
+								  VerticalAlignment="Bottom"
+									Classes="Flat Rounded"
+									Content="APPLY"
+									Padding="6"
+									Height="40"
+									Width="140"
+									
+									IsEnabled="{Binding CanRename}"/>
+					<Button Grid.Column="1"
+									Command="{Binding ClearCommand}"
+									HorizontalAlignment="Right"
+									VerticalAlignment="Bottom"
+									Classes="Flat Rounded Danger"
+									Content="CLEAR"
+									Padding="6"
+									Height="40"
+									Width="140"
+									IsEnabled="{Binding CanClear}"/>
+				</Grid>
+
+				<!-- End Commands -->
+			</Grid>
 		</WrapPanel>
 	</ScrollViewer>
 </UserControl>

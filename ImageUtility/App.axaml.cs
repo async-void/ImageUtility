@@ -11,6 +11,7 @@ using ImageUtility.Features.CustomTheme;
 using ImageUtility.Features.Dashboard;
 using ImageUtility.Features.Renamer;
 using ImageUtility.Features.Theming;
+using ImageUtility.Interfaces;
 using ImageUtility.Services;
 using ImageUtility.ViewModels;
 using ImageUtility.Views;
@@ -92,9 +93,10 @@ namespace ImageUtility
         {
             //services.AddSingleton<ClipboardService>();
             services.AddSingleton<PageNavigationService>();
+            services.AddSingleton<MainWindow>();
             services.AddSingleton<ISukiToastManager, SukiToastManager>();
             services.AddSingleton<ISukiDialogManager, SukiDialogManager>();
-           
+            services.AddSingleton<IRenamer, RenamerService>();
             services.AddLogging(loggerBuilder =>
             {
                 loggerBuilder.ClearProviders();

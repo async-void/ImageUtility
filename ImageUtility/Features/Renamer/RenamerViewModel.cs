@@ -9,25 +9,35 @@ using ImageUtility.ViewModels;
 using ImageUtility.Views;
 using Material.Icons;
 using SukiUI.MessageBox;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace ImageUtility.Features.Renamer
 {
     public partial class RenamerViewModel : ViewModelBase
     {
+        private readonly MainWindow _mWindow;
         [ObservableProperty]
         [Required]
         [NotifyCanExecuteChangedFor(nameof(RenameCommand))]
-        private string _sourceDir;
+        [NotifyCanExecuteChangedFor(nameof(ClearCommand))]
+        private string? _sourceDir;
 
         [ObservableProperty]
         [Required]
         [NotifyCanExecuteChangedFor(nameof(RenameCommand))]
-        private string _destinationDir;
+        [NotifyCanExecuteChangedFor(nameof(ClearCommand))]
+        private string? _destinationDir;
 
         [ObservableProperty]
         [NotifyCanExecuteChangedFor(nameof(RenameCommand))]
+        [NotifyCanExecuteChangedFor(nameof(ClearCommand))]
         private string? _pattern;
+
+        [ObservableProperty]
+        private string? _statusMessage;
 
         [ObservableProperty]
         private bool _useExternalFile;
@@ -35,39 +45,108 @@ namespace ImageUtility.Features.Renamer
         [ObservableProperty]
         private bool _openOnComplete;
 
-        public RenamerViewModel() : base("Renamer", MaterialIconKind.Rename, 2)
+        [ObservableProperty]
+        private bool _isLoading;
+
+        private List<string>? filesList = new List<string>();
+        public RenamerViewModel(MainWindow mWindow) : base("Renamer", MaterialIconKind.Rename, 2)
         {
+            _mWindow = mWindow;
         }
 
         [RelayCommand(CanExecute = nameof(CanRename))]
         private void Rename()
         {
-
+            StatusMessage = "Renaming Files... Please Wait";
+            IsLoading = true;
+        }
+        [RelayCommand(CanExecute = nameof(CanClear))]
+        private void Clear()
+        {
+            Pattern = string.Empty;
+            SourceDir = string.Empty;
+            DestinationDir = string.Empty;
+            UseExternalFile = false;
+            OpenOnComplete = false;
         }
 
         [RelayCommand]
-        private void SetSourceDirectory()
+        private async Task SetSourceDirectory()
         {
-            
-            // Get top level from the current control. Alternatively, you can use Window reference instead.
-            var topLevel = TopLevel.GetTopLevel(((IClassicDesktopStyleApplicationLifetime)Application.Current.ApplicationLifetime).MainWindow);
+            var topLevel = TopLevel.GetTopLevel(_mWindow);
+            var startLoc = await topLevel!.StorageProvider.TryGetWellKnownFolderAsync(WellKnownFolder.Documents);
 
-            // Start async operation to open the dialog.
-            var files = topLevel?.StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions());
-            
+            var options = new FolderPickerOpenOptions
+            {
+                Title = "Select a Folder",
+                SuggestedStartLocation = startLoc,
+                AllowMultiple = false
+            };
+            var result = await topLevel.StorageProvider.OpenFolderPickerAsync(options);
+            if (result is { Count: > 0 })
+            {
+                SourceDir = result[0].Path.LocalPath;
+            }
         }
 
         [RelayCommand]
-        private void SetDestinationDirectory()
+        private async Task SetDestinationDirectory()
         {
+            var topLevel = TopLevel.GetTopLevel(_mWindow);
+            var startLoc = await topLevel!.StorageProvider.TryGetWellKnownFolderAsync(WellKnownFolder.Documents);
+
+            var options = new FolderPickerOpenOptions
+            {
+                Title = "Select a Folder",
+                SuggestedStartLocation = startLoc,
+                AllowMultiple = false
+            };
+            var result = await topLevel.StorageProvider.OpenFolderPickerAsync(options);
+            if (result is { Count: > 0 })
+            {
+                DestinationDir = result[0].Path.LocalPath;
+            }
         }
 
         [RelayCommand]
-        private void LoadExternal()
+        private async Task LoadExternal()
         {
-            UseExternalFile = true;
+            StatusMessage = "Loading Files...";
+            IsLoading = true;
+            var topLevel = TopLevel.GetTopLevel(_mWindow);
+            var startLoc = await topLevel!.StorageProvider.TryGetWellKnownFolderAsync(WellKnownFolder.Documents);
+
+            var options = new FilePickerOpenOptions
+            {
+                Title = "Select a File",
+                SuggestedStartLocation = startLoc,
+                AllowMultiple = false,
+                FileTypeFilter = new List<FilePickerFileType>
+                {
+                    new FilePickerFileType("Text Files")
+                    {
+                        Patterns = new List<string> { "*.txt" },
+                        AppleUniformTypeIdentifiers = new List<string> { "public.plain-text" }
+                    }
+                }
+            };
+            var result = await topLevel.StorageProvider.OpenFilePickerAsync(options);
+           
+            if (result is { Count: > 0 })
+            {
+                var lines = await File.ReadAllLinesAsync(result[0].Path.LocalPath);
+                
+                foreach (var line in lines)
+                {
+                    filesList?.Add(line);
+                }
+               
+            }
+
+            IsLoading = false;
         }
 
-        public bool CanRename() => !string.IsNullOrEmpty(Pattern) && !string.IsNullOrEmpty(SourceDir) && !string.IsNullOrEmpty(DestinationDir);
+        public bool CanRename() => !string.IsNullOrEmpty(Pattern) || !string.IsNullOrEmpty(SourceDir) && !string.IsNullOrEmpty(DestinationDir);
+        public bool CanClear() => !string.IsNullOrEmpty(Pattern) || !string.IsNullOrEmpty(SourceDir) && !string.IsNullOrEmpty(DestinationDir);
     }
 }
