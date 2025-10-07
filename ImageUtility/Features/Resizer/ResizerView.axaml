@@ -10,7 +10,7 @@
              x:DataType="resizer:ResizerViewModel">
 
 	<ScrollViewer VerticalScrollBarVisibility="Hidden"
-								HorizontalAlignment="Left">
+								>
 		<suki:BusyArea IsBusy="{Binding IsBusy}"
 									 BusyText="{Binding StatusMessage}">
 			<WrapPanel Margin="10" Orientation="Horizontal">
@@ -18,20 +18,20 @@
 					<!-- Directories -->
 					<suki:GlassCard Margin="10"
 													CornerRadius="10"
-													Width="800">
+													Width="600">
 						<StackPanel>
 							<suki:GroupBox Header="Source/Destination Directories">
 								<StackPanel Spacing="5" Margin="10">
 
 									<StackPanel Spacing="10" 
 															Orientation="Horizontal" 
-															Width="600"
+														
 															HorizontalAlignment="Left">
 										<TextBox Text="{Binding SourceDir, UpdateSourceTrigger=PropertyChanged}"
 													 Watermark="Source Directory"
 													 suki:TextBoxExtensions.Prefix="{icon:MaterialIconExt Kind=Folder}"
 													 Classes="clearButton"
-													 Width="500"/>
+													 Width="460"/>
 										<Button 
 														Background="Transparent"
 														BorderBrush="Transparent"
@@ -44,13 +44,13 @@
 									</StackPanel>
 									<StackPanel Spacing="10" 
 															Orientation="Horizontal"
-														  Width="600"
+														
 														  HorizontalAlignment="Left">
 										<TextBox Text="{Binding DestinationDir, UpdateSourceTrigger=PropertyChanged}"
 													 Watermark="Destination Directory"
 													 suki:TextBoxExtensions.Prefix="{icon:MaterialIconExt Kind=Folder}"
 													 Classes="clearButton"
-													 Width="500"/>
+													 Width="460"/>
 										<Button 
 														Background="Transparent"
 														BorderBrush="Transparent"
@@ -63,111 +63,116 @@
 								</StackPanel>
 							</suki:GroupBox>
 							<!-- End Directiories -->
-							<!-- Options -->
-							<suki:GroupBox Header="Options" HorizontalAlignment="Left">
-								<StackPanel Spacing="10" Width="700"
-														HorizontalAlignment="Left">
-									<suki:BusyArea IsBusy="{Binding IsLoading}"
-																 BusyText="{Binding StatusMessage}">
-										<suki:GlassCard CornerRadius="6" Width="600"
-																		HorizontalAlignment="Left">
+							
+
+						
+						</StackPanel>
+					</suki:GlassCard>
+				</Grid>
+				<suki:GlassCard CornerRadius="8"
+												Margin="10">
+					<!-- Options -->
+
+					<suki:GroupBox Header="Options">
+						<StackPanel Spacing="10" 
+												>
+							<suki:BusyArea IsBusy="{Binding IsLoading}"
+														 BusyText="{Binding StatusMessage}">
+								<suki:GlassCard CornerRadius="8" 
+																
+																Width="600">
+									<StackPanel>
+										<Grid>
+											<ComboBox HorizontalAlignment="Right"
+																VerticalAlignment="Center"
+																Width="200"
+																ItemsSource="{Binding ResizeModes}"
+																SelectedItem="{Binding SelectedResizeMode, UpdateSourceTrigger=PropertyChanged}"
+																Margin="10 0 0 0"
+																ToolTip.Placement="Right"
+																ToolTip.Tip="Resizer Mode"/>
 											<StackPanel>
-												<Grid> 
-													<ComboBox HorizontalAlignment="Right"
-																		VerticalAlignment="Center"
-																		Width="200"
-																		ItemsSource="{Binding ResizeModes}"
-																		SelectedItem="{Binding SelectedResizeMode, UpdateSourceTrigger=PropertyChanged}"
-																		Margin="10 0 0 0"
-																		ToolTip.Placement="Right"
-																		ToolTip.Tip="Resizer Mode"/>
-													<StackPanel>
-														<TextBlock HorizontalAlignment="Left"
-																			 VerticalAlignment="Top"
-																			 FontWeight="DemiBold"
-																			 Text="Resize Mode" />
-														<TextBlock HorizontalAlignment="Left"
-																			 VerticalAlignment="Top"
-																			 FontWeight="Thin"
-																			 FontSize="12"
-																			 Text="Select the resize mode to use." />
-													</StackPanel>
-												</Grid>
-												<Grid>
-													<NumericUpDown suki:NumericUpDownExtensions.Unit="{icon:MaterialIconExt Kind=NumericOneCircle}"
-																				 HorizontalAlignment="Right"
-																				 VerticalAlignment="Center"
-																				 FormatString="F0"
-																				 Minimum="64"
-																				 Maximum="640"
-																				 Value="64"
-																				 Text="{Binding Width, UpdateSourceTrigger=PropertyChanged}"
-																				 Margin="0 5 5 0"/>
-													<StackPanel>
-														<TextBlock HorizontalAlignment="Left"
-																			 VerticalAlignment="Top"
-																			 FontWeight="DemiBold"
-																			 Text="Width" />
-														<TextBlock HorizontalAlignment="Left"
-																			 VerticalAlignment="Top"
-																			 FontWeight="Thin"
-																			 FontSize="12"
-																			 Text="Set the width for the resized image." />
-													</StackPanel>
-												</Grid>
-												<Grid Margin="0 10 0 10">
-													<NumericUpDown suki:NumericUpDownExtensions.Unit="{icon:MaterialIconExt Kind=NumericOneCircle}"
-																				 HorizontalAlignment="Right"
-																				 VerticalAlignment="Center"
-																				 FormatString="F0"
-																				 Minimum="64"
-																				 Maximum="640"
-																			   Margin="0 0 5 0"
-																				 Value="64"
-																				 Text="{Binding Height, UpdateSourceTrigger=PropertyChanged}" />
-													<StackPanel>
-														<TextBlock HorizontalAlignment="Left"
-																			 VerticalAlignment="Top"
-																			 FontWeight="DemiBold"
-																			 Text="Height" />
-														<TextBlock HorizontalAlignment="Left"
-																			 VerticalAlignment="Top"
-																			 FontWeight="Thin"
-																			 FontSize="12"
-																			 Text="Set the height for the resized image." />
-													</StackPanel>
-												</Grid>
-												<Grid Margin="0,2,0,20">
-													<ToggleSwitch HorizontalAlignment="Right"
-																				VerticalAlignment="Top"
-																				Classes="Switch"
-																				IsChecked="{Binding MaintainAspectRatio}" />
-													<TextBlock HorizontalAlignment="Left"
-																			VerticalAlignment="Top"
-																			FontWeight="DemiBold"
-																			Text="Maintain Aspect Ratio" />
-
-													<TextBlock Margin="0,16,0,0"
-																		 HorizontalAlignment="Left"
-																		 VerticalAlignment="Bottom"
-																		 FontSize="12"
-																		 Foreground="{DynamicResource SukiLowText}"
-																		 Text="maintain the aspect ratio of the original file."
-																		 TextWrapping="Wrap" />
-												</Grid>
-											
+												<TextBlock HorizontalAlignment="Left"
+																	 VerticalAlignment="Top"
+																	 FontWeight="DemiBold"
+																	 Text="Resize Mode" />
+												<TextBlock HorizontalAlignment="Left"
+																	 VerticalAlignment="Top"
+																	 FontWeight="Thin"
+																	 FontSize="12"
+																	 Text="Select the resize mode to use." />
 											</StackPanel>
-										</suki:GlassCard>
-									</suki:BusyArea>
-								</StackPanel>
-							</suki:GroupBox>
-							<!--End Options-->
+										</Grid>
+										<Grid>
+											<NumericUpDown suki:NumericUpDownExtensions.Unit="{icon:MaterialIconExt Kind=NumericOneCircle}"
+																		 HorizontalAlignment="Right"
+																		 VerticalAlignment="Center"
+																		 FormatString="F0"
+																		 Minimum="64"
+																		 Maximum="640"
+																		 Value="64"
+																		 Text="{Binding Width, UpdateSourceTrigger=PropertyChanged}"
+																		 Margin="0 5 5 0"/>
+											<StackPanel>
+												<TextBlock HorizontalAlignment="Left"
+																	 VerticalAlignment="Top"
+																	 FontWeight="DemiBold"
+																	 Text="Width" />
+												<TextBlock HorizontalAlignment="Left"
+																	 VerticalAlignment="Top"
+																	 FontWeight="Thin"
+																	 FontSize="12"
+																	 Text="Set the width for the resized image." />
+											</StackPanel>
+										</Grid>
+										<Grid Margin="0 10 0 10">
+											<NumericUpDown suki:NumericUpDownExtensions.Unit="{icon:MaterialIconExt Kind=NumericOneCircle}"
+																		 HorizontalAlignment="Right"
+																		 VerticalAlignment="Center"
+																		 FormatString="F0"
+																		 Minimum="64"
+																		 Maximum="640"
+																		 Margin="0 0 5 0"
+																		 Value="64"
+																		 Text="{Binding Height, UpdateSourceTrigger=PropertyChanged}" />
+											<StackPanel>
+												<TextBlock HorizontalAlignment="Left"
+																	 VerticalAlignment="Top"
+																	 FontWeight="DemiBold"
+																	 Text="Height" />
+												<TextBlock HorizontalAlignment="Left"
+																	 VerticalAlignment="Top"
+																	 FontWeight="Thin"
+																	 FontSize="12"
+																	 Text="Set the height for the resized image." />
+											</StackPanel>
+										</Grid>
+										<Grid Margin="0,2,0,20">
+											<ToggleSwitch HorizontalAlignment="Right"
+																		VerticalAlignment="Top"
+																		Classes="Switch"
+																		IsChecked="{Binding MaintainAspectRatio}" />
+											<TextBlock HorizontalAlignment="Left"
+																	VerticalAlignment="Top"
+																	FontWeight="DemiBold"
+																	Text="Maintain Aspect Ratio" />
 
+											<TextBlock Margin="0,16,0,0"
+																 HorizontalAlignment="Left"
+																 VerticalAlignment="Bottom"
+																 FontSize="12"
+																 Foreground="{DynamicResource SukiLowText}"
+																 Text="maintain the aspect ratio of the original file."
+																 TextWrapping="Wrap" />
+										</Grid>
+										
+									</StackPanel>
+								</suki:GlassCard>
+								
+							</suki:BusyArea>
 							<!-- Commands -->
-							<Grid Width="800" Margin="0 -20 0 0"
-										VerticalAlignment="Bottom"
-										HorizontalAlignment="Center"
-										ColumnDefinitions="150, 300, *">
+							<Grid Margin="0 -30 0 0"
+										Width="300">
 								<Button Grid.Column="1"
 									Command="{Binding ResizeCommand}"
 												HorizontalAlignment="Left"
@@ -191,8 +196,10 @@
 							</Grid>
 							<!-- End Commands -->
 						</StackPanel>
-					</suki:GlassCard>
-				</Grid>
+					</suki:GroupBox>
+					<!--End Options-->
+					
+				</suki:GlassCard>
 			</WrapPanel>
 		</suki:BusyArea>
 	</ScrollViewer>
