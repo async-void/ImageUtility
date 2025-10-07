@@ -17,7 +17,7 @@ namespace ImageUtility.Services
         public async Task<Result<string, string>> RenameFilesAsync(IEnumerable<string> sourcePaths, string destinationDir, bool copyFiles, string? pattern = null, IEnumerable<string>? renameStrings = null)
         {
             var cts = new CancellationTokenSource();
-
+            //FindExact(sourcePaths, renameStrings);
             if (pattern is { } p)
             {
                 await Parallel.ForEachAsync(sourcePaths, cts.Token, async (sourcePath, token) =>
@@ -33,12 +33,13 @@ namespace ImageUtility.Services
                 var sList = sourcePaths.ToList();
 
                 if (rList.Count != sList.Count)
-                    return Result<string, string>.Err("filename.txt count does not match source files count.");
+                    return Result<string, string>.Err("filename count does not match source file count.");
 
                 var renamePairs = sList.Zip(rList, (source, rename) => new { source, rename });
+                
                 await Parallel.ForEachAsync(renamePairs, cts.Token, async (pair, token) =>
                 {
-                    string destinationPath = GetNewNameWithRenameStrings(pair.source, pair.rename);
+                    string destinationPath = GetNewNameWithRenameStrings(pair.source, destinationDir, pair.rename);
                     await CopyOrMoveAsync(pair.source, destinationPath, copyFiles);
                 });
                 return Result<string, string>.Ok("Successfully renamed all files");
@@ -55,11 +56,12 @@ namespace ImageUtility.Services
             return Path.Combine(destDir, $"{fileName}_{pattern}{ext}");
         }
 
-        private static string GetNewNameWithRenameStrings(string sourcePath, string renameString)
+        private static string GetNewNameWithRenameStrings(string sourcePath, string destinationPath, string renameString)
         {
-            var fileName = Path.GetFileNameWithoutExtension(sourcePath);
+            var parts = renameString.Split("|", StringSplitOptions.RemoveEmptyEntries);
+            var fileName = Path.GetFileNameWithoutExtension(parts[1]);
             var ext = Path.GetExtension(sourcePath);
-            return Path.Combine(Path.GetDirectoryName(sourcePath)!, $"{fileName}_{renameString}{ext}");
+            return Path.Combine(Path.GetDirectoryName(destinationPath)!, $"{fileName}{ext}");
         }
 
         private async Task CopyOrMoveAsync(string source, string destination, bool copy)
@@ -78,6 +80,20 @@ namespace ImageUtility.Services
                 _logger.LogError(message: $"Failed to {(copy ? "copy" : "move")} file from {source} to {destination}", ex);
             }
 
+        }
+
+        public void FindExact(IEnumerable<string> sourcePaths, IEnumerable<string>? renameStrings)
+        {
+            for (var i = 0; i < sourcePaths.Count(); i++)
+            {
+                var line = Path.GetFileName(sourcePaths.ElementAt(i));
+                var parts = renameStrings?.ElementAt(i).Split("|", StringSplitOptions.RemoveEmptyEntries);
+                var line2 = Path.GetFileName(parts[0]);
+                if (line != line2)
+                {
+                    Console.WriteLine($"Error found: {line}");
+                }
+            }
         }
     }
 }

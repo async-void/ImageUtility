@@ -48,6 +48,7 @@
     <PackageReference Include="Serilog.Extensions.Hosting" Version="9.0.0" />
     <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
     <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
+    <PackageReference Include="SixLabors.ImageSharp" Version="3.1.11" />
     <PackageReference Include="SukiUI" Version="6.0.3" />
     <PackageReference Include="SukiUI.Dock" Version="6.0.3" />
   </ItemGroup>

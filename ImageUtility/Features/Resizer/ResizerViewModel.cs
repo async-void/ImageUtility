@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using ImageUtility.Enums;
 using ImageUtility.ViewModels;
 using ImageUtility.Views;
 using Material.Icons;
@@ -7,6 +8,8 @@ using SukiUI.Dialogs;
 using SukiUI.Toasts;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,8 +23,12 @@ namespace ImageUtility.Features.Resizer
         private readonly ISukiDialogManager _dialogManager;
 
         [ObservableProperty]
+        [NotifyCanExecuteChangedFor(nameof(ResizeCommand))]
+        [Required]
         private string? _sourceDir;
         [ObservableProperty]
+        [Required]
+        [NotifyCanExecuteChangedFor(nameof(ResizeCommand))]
         private string? _destinationDir;
         [ObservableProperty]
         private int _width;
@@ -33,6 +40,12 @@ namespace ImageUtility.Features.Resizer
         private string? _statusMessage;
         [ObservableProperty]
         private bool _isLoading;
+        [ObservableProperty]
+        private bool _isBusy;
+        [ObservableProperty]
+        private string? _selectedResizeMode;
+
+        public ObservableCollection<string> ResizeModes { get; } = ["Stretch", "Crop", "Fill", "Pad", "Max", "Min"];
 
         public ResizerViewModel(MainWindow mWindow, ISukiToastManager toastManager, ISukiDialogManager dialogManager) : base("Resizer", MaterialIconKind.Resize, 3)
         {
@@ -44,9 +57,22 @@ namespace ImageUtility.Features.Resizer
         [RelayCommand(CanExecute = nameof(CanResize))]
         private async Task Resize()
         {
-
+            IsBusy = true;
+            StatusMessage = "Resizing images...";
         }
 
-        public bool CanResize() => !string.IsNullOrWhiteSpace(SourceDir) && !string.IsNullOrWhiteSpace(DestinationDir) && Width > 0 && Height > 0;
+        [RelayCommand(CanExecute = nameof(CanClear))]
+        private void Clear()
+        {
+            SourceDir = string.Empty;
+            DestinationDir = string.Empty;
+            Width = 0;
+            Height = 0;
+            StatusMessage = string.Empty;
+            IsLoading = false;
+        }
+
+        public bool CanResize() => !string.IsNullOrWhiteSpace(SourceDir) && !string.IsNullOrWhiteSpace(DestinationDir);
+        public bool CanClear() => !string.IsNullOrWhiteSpace(SourceDir) && !string.IsNullOrWhiteSpace(DestinationDir);
     }
 }

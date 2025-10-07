@@ -16,6 +16,7 @@ using SukiUI.Toasts;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
@@ -58,6 +59,9 @@ namespace ImageUtility.Features.Renamer
         private bool _isLoading;
 
         [ObservableProperty]
+        private bool _isLoadingDirectories;
+
+        [ObservableProperty]
         private bool _copyFiles;
 
         private List<string> filesList = [];
@@ -83,6 +87,29 @@ namespace ImageUtility.Features.Renamer
                 );
 
             IsLoading = false;
+
+            if ( OpenOnComplete && result.IsOk)
+            {
+                try
+                {
+                    Process p = new Process();
+                    p.StartInfo = new ProcessStartInfo()
+                    {
+                        FileName = DestinationDir,
+                        UseShellExecute = true,
+                        Verb = "open"
+                    };
+                    p.Start();
+                }
+                catch (Exception ex)
+                {
+                    _toastManager.CreateToast()
+                          .WithContent($"Unable to open {DestinationDir} Directory")
+                          .OfType(NotificationType.Success)
+                          .Dismiss().After(TimeSpan.FromSeconds(3))
+                          .Queue();
+                }
+            }
             _toastManager.CreateToast()
                 .WithContent($"{message}")
                 .OfType(NotificationType.Success)
@@ -103,8 +130,11 @@ namespace ImageUtility.Features.Renamer
         [RelayCommand]
         private async Task SetSourceDirectory()
         {
+            
             var topLevel = TopLevel.GetTopLevel(_mWindow);
             var startLoc = await topLevel!.StorageProvider.TryGetWellKnownFolderAsync(WellKnownFolder.Documents);
+            IsLoadingDirectories = true;
+            StatusMessage = "Loading Source Files";
 
             var options = new FolderPickerOpenOptions
             {
@@ -115,8 +145,11 @@ namespace ImageUtility.Features.Renamer
             var result = await topLevel.StorageProvider.OpenFolderPickerAsync(options);
             if (result is { Count: > 0 })
             {
+                
                 SourceDir = result[0].Path.LocalPath;
             }
+            IsLoadingDirectories = false;
+            StatusMessage = string.Empty;
         }
 
         [RelayCommand]
@@ -124,7 +157,7 @@ namespace ImageUtility.Features.Renamer
         {
             var topLevel = TopLevel.GetTopLevel(_mWindow);
             var startLoc = await topLevel!.StorageProvider.TryGetWellKnownFolderAsync(WellKnownFolder.Documents);
-
+            
             var options = new FolderPickerOpenOptions
             {
                 Title = "Select a Folder",
@@ -132,6 +165,7 @@ namespace ImageUtility.Features.Renamer
                 AllowMultiple = false
             };
             var result = await topLevel.StorageProvider.OpenFolderPickerAsync(options);
+           
             if (result is { Count: > 0 })
             {
                 DestinationDir = result[0].Path.LocalPath;
@@ -141,7 +175,7 @@ namespace ImageUtility.Features.Renamer
         [RelayCommand]
         private async Task LoadExternal()
         {
-            StatusMessage = "Loading Files...";
+            StatusMessage = "Reading Filename's...";
             IsLoading = true;
             var topLevel = TopLevel.GetTopLevel(_mWindow);
             var startLoc = await topLevel!.StorageProvider.TryGetWellKnownFolderAsync(WellKnownFolder.Documents);
@@ -164,7 +198,7 @@ namespace ImageUtility.Features.Renamer
            
             if (result is { Count: > 0 })
             {
-                using StreamReader reader = new StreamReader(result[0].Path.LocalPath);
+                using StreamReader reader = new(result[0].Path.LocalPath);
                 string? line;
                 while ((line = await reader.ReadLineAsync()) != null)
                 {
