@@ -9,7 +9,7 @@
 *.user
 *.userosscache
 *.sln.docstates
-*.lic
+sixlabors.lic
 config.json
 
 # User-specific files (MonoDevelop/Xamarin Studio)

@@ -1,0 +1,60 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+						 xmlns:help="clr-namespace:ImageUtility.Features.Help;assembly=ImageUtility"
+						 xmlns:generic="clr-namespace:System.Collections.Generic;assembly=System.Collections"
+						 xmlns:suki="https://github.com/kikipoulet/SukiUI"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="ImageUtility.HelpView">
+
+	<UserControl.Resources>
+		<generic:List x:Key="Collection" x:TypeArguments="suki:SettingsLayoutItem">
+			<suki:SettingsLayoutItem x:Name="Renamer" Header="Renaming">
+				<suki:SettingsLayoutItem.Content>
+					<suki:GlassCard Margin="0,0,0,10" Padding="10">
+						<StackPanel Orientation="Horizontal"
+												HorizontalAlignment="Center"
+												Spacing="20">
+							<StackPanel>
+								<TextBlock TextWrapping="Wrap"
+													 Text="• select the source directory that holds the images to be renamed."
+													 FontSize="14"
+													 FontStyle="Oblique"
+													 Width="500"/>
+								<TextBlock TextWrapping="WrapWithOverflow"
+													 FontSize="14"
+													 FontStyle="Oblique"
+													 Text="• select the destination directory - this is the directory where the renamed images will be saved."
+													 Width="500"/>
+							
+							</StackPanel>
+						</StackPanel>
+					</suki:GlassCard>
+				</suki:SettingsLayoutItem.Content>
+			</suki:SettingsLayoutItem>
+			<suki:SettingsLayoutItem x:Name="Resizer" Header="Resizing">
+				<suki:SettingsLayoutItem.Content>
+					<suki:GlassCard Margin="0,0,0,10" Padding="10">
+						<StackPanel Orientation="Horizontal"
+											HorizontalAlignment="Center"
+											Spacing="20">
+							<TextBlock Width="400"
+								TextWrapping="WrapWithOverflow"
+												 Text="You can resize images using the Resizer feature."
+												 FontSize="14"
+												 FontStyle="Oblique"/>
+						</StackPanel>
+					</suki:GlassCard>
+				</suki:SettingsLayoutItem.Content>
+				</suki:SettingsLayoutItem>
+		</generic:List>
+	</UserControl.Resources>
+
+
+	<suki:SukiStackPage Margin="20">
+		<suki:SukiStackPage.Content>
+			<suki:SettingsLayout Name="Help" Items="{StaticResource Collection}" />
+		</suki:SukiStackPage.Content>
+	</suki:SukiStackPage>
+</UserControl>

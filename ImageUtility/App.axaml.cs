@@ -9,6 +9,7 @@ using ImageUtility.Common;
 using ImageUtility.Dialogs;
 using ImageUtility.Features.CustomTheme;
 using ImageUtility.Features.Dashboard;
+using ImageUtility.Features.Help;
 using ImageUtility.Features.Renamer;
 using ImageUtility.Features.Resizer;
 using ImageUtility.Features.Theming;
@@ -83,6 +84,7 @@ namespace ImageUtility
              .AddView<RenamerView, RenamerViewModel>(services)
              .AddView<ThemingView, ThemingViewModel>(services)
              .AddView<ResizerView, ResizerViewModel>(services)
+             .AddView<HelpView, HelpViewModel>(services)
             // Add additional views
             .AddView<DialogView, DialogViewModel>(services)
             //.AddView<VmDialogView, VmDialogViewModel>(services)

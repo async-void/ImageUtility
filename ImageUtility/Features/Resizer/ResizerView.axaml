@@ -9,7 +9,7 @@
              mc:Ignorable="d"
              x:DataType="resizer:ResizerViewModel">
 
-	<ScrollViewer VerticalScrollBarVisibility="Hidden"
+	<ScrollViewer VerticalScrollBarVisibility="Hidden" HorizontalAlignment="Center"
 								>
 		<suki:BusyArea IsBusy="{Binding IsBusy}"
 									 BusyText="{Binding StatusMessage}">

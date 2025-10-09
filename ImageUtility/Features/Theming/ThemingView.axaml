@@ -6,8 +6,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:suki="https://github.com/kikipoulet/SukiUI"
              xmlns:theming="clr-namespace:ImageUtility.Features.Theming"
-             d:DesignHeight="450"
-             d:DesignWidth="800"
              x:DataType="theming:ThemingViewModel"
              mc:Ignorable="d">
 

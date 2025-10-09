@@ -9,10 +9,12 @@
 						 x:DataType="renamer:RenamerViewModel"
              x:Class="ImageUtility.RenamerView">
 	<ScrollViewer VerticalScrollBarVisibility="Hidden"
-								HorizontalAlignment="Left">
+								HorizontalAlignment="Center">
 		<WrapPanel Margin="10" Orientation="Horizontal">
+			
 			<Grid>
-			<!-- Directories -->
+				
+			  <!-- Directories -->
 				<suki:GlassCard Margin="10" 
 												CornerRadius="10">
 					
