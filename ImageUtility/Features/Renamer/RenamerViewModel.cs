@@ -19,7 +19,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+
 
 namespace ImageUtility.Features.Renamer
 {
@@ -132,7 +132,7 @@ namespace ImageUtility.Features.Renamer
         {
             
             var topLevel = TopLevel.GetTopLevel(_mWindow);
-            var startLoc = await topLevel!.StorageProvider.TryGetWellKnownFolderAsync(WellKnownFolder.Documents);
+            var startLoc = await topLevel!.StorageProvider.TryGetWellKnownFolderAsync(Avalonia.Platform.Storage.WellKnownFolder.Documents);
             IsLoadingDirectories = true;
             StatusMessage = "Loading Source Files";
 

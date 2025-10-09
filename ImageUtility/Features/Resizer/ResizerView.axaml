@@ -14,70 +14,69 @@
 		<suki:BusyArea IsBusy="{Binding IsBusy}"
 									 BusyText="{Binding StatusMessage}">
 			<WrapPanel Margin="10" Orientation="Horizontal">
+
+				<!-- Directories -->
 				<Grid>
-					<!-- Directories -->
-					<suki:GlassCard Margin="10"
-													CornerRadius="10"
-													Width="600">
-						<StackPanel>
-							<suki:GroupBox Header="Source/Destination Directories">
-								<StackPanel Spacing="5" Margin="10">
 
-									<StackPanel Spacing="10" 
-															Orientation="Horizontal" 
-														
-															HorizontalAlignment="Left">
-										<TextBox Text="{Binding SourceDir, UpdateSourceTrigger=PropertyChanged}"
-													 Watermark="Source Directory"
-													 suki:TextBoxExtensions.Prefix="{icon:MaterialIconExt Kind=Folder}"
-													 Classes="clearButton"
-													 Width="460"/>
-										<Button 
-														Background="Transparent"
-														BorderBrush="Transparent"
-														Cursor="Hand">
-											<Button.Content>
-												<icon:MaterialIcon Kind="FolderOpen" Width="22" Height="22"/>
-											</Button.Content>
-										</Button>
-
-									</StackPanel>
-									<StackPanel Spacing="10" 
-															Orientation="Horizontal"
-														
-														  HorizontalAlignment="Left">
-										<TextBox Text="{Binding DestinationDir, UpdateSourceTrigger=PropertyChanged}"
-													 Watermark="Destination Directory"
-													 suki:TextBoxExtensions.Prefix="{icon:MaterialIconExt Kind=Folder}"
-													 Classes="clearButton"
-													 Width="460"/>
-										<Button 
-														Background="Transparent"
-														BorderBrush="Transparent"
-														Cursor="Hand">
-											<Button.Content>
-												<icon:MaterialIcon Kind="FolderOpen" Width="22" Height="22"/>
-											</Button.Content>
-										</Button>
-									</StackPanel>
-								</StackPanel>
-							</suki:GroupBox>
-							<!-- End Directiories -->
-							
-
+						<suki:GlassCard Margin="8"
+														CornerRadius="10">
 						
-						</StackPanel>
-					</suki:GlassCard>
+								<StackPanel>
+								
+									 <suki:GroupBox Header="Source/Destination Directories">
+										<StackPanel Spacing="5" Margin="10">
+
+											<StackPanel Spacing="10" 
+																	Orientation="Horizontal" 
+																	HorizontalAlignment="Left">
+												<TextBox Text="{Binding SourceDir, UpdateSourceTrigger=PropertyChanged}"
+																 Watermark="Source Directory"
+																 suki:TextBoxExtensions.Prefix="{icon:MaterialIconExt Kind=Folder}"
+																 Classes="clearButton"
+																 Width="500"/>
+												<Button Command="{Binding SetSourceDirectoryCommand}"
+																Background="Transparent"
+																BorderBrush="Transparent"
+																Cursor="Hand">
+													<Button.Content>
+														<icon:MaterialIcon Kind="FolderOpen" Width="22" Height="22"/>
+													</Button.Content>
+												</Button>
+
+											</StackPanel>
+											<StackPanel Spacing="10" 
+																	Orientation="Horizontal"
+																	HorizontalAlignment="Left">
+												<TextBox Text="{Binding DestinationDir, UpdateSourceTrigger=PropertyChanged}"
+																 Watermark="Destination Directory"
+																 suki:TextBoxExtensions.Prefix="{icon:MaterialIconExt Kind=Folder}"
+																 Classes="clearButton"
+																 Width="500"/>
+												<Button Command="{Binding SetDestinationDirectoryCommand}"
+																Background="Transparent"
+																BorderBrush="Transparent"
+																Cursor="Hand">
+													<Button.Content>
+														<icon:MaterialIcon Kind="FolderOpen" Width="22" Height="22"/>
+													</Button.Content>
+												</Button>
+											</StackPanel>
+										</StackPanel>
+									</suki:GroupBox>
+							
+							</StackPanel>
+						
+						</suki:GlassCard>
+
 				</Grid>
+				<!-- End Directiories -->
+
+				<!-- Options -->
 				<suki:GlassCard CornerRadius="8"
 												Margin="10">
-					<!-- Options -->
-
 					<suki:GroupBox Header="Options">
-						<StackPanel Spacing="10" 
-												>
-							<suki:BusyArea IsBusy="{Binding IsLoading}"
-														 BusyText="{Binding StatusMessage}">
+						<StackPanel Spacing="10" >
+							
 								<suki:GlassCard CornerRadius="8" 
 																
 																Width="600">
@@ -165,11 +164,28 @@
 																 Text="maintain the aspect ratio of the original file."
 																 TextWrapping="Wrap" />
 										</Grid>
+										<Grid Margin="0,2,0,20">
+											<ToggleSwitch HorizontalAlignment="Right"
+																		VerticalAlignment="Top"
+																		Classes="Switch"
+																		IsChecked="{Binding OpenOnCompletion}" />
+											<TextBlock HorizontalAlignment="Left"
+																	VerticalAlignment="Top"
+																	FontWeight="DemiBold"
+																	Text="Open On Completion" />
+
+											<TextBlock Margin="0,16,0,0"
+																 HorizontalAlignment="Left"
+																 VerticalAlignment="Bottom"
+																 FontSize="12"
+																 Foreground="{DynamicResource SukiLowText}"
+																 Text="Open Destination directory when resizing is complete."
+																 TextWrapping="Wrap" />
+										</Grid>
 										
 									</StackPanel>
 								</suki:GlassCard>
 								
-							</suki:BusyArea>
 							<!-- Commands -->
 							<Grid Margin="0 -30 0 0"
 										Width="300">

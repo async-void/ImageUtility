@@ -1,4 +1,7 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using Avalonia.Controls;
+using Avalonia.Controls.Notifications;
+using Avalonia.Platform.Storage;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ImageUtility.Enums;
 using ImageUtility.ViewModels;
@@ -24,11 +27,13 @@ namespace ImageUtility.Features.Resizer
 
         [ObservableProperty]
         [NotifyCanExecuteChangedFor(nameof(ResizeCommand))]
+        [NotifyCanExecuteChangedFor(nameof(ClearCommand))]
         [Required]
         private string? _sourceDir;
         [ObservableProperty]
         [Required]
         [NotifyCanExecuteChangedFor(nameof(ResizeCommand))]
+        [NotifyCanExecuteChangedFor(nameof(ClearCommand))]
         private string? _destinationDir;
         [ObservableProperty]
         private int _width;
@@ -37,9 +42,9 @@ namespace ImageUtility.Features.Resizer
         [ObservableProperty]
         private bool _maintainAspectRatio;
         [ObservableProperty]
-        private string? _statusMessage;
+        private bool _openOnCompletion;
         [ObservableProperty]
-        private bool _isLoading;
+        private string? _statusMessage;
         [ObservableProperty]
         private bool _isBusy;
         [ObservableProperty]
@@ -54,6 +59,68 @@ namespace ImageUtility.Features.Resizer
             _dialogManager = dialogManager;
         }
 
+        [RelayCommand]
+        private async Task SetDestinationDirectory()
+        {
+            var topLevel = TopLevel.GetTopLevel(_mWindow);
+            var startLoc = await topLevel!.StorageProvider.TryGetWellKnownFolderAsync(WellKnownFolder.Documents);
+            var options = new FolderPickerOpenOptions
+            {
+                Title = "Select a Folder",
+                SuggestedStartLocation = startLoc,
+                AllowMultiple = false
+            };
+            var result = await topLevel.StorageProvider.OpenFolderPickerAsync(options);
+            if (result is { Count: > 0 })
+            {
+                DestinationDir = result[0].Path.LocalPath;
+            }
+            else
+            {
+                _toastManager.CreateToast()
+                    .WithTitle("Warning")
+                    .WithContent("Destination Directory not selected")
+                    .OfType(NotificationType.Warning)
+                    .Dismiss().After(TimeSpan.FromSeconds(3))
+                    .Queue();
+            }
+        }
+
+        [RelayCommand]
+        private async Task SetSourceDirectory()
+        {
+            var toplevel = TopLevel.GetTopLevel(_mWindow);
+            var startLoc = await toplevel!.StorageProvider.TryGetWellKnownFolderAsync(WellKnownFolder.Documents);
+            IsBusy = true;
+            StatusMessage = "Loading Source...";
+            var options = new FolderPickerOpenOptions
+            {
+                Title = "Select a Folder",
+                SuggestedStartLocation = startLoc,
+                AllowMultiple = false
+            };
+            var result = await toplevel.StorageProvider.OpenFolderPickerAsync(options);
+            if (result is { Count: > 0 })
+            {
+                SourceDir = result[0].Path.LocalPath;
+                IsBusy = false;
+                StatusMessage = string.Empty;
+            }
+            else
+            {
+                IsBusy = false;
+                StatusMessage = string.Empty;
+                _toastManager.CreateToast()
+                    .WithTitle("Warning")
+                    .WithContent("Source Directory not selected")
+                    .OfType(NotificationType.Warning)
+                    .Dismiss().After(TimeSpan.FromSeconds(3))
+                    .Queue();
+
+            }
+            
+        }
+
         [RelayCommand(CanExecute = nameof(CanResize))]
         private async Task Resize()
         {
@@ -66,10 +133,12 @@ namespace ImageUtility.Features.Resizer
         {
             SourceDir = string.Empty;
             DestinationDir = string.Empty;
-            Width = 0;
-            Height = 0;
+            Width = 64;
+            Height = 64;
             StatusMessage = string.Empty;
-            IsLoading = false;
+            IsBusy = false;
+            MaintainAspectRatio = false;
+            OpenOnCompletion = false;
         }
 
         public bool CanResize() => !string.IsNullOrWhiteSpace(SourceDir) && !string.IsNullOrWhiteSpace(DestinationDir);
