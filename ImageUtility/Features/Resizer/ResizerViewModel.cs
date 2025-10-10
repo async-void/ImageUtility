@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -48,9 +49,15 @@ namespace ImageUtility.Features.Resizer
         [ObservableProperty]
         private bool _isBusy;
         [ObservableProperty]
+        private bool _removeOriginal;
+        [ObservableProperty]
+        [NotifyCanExecuteChangedFor(nameof(ResizeCommand))]
         private string? _selectedResizeMode;
+        [ObservableProperty]
+        private string? _selectedFileType;
 
         public ObservableCollection<string> ResizeModes { get; } = ["Stretch", "Crop", "Fill", "Pad", "Max", "Min"];
+        public ObservableCollection<string> FileTypes { get; } = ["All", "PNG", "JPG", "JPEG", "BMP", "GIF", "TIFF"];
 
         public ResizerViewModel(MainWindow mWindow, ISukiToastManager toastManager, ISukiDialogManager dialogManager) : base("Resizer", MaterialIconKind.Resize, 3)
         {
@@ -92,7 +99,7 @@ namespace ImageUtility.Features.Resizer
             var toplevel = TopLevel.GetTopLevel(_mWindow);
             var startLoc = await toplevel!.StorageProvider.TryGetWellKnownFolderAsync(WellKnownFolder.Documents);
             IsBusy = true;
-            StatusMessage = "Loading Source...";
+            StatusMessage = "Enumerating Source.files...";
             var options = new FolderPickerOpenOptions
             {
                 Title = "Select a Folder",
@@ -126,6 +133,14 @@ namespace ImageUtility.Features.Resizer
         {
             IsBusy = true;
             StatusMessage = "Resizing images...";
+            var files = Directory.GetFiles(SourceDir!, "*.*", SearchOption.AllDirectories)
+                .Where(f => f.EndsWith(".png", StringComparison.OrdinalIgnoreCase) ||
+                            f.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase) ||
+                            f.EndsWith(".jpeg", StringComparison.OrdinalIgnoreCase) ||
+                            f.EndsWith(".bmp", StringComparison.OrdinalIgnoreCase) ||
+                            f.EndsWith(".gif", StringComparison.OrdinalIgnoreCase) ||
+                            f.EndsWith(".tiff", StringComparison.OrdinalIgnoreCase))
+                .ToList();
         }
 
         [RelayCommand(CanExecute = nameof(CanClear))]
@@ -141,7 +156,7 @@ namespace ImageUtility.Features.Resizer
             OpenOnCompletion = false;
         }
 
-        public bool CanResize() => !string.IsNullOrWhiteSpace(SourceDir) && !string.IsNullOrWhiteSpace(DestinationDir);
+        public bool CanResize() => !string.IsNullOrWhiteSpace(SourceDir) && !string.IsNullOrWhiteSpace(DestinationDir) && !string.IsNullOrWhiteSpace(SelectedResizeMode);
         public bool CanClear() => !string.IsNullOrWhiteSpace(SourceDir) && !string.IsNullOrWhiteSpace(DestinationDir);
     }
 }

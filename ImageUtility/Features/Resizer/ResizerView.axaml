@@ -19,7 +19,8 @@
 				<Grid>
 
 						<suki:GlassCard Margin="8"
-														CornerRadius="10">
+														CornerRadius="10"
+														Width="640">
 						
 								<StackPanel>
 								
@@ -73,7 +74,7 @@
 
 				<!-- Options -->
 				<suki:GlassCard CornerRadius="8"
-												Margin="10">
+												Margin="8">
 					<suki:GroupBox Header="Options">
 						<StackPanel Spacing="10" >
 							
@@ -102,6 +103,28 @@
 																	 Text="Select the resize mode to use." />
 											</StackPanel>
 										</Grid>
+										<Grid>
+											<ComboBox HorizontalAlignment="Right"
+																VerticalAlignment="Center"
+																Width="200"
+																ItemsSource="{Binding FileTypes}"
+																SelectedItem="{Binding SelectedFileType, UpdateSourceTrigger=PropertyChanged}"
+																Margin="10 0 0 0"
+																ToolTip.Placement="Right"
+																ToolTip.Tip="File Types"/>
+											<StackPanel>
+												<TextBlock HorizontalAlignment="Left"
+																	 VerticalAlignment="Top"
+																	 FontWeight="DemiBold"
+																	 Text="File Types" />
+												<TextBlock HorizontalAlignment="Left"
+																	 VerticalAlignment="Top"
+																	 FontWeight="Thin"
+																	 FontSize="12"
+																	 Text="Select the file type. default [ALL]" />
+											</StackPanel>
+										</Grid>
+										
 										<Grid>
 											<NumericUpDown suki:NumericUpDownExtensions.Unit="{icon:MaterialIconExt Kind=NumericOneCircle}"
 																		 HorizontalAlignment="Right"
@@ -162,6 +185,24 @@
 																 FontSize="12"
 																 Foreground="{DynamicResource SukiLowText}"
 																 Text="maintain the aspect ratio of the original file."
+																 TextWrapping="Wrap" />
+										</Grid>
+										<Grid Margin="0,2,0,20">
+											<ToggleSwitch HorizontalAlignment="Right"
+																		VerticalAlignment="Top"
+																		Classes="Switch"
+																		IsChecked="{Binding RemoveOriginal}" />
+											<TextBlock HorizontalAlignment="Left"
+																	VerticalAlignment="Top"
+																	FontWeight="DemiBold"
+																	Text="Remove Original" />
+
+											<TextBlock Margin="0,16,0,0"
+																 HorizontalAlignment="Left"
+																 VerticalAlignment="Bottom"
+																 FontSize="12"
+																 Foreground="{DynamicResource SukiLowText}"
+																 Text="Remove or Copy original file."
 																 TextWrapping="Wrap" />
 										</Grid>
 										<Grid Margin="0,2,0,20">
