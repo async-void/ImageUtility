@@ -71,6 +71,7 @@ namespace ImageUtility.Features.Renamer
             _mWindow = mWindow;
             _renameService = renameService;
             _toastManager = toastManager;
+            CopyFiles = true;
         }
 
         [RelayCommand(CanExecute = nameof(CanRename))]
@@ -105,15 +106,15 @@ namespace ImageUtility.Features.Renamer
                 {
                     _toastManager.CreateToast()
                           .WithContent($"Unable to open {DestinationDir} Directory")
-                          .OfType(NotificationType.Success)
-                          .Dismiss().After(TimeSpan.FromSeconds(3))
+                          .OfType(NotificationType.Warning)
+                          .Dismiss().After(TimeSpan.FromSeconds(5))
                           .Queue();
                 }
             }
             _toastManager.CreateToast()
                 .WithContent($"{message}")
                 .OfType(NotificationType.Success)
-                .Dismiss().After(TimeSpan.FromSeconds(3))
+                .Dismiss().After(TimeSpan.FromSeconds(5))
                 .Queue();
         }
 
@@ -148,6 +149,15 @@ namespace ImageUtility.Features.Renamer
                 
                 SourceDir = result[0].Path.LocalPath;
             }
+            else
+            {
+                _toastManager.CreateToast()
+                    .WithTitle("Warning")
+                    .WithContent("Source Directory not selected")
+                    .OfType(NotificationType.Warning)
+                    .Dismiss().After(TimeSpan.FromSeconds(5))
+                    .Queue();
+            }
             IsLoadingDirectories = false;
             StatusMessage = string.Empty;
         }
@@ -169,6 +179,15 @@ namespace ImageUtility.Features.Renamer
             if (result is { Count: > 0 })
             {
                 DestinationDir = result[0].Path.LocalPath;
+            }
+            else
+            {
+                _toastManager.CreateToast()
+                    .WithTitle("Warning")
+                    .WithContent("Destination Directory not selected")
+                    .OfType(NotificationType.Warning)
+                    .Dismiss().After(TimeSpan.FromSeconds(5))
+                    .Queue();
             }
         }
 

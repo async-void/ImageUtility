@@ -48,7 +48,7 @@ namespace ImageUtility.ViewModels
         [ObservableProperty] private bool _showBottomBar = true;
 
         private readonly SukiTheme _theme;
-        private readonly ThemingViewModel _theming;
+       // private readonly ThemingViewModel _theming;
 
         public MainWindowViewModel(IEnumerable<ViewModelBase> demoPages, PageNavigationService pageNavigationService, ISukiToastManager toastManager, ISukiDialogManager dialogManager)
         {
@@ -56,11 +56,11 @@ namespace ImageUtility.ViewModels
             DialogManager = dialogManager;
             Pages = new AvaloniaList<ViewModelBase>(demoPages.OrderBy(x => x.Index).ThenBy(x => x.DisplayName));
             PageNavigationService = pageNavigationService;
-            _theming = (ThemingViewModel)Pages.First(x => x is ThemingViewModel);
-            _theming.BackgroundStyleChanged += style => BackgroundStyle = style;
-            _theming.BackgroundAnimationsChanged += enabled => AnimationsEnabled = enabled;
-            _theming.CustomBackgroundStyleChanged += shader => CustomShaderFile = shader;
-            _theming.BackgroundTransitionsChanged += enabled => TransitionsEnabled = enabled;
+            //_theming = (ThemingViewModel)Pages.First(x => x is ThemingViewModel);
+            //_theming.BackgroundStyleChanged += style => BackgroundStyle = style;
+            //_theming.BackgroundAnimationsChanged += enabled => AnimationsEnabled = enabled;
+            //_theming.CustomBackgroundStyleChanged += shader => CustomShaderFile = shader;
+            //_theming.BackgroundTransitionsChanged += enabled => TransitionsEnabled = enabled;
 
             BackgroundStyles = new AvaloniaList<SukiBackgroundStyle>(Enum.GetValues<SukiBackgroundStyle>());
             _theme = SukiTheme.GetInstance();
@@ -183,13 +183,13 @@ namespace ImageUtility.ViewModels
         [RelayCommand]
         private static void OpenUrl(string url) => UrlUtilities.OpenUrl(url);
 
-        partial void OnBackgroundStyleChanged(SukiBackgroundStyle value) =>
-            _theming.BackgroundStyle = value;
+        //partial void OnBackgroundStyleChanged(SukiBackgroundStyle value) =>
+        //    _theming.BackgroundStyle = value;
 
-        partial void OnAnimationsEnabledChanged(bool value) =>
-            _theming.BackgroundAnimations = value;
+        //partial void OnAnimationsEnabledChanged(bool value) =>
+        //    _theming.BackgroundAnimations = value;
 
-        partial void OnTransitionsEnabledChanged(bool value) =>
-            _theming.BackgroundTransitions = value;
+        //partial void OnTransitionsEnabledChanged(bool value) =>
+        //    _theming.BackgroundTransitions = value;
     }
 }

@@ -13,6 +13,16 @@
   </ItemGroup>
 
   <ItemGroup>
+    <AvaloniaResource Remove="Assets\Json\help.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Assets\Json\help.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Avalonia" Version="11.3.6" />
     <PackageReference Include="Avalonia.Controls.ColorPicker" Version="11.3.6" />
     <PackageReference Include="Avalonia.Desktop" Version="11.3.6" />
@@ -41,6 +51,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.9" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.9" />
+    <PackageReference Include="NeoSolve.ImageSharp.AVIF" Version="1.3.0" />
     <PackageReference Include="Npgsql" Version="9.0.3" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
     <PackageReference Include="Npgsql.NodaTime" Version="9.0.3" />

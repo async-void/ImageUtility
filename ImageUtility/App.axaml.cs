@@ -7,6 +7,7 @@ using Avalonia.Logging;
 using Avalonia.Markup.Xaml;
 using ImageUtility.Common;
 using ImageUtility.Dialogs;
+using ImageUtility.Features.Converting;
 using ImageUtility.Features.CustomTheme;
 using ImageUtility.Features.Dashboard;
 using ImageUtility.Features.Help;
@@ -82,7 +83,8 @@ namespace ImageUtility
              // Add pages
              .AddView<DashboardView, DashboardViewModel>(services)
              .AddView<RenamerView, RenamerViewModel>(services)
-             .AddView<ThemingView, ThemingViewModel>(services)
+             .AddView<ConverterView, ConverterViewModel>(services)
+             //.AddView<ThemingView, ThemingViewModel>(services)
              .AddView<ResizerView, ResizerViewModel>(services)
              .AddView<HelpView, HelpViewModel>(services)
             // Add additional views
@@ -100,6 +102,8 @@ namespace ImageUtility
             services.AddSingleton<ISukiToastManager, SukiToastManager>();
             services.AddSingleton<ISukiDialogManager, SukiDialogManager>();
             services.AddSingleton<IRenamer, RenamerService>();
+            services.AddSingleton<IResizer, ResizerService>();
+            services.AddSingleton<IHelpProvider, HelpProviderService>();
             services.AddLogging(loggerBuilder =>
             {
                 loggerBuilder.ClearProviders();

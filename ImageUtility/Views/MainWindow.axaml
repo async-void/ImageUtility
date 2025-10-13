@@ -53,7 +53,7 @@
 		</avalonia:MaterialIcon>
 	</suki:SukiWindow.LogoContent>
 	<suki:SukiWindow.MenuItems>
-		<MenuItem Header="Toggles">
+		<MenuItem Header="Options">
 			<MenuItem Command="{Binding ToggleBaseThemeCommand}" Header="{Binding BaseTheme}">
 				<MenuItem.Icon>
 					<avalonia:MaterialIcon Kind="Lightbulb" />

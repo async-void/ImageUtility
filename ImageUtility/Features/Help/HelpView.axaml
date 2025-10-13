@@ -5,7 +5,8 @@
 						 xmlns:help="clr-namespace:ImageUtility.Features.Help;assembly=ImageUtility"
 						 xmlns:generic="clr-namespace:System.Collections.Generic;assembly=System.Collections"
 						 xmlns:suki="https://github.com/kikipoulet/SukiUI"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             mc:Ignorable="d"
+						 x:DataType="help:HelpViewModel"
              x:Class="ImageUtility.HelpView">
 
 	<UserControl.Resources>
@@ -16,16 +17,36 @@
 						<StackPanel Orientation="Horizontal"
 												HorizontalAlignment="Center"
 												Spacing="20">
-							<StackPanel>
-								<TextBlock TextWrapping="Wrap"
-													 Text="• select the source directory that holds the images to be renamed."
+							<StackPanel Spacing="6">
+								<TextBlock TextWrapping="WrapWithOverflow"
+													 Text="• source directory and destination directory are required befor renaming can begin."
 													 FontSize="14"
 													 FontStyle="Oblique"
 													 Width="500"/>
 								<TextBlock TextWrapping="WrapWithOverflow"
+													 Text="• select the source directory that holds the images to be renamed."
+													 FontSize="14"
+													 FontStyle="Oblique"
+													 Width="500" />
+								<TextBlock TextWrapping="WrapWithOverflow"
 													 FontSize="14"
 													 FontStyle="Oblique"
 													 Text="• select the destination directory - this is the directory where the renamed images will be saved."
+													 Width="500"/>
+								<TextBlock TextWrapping="WrapWithOverflow"
+													 FontSize="14"
+													 FontStyle="Oblique"
+													 Text="• loading an external renaming txt file will disable the other renaming options."
+													 Width="500"/>
+								<TextBlock TextWrapping="WrapWithOverflow"
+													 FontSize="14"
+													 FontStyle="Oblique"
+													 Text="• pattern is the renaming pattern to be used when renaming files."
+													 Width="500"/>
+								<TextBlock TextWrapping="WrapWithOverflow"
+													 FontSize="14"
+													 FontStyle="Oblique"
+													 Text="• numbering can be added to the renaming. set the starting number."
 													 Width="500"/>
 							
 							</StackPanel>
@@ -37,13 +58,38 @@
 				<suki:SettingsLayoutItem.Content>
 					<suki:GlassCard Margin="0,0,0,10" Padding="10">
 						<StackPanel Orientation="Horizontal"
-											HorizontalAlignment="Center"
-											Spacing="20">
-							<TextBlock Width="400"
-								TextWrapping="WrapWithOverflow"
-												 Text="You can resize images using the Resizer feature."
-												 FontSize="14"
-												 FontStyle="Oblique"/>
+											  HorizontalAlignment="Center"
+											  Spacing="20">
+							<StackPanel Spacing="6">
+								<TextBlock Width="500"
+								           TextWrapping="WrapWithOverflow"
+											     Text="• source directory and destination directory are required befor resizing can begin."
+												   FontSize="14"
+												   FontStyle="Oblique"/>
+								<TextBlock Width="500"
+								           TextWrapping="WrapWithOverflow"
+											     Text="• choose Resize Mode."
+												   FontSize="14"
+												   FontStyle="Oblique"/>
+								<TextBlock Width="500"
+								           TextWrapping="WrapWithOverflow"
+											     Text="• choose file type"
+												   FontSize="14"
+												   FontStyle="Oblique"/>
+								<TextBlock Width="500"
+								           TextWrapping="WrapWithOverflow"
+											     Text="• set the height and the width"
+												   FontSize="14"
+												   FontStyle="Oblique"/>
+								<TextBlock Width="500"
+								           TextWrapping="WrapWithOverflow"
+											     Text="• set whether to maintain aspect ratio."
+												   FontSize="14"
+												   FontStyle="Oblique"/>
+								
+							</StackPanel>
+							
+							
 						</StackPanel>
 					</suki:GlassCard>
 				</suki:SettingsLayoutItem.Content>

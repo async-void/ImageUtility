@@ -3,72 +3,68 @@ using Avalonia.Controls.Notifications;
 using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using ImageUtility.Enums;
-using ImageUtility.Interfaces;
 using ImageUtility.ViewModels;
 using ImageUtility.Views;
 using Material.Icons;
-using SukiUI.Dialogs;
 using SukiUI.Toasts;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
-namespace ImageUtility.Features.Resizer
+namespace ImageUtility.Features.Converting
 {
-    public partial class ResizerViewModel : ViewModelBase
+    public partial class ConverterViewModel : ViewModelBase
     {
         private readonly MainWindow _mWindow;
-        private readonly IResizer _resizerService;
         private readonly ISukiToastManager _toastManager;
-        private readonly ISukiDialogManager _dialogManager;
 
         [ObservableProperty]
-        [NotifyCanExecuteChangedFor(nameof(ResizeCommand))]
+        private bool _isBusy;
+        [ObservableProperty]
+        private string? _statusMessage;
+
+        [ObservableProperty]
+        [NotifyCanExecuteChangedFor(nameof(ConvertCommand))]
         [NotifyCanExecuteChangedFor(nameof(ClearCommand))]
         [Required]
         private string? _sourceDir;
         [ObservableProperty]
         [Required]
-        [NotifyCanExecuteChangedFor(nameof(ResizeCommand))]
+        [NotifyCanExecuteChangedFor(nameof(ConvertCommand))]
         [NotifyCanExecuteChangedFor(nameof(ClearCommand))]
         private string? _destinationDir;
         [ObservableProperty]
-        private int _width;
-        [ObservableProperty]
-        private int _height;
-        [ObservableProperty]
-        private bool _maintainAspectRatio;
-        [ObservableProperty]
-        private bool _openOnCompletion;
-        [ObservableProperty]
-        private string? _statusMessage;
-        [ObservableProperty]
-        private bool _isBusy;
+        private string? _selectedFileType;
         [ObservableProperty]
         private bool _copyFiles;
-        [ObservableProperty]
-        [NotifyCanExecuteChangedFor(nameof(ResizeCommand))]
-        private string? _selectedResizeMode;
-        [ObservableProperty]
-        private string? _selectedFileType;
 
-        public ObservableCollection<string> ResizeModes { get; } = ["Stretch", "Crop", "Fill", "Pad", "Max", "Min"];
-        public ObservableCollection<string> FileTypes { get; } = ["All", "PNG", "JPG", "JPEG", "BMP", "GIF", "TIFF"];
+        public ObservableCollection<string> FileTypes { get; } = ["PNG", "JPG", "JPEG", "WEBP", "AVIF", "BMP"];
 
-        public ResizerViewModel(MainWindow mWindow, ISukiToastManager toastManager, ISukiDialogManager dialogManager, IResizer resizerService) : base("Resizer", MaterialIconKind.Resize, 3)
+        public ConverterViewModel(MainWindow mWindow, ISukiToastManager toastManager) : base("Converter", MaterialIconKind.ImageEdit, 4)
         {
             _mWindow = mWindow;
-            _resizerService = resizerService;
             _toastManager = toastManager;
-            _dialogManager = dialogManager;
             CopyFiles = true;
+        }
+
+        [RelayCommand(CanExecute = nameof(CanConvert))]
+        private async Task Convert()
+        {
+            IsBusy = true;
+            StatusMessage = "Converting images... this may take a moment";
+            await Task.Delay(2000);
+            StatusMessage = "Conversion complete!";
+            IsBusy = false;
+        }
+
+        [RelayCommand(CanExecute = nameof(CanClear))]
+        private void Clear()
+        {
+            SourceDir = string.Empty;
+            DestinationDir = string.Empty;
+            StatusMessage = string.Empty;
+            IsBusy = false;
         }
 
         [RelayCommand]
@@ -130,59 +126,10 @@ namespace ImageUtility.Features.Resizer
                     .Queue();
 
             }
-            
+
         }
 
-        [RelayCommand(CanExecute = nameof(CanResize))]
-        private async Task Resize()
-        {
-            IsBusy = true;
-            StatusMessage = "Resizing images...";
-            var files = Directory.EnumerateFiles(SourceDir!);
-            var result = await _resizerService.ResizeImagesAsync(files, DestinationDir!, Width, Height, SelectedResizeMode!, MaintainAspectRatio, CopyFiles);
-
-            IsBusy = false;
-            StatusMessage = string.Empty;
-
-            var message = result.Match(
-                    ok => $"SUCCESS: {ok}",
-                    err => $"FAILURE: {err}"
-                );
-            var notificationType = result.IsOk ? NotificationType.Success : NotificationType.Error;
-
-            if (OpenOnCompletion)
-            {
-                Process p = new Process();
-                p.StartInfo = new ProcessStartInfo()
-                {
-                    FileName = DestinationDir,
-                    UseShellExecute = true,
-                    Verb = "open"
-                };
-                p.Start();
-            }
-           
-            _toastManager.CreateToast()
-                         .WithTitle($"{message}")
-                         .OfType(notificationType)
-                         .Dismiss().After(TimeSpan.FromSeconds(5))
-                         .Queue();
-        }
-
-        [RelayCommand(CanExecute = nameof(CanClear))]
-        private void Clear()
-        {
-            SourceDir = string.Empty;
-            DestinationDir = string.Empty;
-            Width = 64;
-            Height = 64;
-            StatusMessage = string.Empty;
-            IsBusy = false;
-            MaintainAspectRatio = false;
-            OpenOnCompletion = false;
-        }
-
-        public bool CanResize() => !string.IsNullOrWhiteSpace(SourceDir) && !string.IsNullOrWhiteSpace(DestinationDir) && !string.IsNullOrWhiteSpace(SelectedResizeMode);
+        public bool CanConvert() => !string.IsNullOrWhiteSpace(SourceDir) && !string.IsNullOrWhiteSpace(DestinationDir);
         public bool CanClear() => !string.IsNullOrWhiteSpace(SourceDir) && !string.IsNullOrWhiteSpace(DestinationDir);
     }
 }

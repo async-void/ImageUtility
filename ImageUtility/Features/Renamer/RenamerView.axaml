@@ -147,7 +147,7 @@
 																	 Width="400"
 																	 TextWrapping="Wrap"
 																	 HorizontalAlignment="Left"
-																	 Text="Copy files to destination directory, this will copy [source] files not remove them."/>
+																	 Text="Copy files to destination directory, this will copy [source] files. the original files won't be touched."/>
 											</StackPanel>
 											<ToggleSwitch HorizontalAlignment="Right"
 																		VerticalAlignment="Center"

@@ -1,4 +1,7 @@
-﻿using ImageUtility.ViewModels;
+﻿using CommunityToolkit.Mvvm.Input;
+using ImageUtility.Interfaces;
+using ImageUtility.Models;
+using ImageUtility.ViewModels;
 using Material.Icons;
 using System;
 using System.Collections.Generic;
@@ -10,8 +13,20 @@ namespace ImageUtility.Features.Help
 {
     public partial class HelpViewModel : ViewModelBase
     {
-        public HelpViewModel() : base("Help", MaterialIconKind.Help, 4)
+        private readonly IHelpProvider _helpProvider;
+        public HelpViewModel(IHelpProvider helpProvider) : base("Help", MaterialIconKind.Help, 5)
         {
+            _helpProvider = helpProvider;
+        }
+
+        public List<HelpRoot> HelpContents { get;  private set; } = new List<HelpRoot>();
+
+        [RelayCommand]
+        private async Task LoadHelp()
+        {
+            Result<HelpRoot, string> HelpContents = await _helpProvider.GetHelpContentAsync();
+           
+            var test = "";
         }
     }
 }

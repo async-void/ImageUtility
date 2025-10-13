@@ -9,21 +9,19 @@
              mc:Ignorable="d"
              x:DataType="resizer:ResizerViewModel">
 
-	<ScrollViewer VerticalScrollBarVisibility="Hidden" HorizontalAlignment="Center"
-								>
+	<ScrollViewer VerticalScrollBarVisibility="Hidden" HorizontalAlignment="Center">
 		<suki:BusyArea IsBusy="{Binding IsBusy}"
 									 BusyText="{Binding StatusMessage}">
 			<WrapPanel Margin="10" Orientation="Horizontal">
-
 				<!-- Directories -->
 				<Grid>
 
 						<suki:GlassCard Margin="8"
 														CornerRadius="10"
 														Width="640">
-						
+							
 								<StackPanel>
-								
+									
 									 <suki:GroupBox Header="Source/Destination Directories">
 										<StackPanel Spacing="5" Margin="10">
 
@@ -131,7 +129,7 @@
 																		 VerticalAlignment="Center"
 																		 FormatString="F0"
 																		 Minimum="64"
-																		 Maximum="640"
+																		 Maximum="1200"
 																		 Value="64"
 																		 Text="{Binding Width, UpdateSourceTrigger=PropertyChanged}"
 																		 Margin="0 5 5 0"/>
@@ -153,7 +151,7 @@
 																		 VerticalAlignment="Center"
 																		 FormatString="F0"
 																		 Minimum="64"
-																		 Maximum="640"
+																		 Maximum="1200"
 																		 Margin="0 0 5 0"
 																		 Value="64"
 																		 Text="{Binding Height, UpdateSourceTrigger=PropertyChanged}" />
@@ -191,18 +189,18 @@
 											<ToggleSwitch HorizontalAlignment="Right"
 																		VerticalAlignment="Top"
 																		Classes="Switch"
-																		IsChecked="{Binding RemoveOriginal}" />
+																		IsChecked="{Binding CopyFiles}" />
 											<TextBlock HorizontalAlignment="Left"
 																	VerticalAlignment="Top"
 																	FontWeight="DemiBold"
-																	Text="Remove Original" />
+																	Text="Copy Files" />
 
 											<TextBlock Margin="0,16,0,0"
 																 HorizontalAlignment="Left"
 																 VerticalAlignment="Bottom"
 																 FontSize="12"
 																 Foreground="{DynamicResource SukiLowText}"
-																 Text="Remove or Copy original file."
+																 Text="Copy files, turning this off will result in the original files being deleted."
 																 TextWrapping="Wrap" />
 										</Grid>
 										<Grid Margin="0,2,0,20">
