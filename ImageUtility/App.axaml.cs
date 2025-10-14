@@ -6,6 +6,7 @@ using Avalonia.Data.Core.Plugins;
 using Avalonia.Logging;
 using Avalonia.Markup.Xaml;
 using ImageUtility.Common;
+using ImageUtility.Converters;
 using ImageUtility.Dialogs;
 using ImageUtility.Features.Converting;
 using ImageUtility.Features.CustomTheme;
@@ -16,6 +17,7 @@ using ImageUtility.Features.Resizer;
 using ImageUtility.Features.Theming;
 using ImageUtility.Interfaces;
 using ImageUtility.Services;
+using ImageUtility.Utilities;
 using ImageUtility.ViewModels;
 using ImageUtility.Views;
 using Microsoft.Extensions.DependencyInjection;
@@ -104,6 +106,9 @@ namespace ImageUtility
             services.AddSingleton<IRenamer, RenamerService>();
             services.AddSingleton<IResizer, ResizerService>();
             services.AddSingleton<IHelpProvider, HelpProviderService>();
+            services.AddSingleton<IFileUtilities, FileUtilities>();
+            services.AddSingleton<IImageConverter, PngConverter>();
+            services.AddSingleton<ConversionService>();
             services.AddLogging(loggerBuilder =>
             {
                 loggerBuilder.ClearProviders();

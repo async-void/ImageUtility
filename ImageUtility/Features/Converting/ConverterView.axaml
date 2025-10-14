@@ -1,149 +1,263 @@
-<UserControl x:Class="ImageUtility.ConverterView"
-	           xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-						 xmlns:suki="https://github.com/kikipoulet/SukiUI"
-						 xmlns:converting="clr-namespace:ImageUtility.Features.Converting;assembly=ImageUtility"
-						 xmlns:icon="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:DataType="converting:ConverterViewModel">
+<UserControl
+    x:Class="ImageUtility.ConverterView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converting="clr-namespace:ImageUtility.Features.Converting;assembly=ImageUtility"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:icon="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:suki="https://github.com/kikipoulet/SukiUI"
+    d:DesignHeight="500"
+    x:DataType="converting:ConverterViewModel"
+    mc:Ignorable="d">
 
-	<ScrollViewer HorizontalAlignment="Center" VerticalScrollBarVisibility="Hidden">
-		<suki:BusyArea IsBusy="{Binding IsBusy}"
-									 BusyText="{Binding StatusMessage}">
-			<WrapPanel Margin="10" Orientation="Horizontal">
-				
-				<!-- Directories -->
-				<Grid>
-					<suki:GlassCard Margin="8"
-													CornerRadius="10"
-													Width="640">
-						<StackPanel>
-							<suki:GroupBox Header="Source/Destination Directories">
-								<StackPanel Spacing="5" Margin="10">
+    <ScrollViewer HorizontalAlignment="Center" VerticalScrollBarVisibility="Hidden">
+        <suki:BusyArea BusyText="{Binding StatusMessage}" IsBusy="{Binding IsBusy}">
+            <WrapPanel Margin="10" Orientation="Horizontal">
 
-									<StackPanel Spacing="10"
-															Orientation="Horizontal"
-															HorizontalAlignment="Left">
-										<TextBox Text="{Binding SourceDir, UpdateSourceTrigger=PropertyChanged}"
-														 Watermark="Source Directory"
-														 suki:TextBoxExtensions.Prefix="{icon:MaterialIconExt Kind=Folder}"
-														 Classes="clearButton"
-														 Width="500"/>
-										<Button Command="{Binding SetSourceDirectoryCommand}"
-														Background="Transparent"
-														BorderBrush="Transparent"
-														Cursor="Hand">
-											<Button.Content>
-												<icon:MaterialIcon Kind="FolderOpen" Width="22" Height="22"/>
-											</Button.Content>
-										</Button>
+              <!--  Directories  -->
+              <Grid>
+                  <suki:GlassCard
+                      Width="640"
+                      Margin="8"
+                      CornerRadius="10">
+                      <StackPanel>
+                          <suki:GroupBox Header="Directories">
+                              <StackPanel Margin="10" Spacing="5">
 
-									</StackPanel>
-									<StackPanel Spacing="10"
-															Orientation="Horizontal"
-															HorizontalAlignment="Left">
-										<TextBox Text="{Binding DestinationDir, UpdateSourceTrigger=PropertyChanged}"
-														 Watermark="Destination Directory"
-														 suki:TextBoxExtensions.Prefix="{icon:MaterialIconExt Kind=Folder}"
-														 Classes="clearButton"
-														 Width="500"/>
-										<Button Command="{Binding SetDestinationDirectoryCommand}"
-														Background="Transparent"
-														BorderBrush="Transparent"
-														Cursor="Hand">
-											<Button.Content>
-												<icon:MaterialIcon Kind="FolderOpen" Width="22" Height="22"/>
-											</Button.Content>
-										</Button>
-									</StackPanel>
-								</StackPanel>
-							</suki:GroupBox>
-						</StackPanel>
-					</suki:GlassCard>
-				</Grid>
-				<!-- End Directiories -->
+                                  <StackPanel
+                                      HorizontalAlignment="Left"
+                                      Orientation="Horizontal"
+                                      Spacing="10">
+                                      <TextBox
+                                          Width="500"
+                                          suki:TextBoxExtensions.Prefix="{icon:MaterialIconExt Kind=Folder}"
+                                          Classes="clearButton"
+                                          Text="{Binding SourceDir, UpdateSourceTrigger=PropertyChanged}"
+                                          Watermark="Source Directory" />
+                                      <Button
+                                          Background="Transparent"
+                                          BorderBrush="Transparent"
+                                          Command="{Binding SetSourceDirectoryCommand}"
+                                          Cursor="Hand">
+                                          <Button.Content>
+                                              <icon:MaterialIcon
+                                                  Width="22"
+                                                  Height="22"
+                                                  Kind="FolderOpen" />
+                                          </Button.Content>
+                                      </Button>
 
-				<!-- Options -->
-				<suki:GlassCard Margin="8" CornerRadius="8">
-					<suki:GroupBox Header="Options">
-						<StackPanel Spacing="10">
-							<suki:GlassCard CornerRadius="8" Width="600">
-								<StackPanel>
-									<Grid>
-										<ComboBox HorizontalAlignment="Right"
-																VerticalAlignment="Center"
-																Width="200"
-																ItemsSource="{Binding FileTypes}"
-																SelectedItem="{Binding SelectedFileType, UpdateSourceTrigger=PropertyChanged}"
-																Margin="10 0 0 0"
-																ToolTip.Placement="Right"
-																ToolTip.Tip="Resizer Mode"/>
-										<StackPanel>
-											<TextBlock HorizontalAlignment="Left"
-																 VerticalAlignment="Top"
-																 FontWeight="DemiBold"
-																 Text="File Type" />
-											<TextBlock HorizontalAlignment="Left"
-																 VerticalAlignment="Top"
-																 FontWeight="Thin"
-																 FontSize="12"
-																 Text="Select the file type for the conversion." />
-										</StackPanel>
-									</Grid>
-									<Grid Margin="0,2,0,20">
-										<ToggleSwitch HorizontalAlignment="Right"
-																	VerticalAlignment="Top"
-																	Classes="Switch"
-																	IsChecked="{Binding CopyFiles}" />
-										<TextBlock HorizontalAlignment="Left"
-																VerticalAlignment="Top"
-																FontWeight="DemiBold"
-																Text="Copy Files" />
+                                  </StackPanel>
+                                  <StackPanel
+                                      HorizontalAlignment="Left"
+                                      Orientation="Horizontal"
+                                      Spacing="10">
+                                      <TextBox
+                                          Width="500"
+                                          suki:TextBoxExtensions.Prefix="{icon:MaterialIconExt Kind=Folder}"
+                                          Classes="clearButton"
+                                          Text="{Binding DestinationDir, UpdateSourceTrigger=PropertyChanged}"
+                                          Watermark="Destination Directory" />
+                                      <Button
+                                          Background="Transparent"
+                                          BorderBrush="Transparent"
+                                          Command="{Binding SetDestinationDirectoryCommand}"
+                                          Cursor="Hand">
+                                          <Button.Content>
+                                              <icon:MaterialIcon
+                                                  Width="22"
+                                                  Height="22"
+                                                  Kind="FolderOpen" />
+                                          </Button.Content>
+                                      </Button>
+                                  </StackPanel>
+                              </StackPanel>
+                          </suki:GroupBox>
+                      </StackPanel>
+                  </suki:GlassCard>
+              </Grid>
+              <!--  End Directiories  -->
 
-										<TextBlock Margin="0,16,0,0"
-															 HorizontalAlignment="Left"
-															 VerticalAlignment="Bottom"
-															 FontSize="12"
-															 Foreground="{DynamicResource SukiLowText}"
-															 Text="Copy files, turning this off will result in the original files being deleted."
-															 TextWrapping="Wrap" />
-									</Grid>
-								</StackPanel>
-							</suki:GlassCard>
-							<!-- Commands -->
-							<Grid Margin="0 -30 0 0"
-										Width="300">
-								<Button Grid.Column="1"
-									Command="{Binding ConvertCommand}"
-												HorizontalAlignment="Left"
-												VerticalAlignment="Bottom"
-												Classes="Flat Rounded"
-												Content="CONVERT"
-												Padding="6"
-												Height="40"
-												Width="140"
-												IsEnabled="{Binding CanConvert}"/>
-								<Button Grid.Column="1"
-												Command="{Binding ClearCommand}"
-												HorizontalAlignment="Right"
-												VerticalAlignment="Bottom"
-												Classes="Flat Rounded Danger"
-												Content="CLEAR"
-												Padding="6"
-												Height="40"
-												Width="140"
-												IsEnabled="{Binding CanClear}"/>
-							</Grid>
-							<!-- End Commands -->
-						</StackPanel>
-					</suki:GroupBox>
-				</suki:GlassCard>
-				<!-- End Options -->
-				
-			</WrapPanel>
-		</suki:BusyArea>
-	</ScrollViewer>
-	
+              <!--  File Info  -->
+              <suki:GlassCard
+                  Width="640"
+                  Margin="8"
+                  CornerRadius="10">
+
+                  <suki:GroupBox Header="File Information">
+                      <StackPanel Spacing="8">
+                          <Grid>
+                              <TextBlock
+                                  Margin="8,-2,0,0"
+                                  HorizontalAlignment="Right"
+                                  VerticalAlignment="Center"
+                                  Text="{Binding Quality, UpdateSourceTrigger=PropertyChanged, StringFormat='{}{0:N0}%'}" />
+                              <Slider
+                                  Width="170"
+                                  Margin="0,0,26,0"
+                                  HorizontalAlignment="Right"
+                                  VerticalAlignment="Center"
+                                  IsSnapToTickEnabled="True"
+                                  Maximum="100"
+                                  Minimum="50"
+                                  TickFrequency="5"
+                                  Value="{Binding Quality, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
+                              <StackPanel>
+                                  <TextBlock
+                                      Margin="18,0"
+                                      HorizontalAlignment="Left"
+                                      VerticalAlignment="Center"
+                                      FontWeight="DemiBold"
+                                      Text="Conversion Quality: " />
+                                  <TextBlock
+                                      Margin="18,0,0,0"
+                                      HorizontalAlignment="Left"
+                                      VerticalAlignment="Top"
+                                      FontSize="12"
+                                      FontWeight="Thin"
+                                      Text="Set the Conversion Quality - Default is 85" />
+
+                              </StackPanel>
+                          </Grid>
+                          <Grid>
+                              <StackPanel>
+                                  <TextBlock
+                                      Margin="18,0"
+                                      HorizontalAlignment="Left"
+                                      VerticalAlignment="Center"
+                                      FontWeight="DemiBold"
+                                      Text="File Count: " />
+                                  <TextBlock
+                                      Margin="18,0,0,0"
+                                      HorizontalAlignment="Left"
+                                      VerticalAlignment="Top"
+                                      FontSize="12"
+                                      FontWeight="Thin"
+                                      Text="This is the file count for the source directory" />
+                              </StackPanel>
+
+                              <Border
+                                  Margin="0,0,30,0"
+                                  Padding="6"
+                                  HorizontalAlignment="Right"
+                                  Background="{DynamicResource ThemeForegroundLowBrush}"
+                                  CornerRadius="10">
+                                  <TextBlock Text="{Binding FileCount, FallbackValue=1000}" />
+                              </Border>
+                          </Grid>
+                      </StackPanel>
+                  </suki:GroupBox>
+              </suki:GlassCard>
+              <!--  End File Info  -->
+
+              <!--  Options  -->
+              <suki:GlassCard Margin="8" CornerRadius="8">
+                  <suki:GroupBox Header="Options">
+                      <StackPanel Spacing="10">
+                          <suki:GlassCard Width="600" CornerRadius="8">
+                              <StackPanel>
+                                  <Grid>
+                                      <ComboBox
+                                          Width="200"
+                                          Margin="10,0,0,0"
+                                          HorizontalAlignment="Right"
+                                          VerticalAlignment="Center"
+                                          ItemsSource="{Binding FileTypes}"
+                                          SelectedItem="{Binding SelectedFileType, UpdateSourceTrigger=PropertyChanged}"
+                                          ToolTip.Placement="Right"
+                                          ToolTip.Tip="Resizer Mode" />
+                                      <StackPanel>
+                                          <TextBlock
+                                              HorizontalAlignment="Left"
+                                              VerticalAlignment="Top"
+                                              FontWeight="DemiBold"
+                                              Text="File Type" />
+                                          <TextBlock
+                                              HorizontalAlignment="Left"
+                                              VerticalAlignment="Top"
+                                              FontSize="12"
+                                              FontWeight="Thin"
+                                              Text="Select the file type for the conversion." />
+                                      </StackPanel>
+                                  </Grid>
+                                  <Grid Margin="0,2,0,20">
+                                      <ToggleSwitch
+                                          HorizontalAlignment="Right"
+                                          VerticalAlignment="Top"
+                                          Classes="Switch"
+                                          IsChecked="{Binding CopyFiles}" />
+                                      <TextBlock
+                                          HorizontalAlignment="Left"
+                                          VerticalAlignment="Top"
+                                          FontWeight="DemiBold"
+                                          Text="Copy Files" />
+
+                                      <TextBlock
+                                          Margin="0,16,0,0"
+                                          HorizontalAlignment="Left"
+                                          VerticalAlignment="Bottom"
+                                          FontSize="12"
+                                          Foreground="{DynamicResource SukiLowText}"
+                                          Text="Copy files, turning this off will result in the original files being deleted."
+                                          TextWrapping="Wrap" />
+                                  </Grid>
+                                  <Grid Margin="0,2,0,20">
+                                      <ToggleSwitch
+                                          HorizontalAlignment="Right"
+                                          VerticalAlignment="Top"
+                                          Classes="Switch"
+                                          IsChecked="{Binding OpenOnCompletion}" />
+                                      <TextBlock
+                                          HorizontalAlignment="Left"
+                                          VerticalAlignment="Top"
+                                          FontWeight="DemiBold"
+                                          Text="Open On Completion" />
+
+                                      <TextBlock
+                                          Margin="0,16,0,0"
+                                          HorizontalAlignment="Left"
+                                          VerticalAlignment="Bottom"
+                                          FontSize="12"
+                                          Foreground="{DynamicResource SukiLowText}"
+                                          Text="Open Destination directory when conversion is complete."
+                                          TextWrapping="Wrap" />
+                                  </Grid>
+                              </StackPanel>
+                          </suki:GlassCard>
+                          <!--  Commands  -->
+                          <Grid Width="300" Margin="0,-30,0,0">
+                              <Button
+                                  Grid.Column="1"
+                                  Width="140"
+                                  Height="40"
+                                  Padding="6"
+                                  HorizontalAlignment="Left"
+                                  VerticalAlignment="Bottom"
+                                  Classes="Flat Rounded"
+                                  Command="{Binding ConvertCommand}"
+                                  Content="CONVERT"
+                                  IsEnabled="{Binding CanConvert}" />
+                              <Button
+                                  Grid.Column="1"
+                                  Width="140"
+                                  Height="40"
+                                  Padding="6"
+                                  HorizontalAlignment="Right"
+                                  VerticalAlignment="Bottom"
+                                  Classes="Flat Rounded Danger"
+                                  Command="{Binding ClearCommand}"
+                                  Content="CLEAR"
+                                  IsEnabled="{Binding CanClear}" />
+                          </Grid>
+                          <!--  End Commands  -->
+                      </StackPanel>
+                  </suki:GroupBox>
+              </suki:GlassCard>
+              <!--  End Options  -->
+
+            </WrapPanel>
+        </suki:BusyArea>
+    </ScrollViewer>
+
 </UserControl>

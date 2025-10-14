@@ -3,6 +3,8 @@ using Avalonia.Controls.Notifications;
 using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using ImageUtility.Enums;
+using ImageUtility.Interfaces;
 using ImageUtility.ViewModels;
 using ImageUtility.Views;
 using Material.Icons;
@@ -10,6 +12,7 @@ using SukiUI.Toasts;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace ImageUtility.Features.Converting
@@ -18,6 +21,7 @@ namespace ImageUtility.Features.Converting
     {
         private readonly MainWindow _mWindow;
         private readonly ISukiToastManager _toastManager;
+        private readonly IImageConverter _converterService;
 
         [ObservableProperty]
         private bool _isBusy;
@@ -37,14 +41,25 @@ namespace ImageUtility.Features.Converting
         [ObservableProperty]
         private string? _selectedFileType;
         [ObservableProperty]
+        private string? _curFileType;
+        [ObservableProperty]
+        private string? _curFileSize;
+        [ObservableProperty]
+        private string? _fileCount;
+        [ObservableProperty]
         private bool _copyFiles;
+        [ObservableProperty]
+        private bool _openOnCompletion;
+        [ObservableProperty]
+        private int _quality = 85;
 
-        public ObservableCollection<string> FileTypes { get; } = ["PNG", "JPG", "JPEG", "WEBP", "AVIF", "BMP"];
+        public ObservableCollection<ImageType> FileTypes { get; } = [ImageType.PNG, ImageType.JPG, ImageType.JPEG, ImageType.WEBP, ImageType.AVIF];
 
-        public ConverterViewModel(MainWindow mWindow, ISukiToastManager toastManager) : base("Converter", MaterialIconKind.ImageEdit, 4)
+        public ConverterViewModel(MainWindow mWindow, IImageConverter converterService, ISukiToastManager toastManager) : base("Converter", MaterialIconKind.ImageEdit, 4)
         {
             _mWindow = mWindow;
             _toastManager = toastManager;
+            _converterService = converterService;
             CopyFiles = true;
         }
 
@@ -82,6 +97,7 @@ namespace ImageUtility.Features.Converting
             if (result is { Count: > 0 })
             {
                 DestinationDir = result[0].Path.LocalPath;
+                
             }
             else
             {
@@ -111,6 +127,9 @@ namespace ImageUtility.Features.Converting
             if (result is { Count: > 0 })
             {
                 SourceDir = result[0].Path.LocalPath;
+                FileCount = Directory.GetFiles(SourceDir ?? string.Empty, "*.*", SearchOption.AllDirectories).Length.ToString();
+                CurFileType = Directory.GetFiles(SourceDir ?? string.Empty, "*.*", SearchOption.AllDirectories).Length > 0 ?
+                    Path.GetExtension(Directory.GetFiles(SourceDir ?? string.Empty, "*.*", SearchOption.AllDirectories)[0]) : "N/A";
                 IsBusy = false;
                 StatusMessage = string.Empty;
             }
