@@ -21,7 +21,7 @@ namespace ImageUtility.Services
 
         public async Task<Result<Stream, string>> ConvertAsync(ImageType type, Stream input, CancellationToken cancellationToken = default)
         {
-            if (!_converters.TryGetValue(type, out var converter))
+            if (!_converters.TryGetValue(type, out IImageConverter? converter))
             {
                 throw new NotSupportedException($"No converter registered for {type}");
             }

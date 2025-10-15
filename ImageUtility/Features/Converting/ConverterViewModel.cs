@@ -1,10 +1,14 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Controls.Notifications;
+using Avalonia.Controls.Shapes;
 using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ImageUtility.Enums;
+using ImageUtility.Extensions;
 using ImageUtility.Interfaces;
+using ImageUtility.Models;
+using ImageUtility.Services;
 using ImageUtility.ViewModels;
 using ImageUtility.Views;
 using Material.Icons;
@@ -13,7 +17,10 @@ using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
+using Path = System.IO.Path;
 
 namespace ImageUtility.Features.Converting
 {
@@ -21,7 +28,7 @@ namespace ImageUtility.Features.Converting
     {
         private readonly MainWindow _mWindow;
         private readonly ISukiToastManager _toastManager;
-        private readonly IImageConverter _converterService;
+        private readonly ConversionService _converterService;
 
         [ObservableProperty]
         private bool _isBusy;
@@ -39,7 +46,7 @@ namespace ImageUtility.Features.Converting
         [NotifyCanExecuteChangedFor(nameof(ClearCommand))]
         private string? _destinationDir;
         [ObservableProperty]
-        private string? _selectedFileType;
+        private ImageType _selectedFileType;
         [ObservableProperty]
         private int _selectedIndex;
         [ObservableProperty]
@@ -53,9 +60,9 @@ namespace ImageUtility.Features.Converting
         [ObservableProperty]
         private int _quality = 85;
 
-        public Array FileTypes => Enum.GetValues(typeof(ImageType));
+        public Array FileTypes => Enum.GetValues<ImageType>();
 
-        public ConverterViewModel(MainWindow mWindow, IImageConverter converterService, ISukiToastManager toastManager) : base("Converter", MaterialIconKind.ImageEdit, 4)
+        public ConverterViewModel(MainWindow mWindow, ConversionService converterService, ISukiToastManager toastManager) : base("Converter", MaterialIconKind.ImageEdit, 4)
         {
             _mWindow = mWindow;
             _toastManager = toastManager;
@@ -68,9 +75,53 @@ namespace ImageUtility.Features.Converting
         {
             IsBusy = true;
             StatusMessage = "Converting images... this may take a moment";
-            await Task.Delay(2000);
+            var imageType = SelectedFileType;
+            
+            var images = Directory.EnumerateFiles(SourceDir!);
+
+            foreach (string img in images)
+            {
+                var imgBytes = await File.ReadAllBytesAsync(img);
+                var stream = new MemoryStream(imgBytes);
+                var convertedStream = await _converterService.ConvertAsync(imageType, stream, new CancellationToken());
+                var newFilePath = Path.Combine(DestinationDir!, Path.GetFileNameWithoutExtension(img));
+                var ext = $".{SelectedFileType.ToExtensionString()}";
+                var newFileName = $"{newFilePath}{ext}";
+
+                await using var converted = convertedStream.Value;
+                converted.Position = 0;
+                await using var fileStream = File.Create(newFileName);
+                await converted.CopyToAsync(fileStream);
+
+            }
+
+            await Task.Delay(300);
             StatusMessage = "Conversion complete!";
             IsBusy = false;
+
+            if (OpenOnCompletion)
+            {
+                try
+                {
+                    var p = new System.Diagnostics.Process();
+                    p.StartInfo = new System.Diagnostics.ProcessStartInfo()
+                    {
+                        FileName = DestinationDir,
+                        UseShellExecute = true,
+                        Verb = "open"
+                    };
+                    p.Start();
+                }
+                catch (Exception ex)
+                {
+                    _toastManager.CreateToast()
+                        .WithTitle("Error")
+                        .WithContent($"Failed to open destination folder\r\n{ex.Message}")
+                        .OfType(NotificationType.Error)
+                        .Dismiss().After(TimeSpan.FromSeconds(5))
+                        .Queue();
+                }
+            }
         }
 
         [RelayCommand(CanExecute = nameof(CanClear))]
