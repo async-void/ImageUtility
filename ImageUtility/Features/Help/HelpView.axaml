@@ -94,6 +94,36 @@
 					</suki:GlassCard>
 				</suki:SettingsLayoutItem.Content>
 				</suki:SettingsLayoutItem>
+			<suki:SettingsLayoutItem x:Name="Converter" Header="Converting">
+				<suki:SettingsLayoutItem.Content>
+					<suki:GlassCard Margin="0,0,0,10" Padding="10">
+						<StackPanel Orientation="Horizontal"
+												HorizontalAlignment="Center"
+												Spacing="20">
+							<StackPanel Spacing="6">
+								<TextBlock Width="500"
+													 TextWrapping="WrapWithOverflow"
+													 Text="• source directory and destination directory are required before converting can begin."
+													 FontSize="14"
+													 FontStyle="Oblique"/>
+								<TextBlock Width="500"
+													 TextWrapping="WrapWithOverflow"
+													 Text="• choose file type."
+													 FontSize="14"
+													 FontStyle="Oblique"/>
+								<TextBlock Width="500"
+													 TextWrapping="WrapWithOverflow"
+													 Text="• choose quality - this is only applicable for JPG files."
+													 FontSize="14"
+													 FontStyle="Oblique"/>
+								
+							</StackPanel>
+							
+							
+						</StackPanel>
+					</suki:GlassCard>
+				</suki:SettingsLayoutItem.Content>
+			</suki:SettingsLayoutItem>
 		</generic:List>
 	</UserControl.Resources>
 

@@ -158,15 +158,22 @@
                           <suki:GlassCard Width="600" CornerRadius="8">
                               <StackPanel>
                                   <Grid>
-                                      <ComboBox
-                                          Width="200"
-                                          Margin="10,0,0,0"
-                                          HorizontalAlignment="Right"
-                                          VerticalAlignment="Center"
-                                          ItemsSource="{Binding FileTypes}"
-                                          SelectedItem="{Binding SelectedFileType, UpdateSourceTrigger=PropertyChanged}"
-                                          ToolTip.Placement="Right"
-                                          ToolTip.Tip="Resizer Mode" />
+																		<ComboBox
+																				Width="200"
+																				Margin="10,0,0,0"
+																				HorizontalAlignment="Right"
+																				VerticalAlignment="Center"
+																				ItemsSource="{Binding FileTypes}"
+																				SelectedItem="{Binding SelectedFileType, UpdateSourceTrigger=PropertyChanged}"
+																				SelectedIndex="{Binding SelectedIndex}"
+																				ToolTip.Placement="Right"
+																				ToolTip.Tip="Image Types">
+																			<ComboBox.ItemTemplate>
+                                        <DataTemplate>
+                                          <TextBlock Text="{Binding}" />
+																				</DataTemplate>
+																			</ComboBox.ItemTemplate>
+																		</ComboBox>
                                       <StackPanel>
                                           <TextBlock
                                               HorizontalAlignment="Left"

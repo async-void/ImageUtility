@@ -41,7 +41,7 @@ namespace ImageUtility.Features.Converting
         [ObservableProperty]
         private string? _selectedFileType;
         [ObservableProperty]
-        private string? _curFileType;
+        private int _selectedIndex;
         [ObservableProperty]
         private string? _curFileSize;
         [ObservableProperty]
@@ -53,7 +53,7 @@ namespace ImageUtility.Features.Converting
         [ObservableProperty]
         private int _quality = 85;
 
-        public ObservableCollection<ImageType> FileTypes { get; } = [ImageType.PNG, ImageType.JPG, ImageType.JPEG, ImageType.WEBP, ImageType.AVIF];
+        public Array FileTypes => Enum.GetValues(typeof(ImageType));
 
         public ConverterViewModel(MainWindow mWindow, IImageConverter converterService, ISukiToastManager toastManager) : base("Converter", MaterialIconKind.ImageEdit, 4)
         {
@@ -128,8 +128,7 @@ namespace ImageUtility.Features.Converting
             {
                 SourceDir = result[0].Path.LocalPath;
                 FileCount = Directory.GetFiles(SourceDir ?? string.Empty, "*.*", SearchOption.AllDirectories).Length.ToString();
-                CurFileType = Directory.GetFiles(SourceDir ?? string.Empty, "*.*", SearchOption.AllDirectories).Length > 0 ?
-                    Path.GetExtension(Directory.GetFiles(SourceDir ?? string.Empty, "*.*", SearchOption.AllDirectories)[0]) : "N/A";
+                
                 IsBusy = false;
                 StatusMessage = string.Empty;
             }
