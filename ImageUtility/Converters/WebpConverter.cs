@@ -34,8 +34,7 @@ namespace ImageUtility.Converters
                     Quality = 85,
                     FileFormat = WebpFileFormatType.Lossless,
                     Method = WebpEncodingMethod.BestQuality,
-                    NearLossless = true,
-                    EntropyPasses = 5
+                    EntropyPasses = 4
                 };
 
                 await normalized.SaveAsync(output, encoder, cancellationToken);

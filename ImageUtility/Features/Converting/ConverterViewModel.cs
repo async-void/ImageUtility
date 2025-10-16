@@ -4,6 +4,7 @@ using Avalonia.Controls.Shapes;
 using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using DotAvifConverter;
 using ImageUtility.Enums;
 using ImageUtility.Extensions;
 using ImageUtility.Interfaces;
@@ -14,8 +15,10 @@ using ImageUtility.Views;
 using Material.Icons;
 using SukiUI.Toasts;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -58,7 +61,7 @@ namespace ImageUtility.Features.Converting
         [ObservableProperty]
         private bool _openOnCompletion;
         [ObservableProperty]
-        private int _quality = 85;
+        private int _quality = 50;
 
         public Array FileTypes => Enum.GetValues<ImageType>();
 
@@ -73,6 +76,7 @@ namespace ImageUtility.Features.Converting
         [RelayCommand(CanExecute = nameof(CanConvert))]
         private async Task Convert()
         {
+            var errors = new List<string>();
             IsBusy = true;
             StatusMessage = "Converting images... this may take a moment";
             var imageType = SelectedFileType;
@@ -82,17 +86,35 @@ namespace ImageUtility.Features.Converting
             foreach (string img in images)
             {
                 var imgBytes = await File.ReadAllBytesAsync(img);
-                var stream = new MemoryStream(imgBytes);
-                var convertedStream = await _converterService.ConvertAsync(imageType, stream, new CancellationToken());
+                await using var stream = new MemoryStream(imgBytes);
+
                 var newFilePath = Path.Combine(DestinationDir!, Path.GetFileNameWithoutExtension(img));
                 var ext = $".{SelectedFileType.ToExtensionString()}";
                 var newFileName = $"{newFilePath}{ext}";
 
-                await using var converted = convertedStream.Value;
-                converted.Position = 0;
-                await using var fileStream = File.Create(newFileName);
-                await converted.CopyToAsync(fileStream);
+                if (SelectedFileType == ImageType.AVIF)
+                {
+                    var newImg = await AvifConverter.EncodeImage(img, newFileName, new AvifConverterOptions
+                    {
+                        Quality = Quality,
+                        Speed = 4,
+                    });
 
+                    if (newImg.Success == false)
+                    {
+                        errors.Add(newImg.Message);
+                        continue;
+                    }
+                }
+                else
+                {
+                    var convertedResult = await _converterService.ConvertAsync(SelectedFileType, stream, new CancellationToken());
+                    await using var converted = convertedResult.Value;
+                    converted.Position = 0;
+                    await using var outputFile = File.Create(newFileName);
+                    await converted.CopyToAsync(outputFile);
+                }
+ 
             }
 
             await Task.Delay(300);
@@ -103,8 +125,8 @@ namespace ImageUtility.Features.Converting
             {
                 try
                 {
-                    var p = new System.Diagnostics.Process();
-                    p.StartInfo = new System.Diagnostics.ProcessStartInfo()
+                    var p = new Process();
+                    p.StartInfo = new ProcessStartInfo()
                     {
                         FileName = DestinationDir,
                         UseShellExecute = true,
@@ -122,9 +144,21 @@ namespace ImageUtility.Features.Converting
                         .Queue();
                 }
             }
-        }
+            if (errors.Any())
+            {
+                var errMsg = string.Join("\r\n", errors);
+                _toastManager.CreateToast()
+                    .WithTitle("Error")
+                    .WithContent($"Some images failed to convert\r\n{errMsg}")
+                    .OfType(NotificationType.Error)
+                    .Dismiss().After(TimeSpan.FromSeconds(10))
+                    .Queue();
+            }
+            
 
-        [RelayCommand(CanExecute = nameof(CanClear))]
+         }
+
+            [RelayCommand(CanExecute = nameof(CanClear))]
         private void Clear()
         {
             SourceDir = string.Empty;

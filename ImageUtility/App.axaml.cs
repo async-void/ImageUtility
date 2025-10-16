@@ -110,6 +110,7 @@ namespace ImageUtility
             services.AddSingleton<IImageConverter, PngConverter>();
             services.AddSingleton<IImageConverter, JpgConverter>();
             services.AddSingleton<IImageConverter, WebpConverter>();
+            services.AddSingleton<IImageConverter, AvifConverter>();
             services.AddSingleton<ConversionService>();
             services.AddLogging(loggerBuilder =>
             {
