@@ -48,7 +48,7 @@
 													 FontStyle="Oblique"
 													 Text="• numbering can be added to the renaming. set the starting number."
 													 Width="500"/>
-							
+
 							</StackPanel>
 						</StackPanel>
 					</suki:GlassCard>
@@ -86,14 +86,19 @@
 											     Text="• set whether to maintain aspect ratio."
 												   FontSize="14"
 												   FontStyle="Oblique"/>
-								
+								<TextBlock Width="500"
+								           TextWrapping="WrapWithOverflow"
+											     Text="• supported file types."
+												   FontSize="14"
+												   FontStyle="Oblique"/>
+
 							</StackPanel>
-							
-							
+
+
 						</StackPanel>
 					</suki:GlassCard>
 				</suki:SettingsLayoutItem.Content>
-				</suki:SettingsLayoutItem>
+			</suki:SettingsLayoutItem>
 			<suki:SettingsLayoutItem x:Name="Converter" Header="Converting">
 				<suki:SettingsLayoutItem.Content>
 					<suki:GlassCard Margin="0,0,0,10" Padding="10">
@@ -110,23 +115,24 @@
 													 TextWrapping="WrapWithOverflow"
 													 Text="• choose file type."
 													 FontSize="14"
-													 FontStyle="Oblique"/>
+													 FontStyle="Oblique" />
+								<TextBlock Text="• supported file types -" >
+									<Run Text=" PNG, JPEG, WEBP and AVIF" />
+								</TextBlock>
 								<TextBlock Width="500"
 													 TextWrapping="WrapWithOverflow"
-													 Text="• choose quality - this is only applicable for JPG files."
+													 Text="• choose quality - higher quality will result in a larger file size"
 													 FontSize="14"
 													 FontStyle="Oblique"/>
-								
+							
 							</StackPanel>
-							
-							
+
 						</StackPanel>
 					</suki:GlassCard>
 				</suki:SettingsLayoutItem.Content>
 			</suki:SettingsLayoutItem>
 		</generic:List>
 	</UserControl.Resources>
-
 
 	<suki:SukiStackPage Margin="20">
 		<suki:SukiStackPage.Content>

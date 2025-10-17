@@ -61,7 +61,7 @@ namespace ImageUtility.Features.Converting
         [ObservableProperty]
         private bool _openOnCompletion;
         [ObservableProperty]
-        private int _quality = 50;
+        private int _quality = 85;
 
         public Array FileTypes => Enum.GetValues<ImageType>();
 
