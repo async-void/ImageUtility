@@ -19,14 +19,14 @@ namespace ImageUtility.Services
             _converters = converters.ToDictionary(c => c.SupportedType);
         }
 
-        public async Task<Result<Stream, string>> ConvertAsync(ImageType type, Stream input, CancellationToken cancellationToken = default)
+        public async Task<Result<Stream, string>> ConvertAsync(ImageType type, Stream input, int quality, CancellationToken cancellationToken = default)
         {
             if (!_converters.TryGetValue(type, out IImageConverter? converter))
             {
                 throw new NotSupportedException($"No converter registered for {type}");
             }
 
-            var result = await converter.ConvertAsync(input, cancellationToken);
+            var result = await converter.ConvertAsync(input, quality, cancellationToken);
             return Result<Stream, string>.Ok(result.Value);
         }
 

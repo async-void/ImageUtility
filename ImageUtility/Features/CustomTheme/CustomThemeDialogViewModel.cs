@@ -9,7 +9,7 @@ namespace ImageUtility.Features.CustomTheme;
 
 public partial class CustomThemeDialogViewModel(SukiTheme theme, ISukiDialog dialog) : ObservableObject
 {
-    [ObservableProperty] private string _displayName = "Pink";
+    [ObservableProperty] private string _displayName = "Add Custom Name";
     [ObservableProperty] private Color _primaryColor = Colors.DeepPink;
     [ObservableProperty] private Color _accentColor = Colors.Pink;
 

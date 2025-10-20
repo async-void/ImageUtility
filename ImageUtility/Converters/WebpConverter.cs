@@ -19,7 +19,7 @@ namespace ImageUtility.Converters
     {
         public ImageType SupportedType => ImageType.WEBP;
 
-        public async Task<Result<Stream, string>> ConvertAsync(Stream input, CancellationToken cancellationToken = default)
+        public async Task<Result<Stream, string>> ConvertAsync(Stream input, int quality, CancellationToken cancellationToken = default)
         {
             if (input is null) return Result<Stream, string>.Err("input stream is null");
             var output = new MemoryStream();
@@ -31,7 +31,7 @@ namespace ImageUtility.Converters
 
                 var encoder = new WebpEncoder
                 {
-                    Quality = 85,
+                    Quality = quality,
                     FileFormat = WebpFileFormatType.Lossless,
                     Method = WebpEncodingMethod.BestQuality,
                     EntropyPasses = 4

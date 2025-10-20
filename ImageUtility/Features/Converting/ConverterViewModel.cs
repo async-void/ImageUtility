@@ -1,22 +1,21 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Controls.Notifications;
-using Avalonia.Controls.Shapes;
 using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using DotAvifConverter;
 using ImageUtility.Enums;
 using ImageUtility.Extensions;
 using ImageUtility.Interfaces;
-using ImageUtility.Models;
 using ImageUtility.Services;
 using ImageUtility.ViewModels;
 using ImageUtility.Views;
 using Material.Icons;
+using SukiUI.Controls;
+using SukiUI.Dialogs;
+using SukiUI.MessageBox;
 using SukiUI.Toasts;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.IO;
@@ -32,6 +31,7 @@ namespace ImageUtility.Features.Converting
         private readonly MainWindow _mWindow;
         private readonly ISukiToastManager _toastManager;
         private readonly ConversionService _converterService;
+        private readonly IFileUtilities _fileUtilities;
 
         [ObservableProperty]
         private bool _isBusy;
@@ -61,15 +61,18 @@ namespace ImageUtility.Features.Converting
         [ObservableProperty]
         private bool _openOnCompletion;
         [ObservableProperty]
+        private bool _isQualityEnabled = true;
+        [ObservableProperty]
         private int _quality = 85;
 
         public Array FileTypes => Enum.GetValues<ImageType>();
 
-        public ConverterViewModel(MainWindow mWindow, ConversionService converterService, ISukiToastManager toastManager) : base("Converter", MaterialIconKind.ImageEdit, 4)
+        public ConverterViewModel(MainWindow mWindow, ConversionService converterService, IFileUtilities fileUtilities, ISukiToastManager toastManager) : base("Converter", MaterialIconKind.ImageEdit, 4)
         {
             _mWindow = mWindow;
             _toastManager = toastManager;
             _converterService = converterService;
+            _fileUtilities = fileUtilities;
             CopyFiles = true;
         }
 
@@ -80,42 +83,66 @@ namespace ImageUtility.Features.Converting
             IsBusy = true;
             StatusMessage = "Converting images... this may take a moment";
             var imageType = SelectedFileType;
-            
-            var images = Directory.EnumerateFiles(SourceDir!);
+            var processedCount = 0;
 
-            foreach (string img in images)
+            var imageExts = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+                            { ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tif", ".tiff", ".webp", ".avif" };
+            var options = new EnumerationOptions
             {
+                RecurseSubdirectories = true,
+                IgnoreInaccessible = true,
+                ReturnSpecialDirectories = false
+            };
+
+            IEnumerable<string> files = Directory.EnumerateFiles(SourceDir!, "*.*", options);
+
+            foreach (string img in files)
+            {
+                processedCount++;
                 var imgBytes = await File.ReadAllBytesAsync(img);
                 await using var stream = new MemoryStream(imgBytes);
-
+                var fileName = Path.GetFileName(img);
                 var newFilePath = Path.Combine(DestinationDir!, Path.GetFileNameWithoutExtension(img));
                 var ext = $".{SelectedFileType.ToExtensionString()}";
                 var newFileName = $"{newFilePath}{ext}";
-
-                if (SelectedFileType == ImageType.AVIF)
+                StatusMessage = $"Converting {processedCount} of {FileCount} files";
+                try
                 {
-                    var newImg = await AvifConverter.EncodeImage(img, newFileName, new AvifConverterOptions
+                    if (SelectedFileType == ImageType.AVIF)
                     {
-                        Quality = Quality,
-                        Speed = 4,
-                    });
-
-                    if (newImg.Success == false)
-                    {
-                        errors.Add(newImg.Message);
-                        continue;
+                        IsQualityEnabled = false;
+                        var ffmpegPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "FFMPEG", "ffmpeg", "bin", "ffmpeg.exe");
+                        var r = _fileUtilities.ConvertToAvif(ffmpegPath, img, newFileName);
                     }
-                }
-                else
+                    else
+                    {
+                        var convertedResult = await _converterService.ConvertAsync(SelectedFileType, stream, Quality, new CancellationToken());
+                        if (!convertedResult.IsOk)
+                        {
+                            errors.Add(convertedResult.Error);
+                            continue;
+                        }
+                        await using var converted = convertedResult.Value;
+                   
+                        converted.Position = 0;
+                        await using var outputFile = File.Create(newFileName);
+                        await converted.CopyToAsync(outputFile);
+                     }
+                 }
+                catch(Exception ex) 
                 {
-                    var convertedResult = await _converterService.ConvertAsync(SelectedFileType, stream, new CancellationToken());
-                    await using var converted = convertedResult.Value;
-                    converted.Position = 0;
-                    await using var outputFile = File.Create(newFileName);
-                    await converted.CopyToAsync(outputFile);
+                    errors.Add($"{ex.Message}");
+                    //var msgBox = new SukiMessageBoxHost
+                    //{
+                    //    ActionButtonsPreset = SukiMessageBoxButtons.OK,
+                    //    IconPreset = SukiMessageBoxIcons.Error,
+                    //};
+                    //msgBox.Header = "Conversion Failure";
+                    //msgBox.Content = $"{SelectedFileType}  for: {fileName} failed with error: {ex.Message}";
+                    //using var _ = SukiMessageBox.ShowDialog(msgBox);
+                    continue;
                 }
- 
-            }
+}
 
             await Task.Delay(300);
             StatusMessage = "Conversion complete!";
@@ -158,12 +185,14 @@ namespace ImageUtility.Features.Converting
 
          }
 
-            [RelayCommand(CanExecute = nameof(CanClear))]
+        [RelayCommand(CanExecute = nameof(CanClear))]
         private void Clear()
         {
             SourceDir = string.Empty;
             DestinationDir = string.Empty;
             StatusMessage = string.Empty;
+            OpenOnCompletion = false;
+            CopyFiles = true;
             IsBusy = false;
         }
 
@@ -230,6 +259,14 @@ namespace ImageUtility.Features.Converting
 
             }
 
+        }
+
+        partial void OnSelectedFileTypeChanged(ImageType value)
+        {
+            if (value == ImageType.AVIF || value == ImageType.PNG)
+                IsQualityEnabled = false;
+            else
+                IsQualityEnabled = true;
         }
 
         public bool CanConvert() => !string.IsNullOrWhiteSpace(SourceDir) && !string.IsNullOrWhiteSpace(DestinationDir);

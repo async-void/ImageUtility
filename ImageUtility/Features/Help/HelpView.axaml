@@ -11,6 +11,42 @@
 
 	<UserControl.Resources>
 		<generic:List x:Key="Collection" x:TypeArguments="suki:SettingsLayoutItem">
+			<suki:SettingsLayoutItem x:Name="AboutSection" Header="About">
+				<suki:SettingsLayoutItem.Content>
+					<suki:GlassCard Margin="0,0,0,10" Padding="10">
+						<StackPanel Orientation="Horizontal"
+												HorizontalAlignment="Center"
+												Spacing="20">
+							<StackPanel Spacing="8">
+								<TextBlock TextWrapping="WrapWithOverflow"
+													 Width="500"
+									         Text="Image Utility "
+													 FontSize="14"
+													 FontStyle="Oblique">
+									<Run Text="is a fast desktop tool that handles large image workflows: bulk resize, bulk rename, &amp; bulk convert. It combines speed with precision, preserving color profiles &amp; metadata while giving power users &amp; casual creators an approachable, polished UI." />
+								</TextBlock>
+								<TextBlock TextWrapping="WrapWithOverflow"
+													 Width="500"
+													 FontSize="14"
+													 FontStyle="Oblique"
+													 Text="• Resize, Rename &amp; Convert In bulk, without the headache." />
+							
+									<TextBlock TextWrapping="WrapWithOverflow"
+														 Width="500"
+														 FontSize="14"
+														 FontStyle="Oblique"
+														 Text="• Batch image work that actually respects your time &amp; pixels." />
+									<TextBlock TextWrapping="WrapWithOverflow"
+														 Width="500"
+														 FontSize="14"
+														 FontStyle="Oblique"
+														 Text="• From folders to finished files — fast, predictable, &amp; clean" />
+
+							</StackPanel>
+						</StackPanel>
+					</suki:GlassCard>
+				</suki:SettingsLayoutItem.Content>
+			</suki:SettingsLayoutItem>
 			<suki:SettingsLayoutItem x:Name="Renamer" Header="Renaming">
 				<suki:SettingsLayoutItem.Content>
 					<suki:GlassCard Margin="0,0,0,10" Padding="10">
@@ -122,6 +158,11 @@
 								<TextBlock Width="500"
 													 TextWrapping="WrapWithOverflow"
 													 Text="• choose quality - higher quality will result in a larger file size"
+													 FontSize="14"
+													 FontStyle="Oblique"/>
+								<TextBlock Width="500"
+													 TextWrapping="WrapWithOverflow"
+													 Text="• converting to .avif takes more cpu power &amp; time, please be patient"
 													 FontSize="14"
 													 FontStyle="Oblique"/>
 							

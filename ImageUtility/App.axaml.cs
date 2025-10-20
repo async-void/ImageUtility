@@ -25,6 +25,7 @@ using Microsoft.Extensions.Logging;
 using Serilog;
 using SukiUI.Controls;
 using SukiUI.Dialogs;
+using SukiUI.Models;
 using SukiUI.Toasts;
 using System.Linq;
 using ILogger = Microsoft.Extensions.Logging.ILogger;
@@ -110,8 +111,8 @@ namespace ImageUtility
             services.AddSingleton<IImageConverter, PngConverter>();
             services.AddSingleton<IImageConverter, JpgConverter>();
             services.AddSingleton<IImageConverter, WebpConverter>();
-            services.AddSingleton<IImageConverter, AvifConverter>();
             services.AddSingleton<ConversionService>();
+            services.AddSingleton<SukiColorTheme>();
             services.AddLogging(loggerBuilder =>
             {
                 loggerBuilder.ClearProviders();

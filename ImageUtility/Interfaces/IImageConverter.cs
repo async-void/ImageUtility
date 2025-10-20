@@ -13,7 +13,7 @@ namespace ImageUtility.Interfaces
     public interface IImageConverter
     {
         ImageType SupportedType { get; }
-        Task<Result<Stream, string>> ConvertAsync(Stream input, CancellationToken cancellationToken = default);
+        Task<Result<Stream, string>> ConvertAsync(Stream stream, int quality = 85, CancellationToken cancellationToken = default);
 
     }
 }

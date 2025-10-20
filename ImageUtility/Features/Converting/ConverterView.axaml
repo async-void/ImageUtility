@@ -99,6 +99,7 @@
                                   HorizontalAlignment="Right"
                                   VerticalAlignment="Center"
                                   IsSnapToTickEnabled="True"
+																	IsEnabled="{Binding IsQualityEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                   Maximum="100"
                                   Minimum="50"
                                   TickFrequency="5"
@@ -164,8 +165,8 @@
 																				HorizontalAlignment="Right"
 																				VerticalAlignment="Center"
 																				ItemsSource="{Binding FileTypes}"
-																				SelectedItem="{Binding SelectedFileType, UpdateSourceTrigger=PropertyChanged}"
-																				SelectedIndex="{Binding SelectedIndex}"
+																				SelectedItem="{Binding SelectedFileType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+																				SelectedIndex="{Binding SelectedIndex}"	
 																				ToolTip.Placement="Right"
 																				ToolTip.Tip="Image Types">
 																			<ComboBox.ItemTemplate>

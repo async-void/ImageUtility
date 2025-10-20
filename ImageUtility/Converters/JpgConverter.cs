@@ -16,7 +16,7 @@ namespace ImageUtility.Converters
     {
         public ImageType SupportedType => ImageType.JPEG;
 
-        public async Task<Result<Stream, string>> ConvertAsync(Stream input, CancellationToken cancellationToken = default)
+        public async Task<Result<Stream, string>> ConvertAsync(Stream input, int quality, CancellationToken cancellationToken = default)
         {
             if (input is null) return Result<Stream, string>.Err("input stream is null");
             var output = new MemoryStream();
@@ -28,8 +28,10 @@ namespace ImageUtility.Converters
 
                 var encoder = new JpegEncoder
                 {
-                    Quality = 85,
-                    ColorType = JpegEncodingColor.Rgb
+                    Quality = quality,
+                    ColorType = JpegEncodingColor.Rgb,
+                    SkipMetadata = false,
+                    Interleaved = true,
                 };
 
                 await normalized.SaveAsync(output, encoder, cancellationToken);

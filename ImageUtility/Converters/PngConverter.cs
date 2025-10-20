@@ -16,7 +16,7 @@ namespace ImageUtility.Converters
     {
         public ImageType SupportedType => ImageType.PNG;
 
-        public async Task<Result<Stream, string>> ConvertAsync(Stream input, CancellationToken cancellationToken = default)
+        public async Task<Result<Stream, string>> ConvertAsync(Stream input, int quality, CancellationToken cancellationToken = default)
         {
 
             if (input is null) return Result<Stream, string>.Err("input stream is null");
@@ -31,6 +31,9 @@ namespace ImageUtility.Converters
                 {
                     CompressionLevel = PngCompressionLevel.BestCompression,
                     ColorType = PngColorType.RgbWithAlpha,
+                    TransparentColorMode = PngTransparentColorMode.Preserve,
+                    SkipMetadata = false,
+                    FilterMethod = PngFilterMethod.Adaptive,
                 };
 
                 await normalized.SaveAsync(output, encoder, cancellationToken);

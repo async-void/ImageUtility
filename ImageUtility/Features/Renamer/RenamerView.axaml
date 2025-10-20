@@ -29,7 +29,7 @@
 													 Watermark="Source Directory" 
 													 suki:TextBoxExtensions.Prefix="{icon:MaterialIconExt Kind=Folder}"
 													 Classes="clearButton"
-													 Width="400"/>
+													 Width="500"/>
 										<Button Command="{Binding SetSourceDirectoryCommand}"
 														Background="Transparent"
 														BorderBrush="Transparent"
@@ -45,7 +45,7 @@
 													 Watermark="Destination Directory"
 													 suki:TextBoxExtensions.Prefix="{icon:MaterialIconExt Kind=Folder}"
 													 Classes="clearButton"
-													 Width="400"/>
+													 Width="500"/>
 										<Button Command="{Binding SetDestinationDirectoryCommand}"
 														Background="Transparent"
 														BorderBrush="Transparent"
@@ -64,7 +64,7 @@
 							<StackPanel Spacing="10" >
 								<suki:BusyArea IsBusy="{Binding IsLoading}"
 															 BusyText="{Binding StatusMessage}">
-								<suki:GlassCard CornerRadius="6" Width="494">
+								<suki:GlassCard CornerRadius="6" Width="584">
 									<StackPanel>
 
 										<Grid Margin="0,2,0,0">
