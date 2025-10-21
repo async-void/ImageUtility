@@ -6,7 +6,9 @@ using Avalonia.LogicalTree;
 using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using HarfBuzzSharp;
+using ImageUtility.Common;
 using ImageUtility.Interfaces;
 using ImageUtility.ViewModels;
 using ImageUtility.Views;
@@ -18,16 +20,18 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 
 namespace ImageUtility.Features.Renamer
 {
-    public partial class RenamerViewModel : ViewModelBase
+    public partial class RenamerViewModel :  ViewModelBase, IRecipient<ProgressMessage>
     {
         private readonly MainWindow _mWindow;
         private readonly IRenamer _renameService;
         private readonly ISukiToastManager _toastManager;
+        private readonly IMessenger _messenger;
 
         [ObservableProperty]
         [Required]
@@ -63,15 +67,19 @@ namespace ImageUtility.Features.Renamer
 
         [ObservableProperty]
         private bool _copyFiles;
+        [ObservableProperty]
+        private int _progress;
 
         private List<string> filesList = [];
 
-        public RenamerViewModel(MainWindow mWindow, IRenamer renameService, ISukiToastManager toastManager) : base("Renamer", MaterialIconKind.Rename, 2)
+        public RenamerViewModel(MainWindow mWindow, IRenamer renameService, ISukiToastManager toastManager, IMessenger messenger) : base("Renamer", MaterialIconKind.Rename, 2)
         {
             _mWindow = mWindow;
             _renameService = renameService;
             _toastManager = toastManager;
             CopyFiles = true;
+            _messenger = messenger;
+            _messenger.Register<ProgressMessage>(this);
         }
 
         [RelayCommand(CanExecute = nameof(CanRename))]
@@ -79,8 +87,8 @@ namespace ImageUtility.Features.Renamer
         {
             StatusMessage = "Renaming Files... Please Wait";
             IsLoading = true;
-            IEnumerable<string> files = Directory.EnumerateFiles(SourceDir!);
-
+            IEnumerable<string> files = [.. Directory.EnumerateFiles(SourceDir!)];
+            var isOk = false;
             var result = await _renameService.RenameFilesAsync([.. files], DestinationDir!, CopyFiles, Pattern, filesList);
             var message = result.Match(
                     ok => $"SUCCESS: {ok}",
@@ -89,7 +97,7 @@ namespace ImageUtility.Features.Renamer
 
             IsLoading = false;
 
-            if ( OpenOnComplete && result.IsOk)
+            if ( OpenOnComplete && isOk)
             {
                 try
                 {
@@ -231,5 +239,11 @@ namespace ImageUtility.Features.Renamer
 
         public bool CanRename() => !string.IsNullOrEmpty(Pattern) || !string.IsNullOrEmpty(SourceDir) && !string.IsNullOrEmpty(DestinationDir);
         public bool CanClear() => !string.IsNullOrEmpty(Pattern) || !string.IsNullOrEmpty(SourceDir) && !string.IsNullOrEmpty(DestinationDir);
+
+        public void Receive(ProgressMessage message)
+        {
+            Progress = message.Value;
+            StatusMessage = $"Renaming {Progress}% complete...";
+        }
     }
 }

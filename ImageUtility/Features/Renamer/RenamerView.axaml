@@ -20,7 +20,7 @@
 					
 					<StackPanel>
 						<suki:BusyArea IsBusy="{Binding IsLoadingDirectories}"
-												 BusyText="{Binding StatusMessage}">
+												   BusyText="{Binding StatusMessage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
 							<suki:GroupBox Header="Source/Destination Directories">
 								<StackPanel Spacing="10" Margin="10">
 

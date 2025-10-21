@@ -1,29 +1,51 @@
-﻿using ImageUtility.Interfaces;
+﻿using CommunityToolkit.Mvvm.Messaging;
+using ImageUtility.Common;
+using ImageUtility.Interfaces;
 using ImageUtility.Models;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Linq.Dynamic.Core.Tokenizer;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace ImageUtility.Services
 {
-    public class RenamerService(ILogger<RenamerService> logger) : IRenamer
+    public class RenamerService(ILogger<RenamerService> logger, IMessenger messenger) : IRenamer
     {
         private readonly ILogger<RenamerService> _logger = logger;
+
+        #region RENAME FILES
         public async Task<Result<string, string>> RenameFilesAsync(IEnumerable<string> sourcePaths, string destinationDir, bool copyFiles, string? pattern = null, IEnumerable<string>? renameStrings = null)
         {
             var cts = new CancellationTokenSource();
             //FindExact(sourcePaths, renameStrings);
             if (pattern is { } p)
             {
-                await Parallel.ForEachAsync(sourcePaths, cts.Token, async (sourcePath, token) =>
+                int completed = 0;
+                int fileCount = sourcePaths.Count();
+                int lastPercent = -1;
+                var progress = new Progress<int>(percent => messenger.Send(new ProgressMessage(percent)));
+                var options = new ParallelOptions { MaxDegreeOfParallelism = 5, CancellationToken = cts.Token };
+                await Parallel.ForEachAsync(sourcePaths, options, async (sourcePath, token) =>
                 {
                     string destinationPath = GetNewNameWithPattern(sourcePath, destinationDir, p);
-                    await CopyOrMoveAsync(sourcePath, destinationPath, copyFiles);
+                    await CopyOrMoveAsync(sourcePath, destinationPath, copyFiles, token);
+                    int current = Interlocked.Increment(ref completed);
+                    int percent = current * 100 / fileCount;
+                    int prev;
+                    do
+                    {
+                        prev = Volatile.Read(ref lastPercent);
+                        if (prev == percent) break;
+                    } while (Interlocked.CompareExchange(ref lastPercent, percent, prev) != prev);
+
+                    if (prev != percent) ((IProgress<int>)progress).Report(percent);
+
                 });
                 return Result<string, string>.Ok("Successfully renamed all files");
             }
@@ -36,17 +58,39 @@ namespace ImageUtility.Services
                     return Result<string, string>.Err("filename count does not match source file count.");
 
                 var renamePairs = sList.Zip(rList, (source, rename) => new { source, rename });
-                
+                int completed = 0;
+                int fileCount = sourcePaths.Count();
+                int lastPercent = -1;
+                var progress = new Progress<int>(percent => messenger.Send(new ProgressMessage(percent)));
+                var options = new ParallelOptions { MaxDegreeOfParallelism = 5, CancellationToken = cts.Token };
                 await Parallel.ForEachAsync(renamePairs, cts.Token, async (pair, token) =>
                 {
                     string destinationPath = GetNewNameWithRenameStrings(pair.source, destinationDir, pair.rename);
-                    await CopyOrMoveAsync(pair.source, destinationPath, copyFiles);
+                    await CopyOrMoveAsync(pair.source, destinationPath, copyFiles, token);
+                    int current = Interlocked.Increment(ref completed);
+                    int percent = current * 100 / fileCount;
+                    int prev;
+                    do
+                    {
+                        prev = Volatile.Read(ref lastPercent);
+                        if (prev == percent) break;
+                    } while (Interlocked.CompareExchange(ref lastPercent, percent, prev) != prev);
+
+                    if (prev != percent) ((IProgress<int>)progress).Report(percent);
                 });
                 return Result<string, string>.Ok("Successfully renamed all files");
             }
 
             return Result<string, string>.Err("Something went wrong, unable to rename files!");
 
+        }
+        #endregion
+
+        private static string GetNewName(string sourcePath, string destDir)
+        {
+            var fileName = Path.GetFileNameWithoutExtension(sourcePath);
+            var ext = Path.GetExtension(sourcePath);
+            return Path.Combine(destDir, $"{fileName}{ext}");
         }
 
         private static string GetNewNameWithPattern(string sourcePath, string destDir, string pattern)
@@ -64,21 +108,30 @@ namespace ImageUtility.Services
             return Path.Combine(Path.GetDirectoryName(destinationPath)!, $"{fileName}{ext}");
         }
 
-        private async Task CopyOrMoveAsync(string source, string destination, bool copy)
+        private async Task CopyOrMoveAsync(string source, string destination, bool copy, CancellationToken token)
         {
             using var sourceStream = new FileStream(source, FileMode.Open, FileAccess.Read, FileShare.Read, bufferSize: 81920, useAsync: true);
             using var destinationStream = new FileStream(destination, FileMode.Create, FileAccess.Write, FileShare.None, bufferSize: 81920, useAsync: true);
             try
             {
-                await sourceStream.CopyToAsync(destinationStream);
+                await sourceStream.CopyToAsync(destinationStream, bufferSize: 81920);
                 sourceStream.Dispose();
-                if (!copy)
-                    File.Delete(source);
             }
-            catch (Exception ex)
+            catch(OperationCanceledException)
             {
-                _logger.LogError(message: $"Failed to {(copy ? "copy" : "move")} file from {source} to {destination}", ex);
+                try
+                {
+                    File.Delete(destination);
+                }
+                catch { }
+                return;
             }
+
+            if (!copy && !token.IsCancellationRequested)
+            {
+                File.Delete(source);
+            }
+
 
         }
 

@@ -5,6 +5,7 @@ using Avalonia.Data.Core;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Logging;
 using Avalonia.Markup.Xaml;
+using CommunityToolkit.Mvvm.Messaging;
 using ImageUtility.Common;
 using ImageUtility.Converters;
 using ImageUtility.Dialogs;
@@ -113,6 +114,7 @@ namespace ImageUtility
             services.AddSingleton<IImageConverter, WebpConverter>();
             services.AddSingleton<ConversionService>();
             services.AddSingleton<SukiColorTheme>();
+            services.AddSingleton<IMessenger>(WeakReferenceMessenger.Default);
             services.AddLogging(loggerBuilder =>
             {
                 loggerBuilder.ClearProviders();
