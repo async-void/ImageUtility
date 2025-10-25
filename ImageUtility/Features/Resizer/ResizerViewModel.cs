@@ -3,6 +3,8 @@ using Avalonia.Controls.Notifications;
 using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
+using ImageUtility.Common;
 using ImageUtility.Enums;
 using ImageUtility.Interfaces;
 using ImageUtility.ViewModels;
@@ -22,12 +24,13 @@ using System.Threading.Tasks;
 
 namespace ImageUtility.Features.Resizer
 {
-    public partial class ResizerViewModel : ViewModelBase
+    public partial class ResizerViewModel : ViewModelBase, IRecipient<ProgressMessage>
     {
         private readonly MainWindow _mWindow;
         private readonly IResizer _resizerService;
         private readonly ISukiToastManager _toastManager;
         private readonly ISukiDialogManager _dialogManager;
+        private readonly IMessenger _messenger;
 
         [ObservableProperty]
         [NotifyCanExecuteChangedFor(nameof(ResizeCommand))]
@@ -43,6 +46,8 @@ namespace ImageUtility.Features.Resizer
         private int _width;
         [ObservableProperty]
         private int _height;
+        [ObservableProperty]
+        private int _progress;
         [ObservableProperty]
         private bool _maintainAspectRatio;
         [ObservableProperty]
@@ -62,12 +67,14 @@ namespace ImageUtility.Features.Resizer
         public ObservableCollection<string> ResizeModes { get; } = ["Stretch", "Crop", "Fill", "Pad", "Max", "Min"];
         public ObservableCollection<string> FileTypes { get; } = ["All", "PNG", "JPG", "JPEG", "BMP", "GIF", "TIFF"];
 
-        public ResizerViewModel(MainWindow mWindow, ISukiToastManager toastManager, ISukiDialogManager dialogManager, IResizer resizerService) : base("Resizer", MaterialIconKind.Resize, 3)
+        public ResizerViewModel(MainWindow mWindow, ISukiToastManager toastManager, ISukiDialogManager dialogManager, IResizer resizerService, IMessenger messenger) : base("Resizer", MaterialIconKind.Resize, 3)
         {
             _mWindow = mWindow;
             _resizerService = resizerService;
             _toastManager = toastManager;
             _dialogManager = dialogManager;
+            _messenger = messenger;
+            _messenger.Register(this);
             CopyFiles = true;
         }
 
@@ -138,7 +145,10 @@ namespace ImageUtility.Features.Resizer
         {
             IsBusy = true;
             StatusMessage = "Resizing images...";
-            var files = Directory.EnumerateFiles(SourceDir!);
+           
+            var options = new EnumerationOptions { RecurseSubdirectories = false };
+            IEnumerable<string> files = [.. Directory.EnumerateFiles(SourceDir!, "*", options)];
+            
             var result = await _resizerService.ResizeImagesAsync(files, DestinationDir!, Width, Height, SelectedResizeMode!, MaintainAspectRatio, CopyFiles);
 
             IsBusy = false;
@@ -184,5 +194,11 @@ namespace ImageUtility.Features.Resizer
 
         public bool CanResize() => !string.IsNullOrWhiteSpace(SourceDir) && !string.IsNullOrWhiteSpace(DestinationDir) && !string.IsNullOrWhiteSpace(SelectedResizeMode);
         public bool CanClear() => !string.IsNullOrWhiteSpace(SourceDir) && !string.IsNullOrWhiteSpace(DestinationDir);
+
+        public void Receive(ProgressMessage message)
+        {
+            Progress = message.Value;
+            StatusMessage = $"Processing {Progress}% complete.";
+        }
     }
 }

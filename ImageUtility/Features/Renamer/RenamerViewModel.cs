@@ -10,6 +10,7 @@ using CommunityToolkit.Mvvm.Messaging;
 using HarfBuzzSharp;
 using ImageUtility.Common;
 using ImageUtility.Interfaces;
+using ImageUtility.Models;
 using ImageUtility.ViewModels;
 using ImageUtility.Views;
 using Material.Icons;
@@ -31,6 +32,7 @@ namespace ImageUtility.Features.Renamer
         private readonly MainWindow _mWindow;
         private readonly IRenamer _renameService;
         private readonly ISukiToastManager _toastManager;
+        private readonly IJsonData _dataService;
         private readonly IMessenger _messenger;
 
         [ObservableProperty]
@@ -72,14 +74,15 @@ namespace ImageUtility.Features.Renamer
 
         private List<string> filesList = [];
 
-        public RenamerViewModel(MainWindow mWindow, IRenamer renameService, ISukiToastManager toastManager, IMessenger messenger) : base("Renamer", MaterialIconKind.Rename, 2)
+        public RenamerViewModel(MainWindow mWindow, IRenamer renameService, ISukiToastManager toastManager, IJsonData dataService, IMessenger messenger) : base("Renamer", MaterialIconKind.Rename, 2)
         {
             _mWindow = mWindow;
             _renameService = renameService;
+            _dataService = dataService;
             _toastManager = toastManager;
             CopyFiles = true;
             _messenger = messenger;
-            _messenger.Register<ProgressMessage>(this);
+            _messenger.Register(this);
         }
 
         [RelayCommand(CanExecute = nameof(CanRename))]
@@ -94,6 +97,22 @@ namespace ImageUtility.Features.Renamer
                     ok => $"SUCCESS: {ok}",
                     err => $"FAILURE: {err}"
                 );
+
+            var userStat = new Day()
+            {
+                Date = DateTime.Now.AddDays(1),
+                Stats = new UserStats()
+                {
+                    Renamer = new RenamerStats()
+                    {
+                        Total = files.Count(),
+                        Success = files.Count(),
+                        Fail = 0
+                    }
+                }
+            };
+
+            await _dataService.InsertDailyStatsAsync(userStat);
 
             IsLoading = false;
 

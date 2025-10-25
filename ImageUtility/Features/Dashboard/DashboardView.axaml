@@ -4,18 +4,212 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 						 xmlns:suki="https://github.com/kikipoulet/SukiUI"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450">
- 
-	<suki:GlassCard Margin="10" Padding="10">
-		<StackPanel Spacing="8">
-			<TextBlock Text="Dashboard" FontSize="24" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-			<TextBlock Text="Welcome to the Dashboard!" FontSize="16" 
-								 HorizontalAlignment="Center" 
-								 VerticalAlignment="Center"/>
-			<TextBlock Text="this is a WIP(work in process)" FontSize="16"
-								 HorizontalAlignment="Center"
-								 VerticalAlignment="Center"/>
-		</StackPanel>
-		
-		</suki:GlassCard>
+						 xmlns:lvc="using:LiveChartsCore.SkiaSharpView.Avalonia"
+						 xmlns:vm="using:ImageUtility.Features.Dashboard"
+             mc:Ignorable="d"
+						 x:DataType="vm:DashboardViewModel">
+
+	<ScrollViewer>
+		<WrapPanel Orientation="Horizontal">
+				<StackPanel>
+					<Grid>
+						<suki:GlassCard Width="300"
+														Margin="10"
+														CornerRadius="10">
+							<StackPanel>
+								<suki:GroupBox Header="Conversions">
+									<StackPanel>
+										<StackPanel Orientation="Horizontal"
+																Spacing="90">
+											<TextBlock Text="Last Used: "
+																 HorizontalAlignment="Left"
+																 FontSize="16"
+																 FontWeight="Bold" />
+											<TextBlock Text="{Binding LastUsed, Mode=OneTime, FallbackValue=Yesterday}"
+																 FontSize="14"
+																 FontStyle="Oblique"
+																 HorizontalAlignment="Right" />
+										</StackPanel>
+										<StackPanel Orientation="Horizontal"
+																Spacing="86">
+											<TextBlock Text="Converted: "
+																 HorizontalAlignment="Left"
+																 FontSize="16"
+																 FontWeight="Bold" />
+											<TextBlock Text="{Binding ConvertedCount, Mode=OneTime, FallbackValue=5000}"
+																 FontSize="14"
+																 FontStyle="Normal"
+																 HorizontalAlignment="Right" />
+										</StackPanel>
+										<StackPanel Orientation="Horizontal"
+																Spacing="105">
+											<TextBlock Text="Success: "
+																 HorizontalAlignment="Left"
+																 FontSize="16"
+																 FontWeight="Bold" />
+											<TextBlock Text="{Binding SuccessCount, Mode=OneTime, FallbackValue=0}"
+																 FontSize="14"
+																 FontStyle="Normal"
+																 HorizontalAlignment="Right" />
+										</StackPanel>
+										<StackPanel Orientation="Horizontal"
+																Spacing="112">
+											<TextBlock Text="Failure: "
+																 HorizontalAlignment="Left"
+																 FontSize="16"
+																 FontWeight="Bold" />
+											<TextBlock Text="{Binding FailureCount, Mode=OneTime, FallbackValue=0}"
+																 FontSize="14"
+																 FontStyle="Normal"
+																 HorizontalAlignment="Right" />
+										</StackPanel>
+									
+										
+									</StackPanel>
+									
+								</suki:GroupBox>
+							</StackPanel>
+						</suki:GlassCard>
+					</Grid>
+				</StackPanel>
+			<StackPanel>
+				<Grid>
+					<suki:GlassCard Width="300"
+													Margin="10"
+													CornerRadius="10">
+						<StackPanel>
+							<suki:GroupBox Header="Renaming">
+								<StackPanel>
+									<StackPanel Orientation="Horizontal"
+															Spacing="90">
+										<TextBlock Text="Last Used: "
+															 HorizontalAlignment="Left"
+															 FontSize="16"
+															 FontWeight="Bold" />
+										<TextBlock Text="{Binding LastUsed, Mode=OneTime, FallbackValue=Yesterday}"
+															 FontSize="14"
+															 FontStyle="Oblique"
+															 HorizontalAlignment="Right" />
+									</StackPanel>
+									<StackPanel Orientation="Horizontal"
+															Spacing="86">
+										<TextBlock Text="Converted: "
+															 HorizontalAlignment="Left"
+															 FontSize="16"
+															 FontWeight="Bold" />
+										<TextBlock Text="{Binding ConvertedCount, Mode=OneTime, FallbackValue=5000}"
+															 FontSize="14"
+															 FontStyle="Oblique"
+															 HorizontalAlignment="Right" />
+									</StackPanel>
+									<StackPanel Orientation="Horizontal"
+															Spacing="105">
+										<TextBlock Text="Success: "
+															 HorizontalAlignment="Left"
+															 FontSize="16"
+															 FontWeight="Bold" />
+										<TextBlock Text="{Binding SuccessCount, Mode=OneTime, FallbackValue=0}"
+															 FontSize="14"
+															 FontStyle="Oblique"
+															 HorizontalAlignment="Right" />
+									</StackPanel>
+									<StackPanel Orientation="Horizontal"
+															Spacing="112">
+										<TextBlock Text="Failure: "
+															 HorizontalAlignment="Left"
+															 FontSize="16"
+															 FontWeight="Bold" />
+										<TextBlock Text="{Binding FailureCount, Mode=OneTime, FallbackValue=0}"
+															 FontSize="14"
+															 FontStyle="Oblique"
+															 HorizontalAlignment="Right" />
+									</StackPanel>
+								</StackPanel>
+							</suki:GroupBox>
+						</StackPanel>
+					</suki:GlassCard>
+				</Grid>
+			</StackPanel>
+			<StackPanel>
+				<Grid>
+					<suki:GlassCard Width="400"
+													Margin="10"
+													CornerRadius="10">
+						<StackPanel>
+							<suki:GroupBox Header="Resizing">
+								<StackPanel>
+									<StackPanel Orientation="Horizontal"
+															Spacing="90">
+										<TextBlock Text="Last Used: "
+															 HorizontalAlignment="Left"
+															 FontSize="16"
+															 FontWeight="Bold" />
+										<TextBlock Text="{Binding LastUsed, Mode=OneTime, FallbackValue=Yesterday}"
+															 FontSize="14"
+															 FontStyle="Oblique"
+															 HorizontalAlignment="Right" />
+									</StackPanel>
+									<StackPanel Orientation="Horizontal"
+															Spacing="86">
+										<TextBlock Text="Converted: "
+															 HorizontalAlignment="Left"
+															 FontSize="16"
+															 FontWeight="Bold" />
+										<TextBlock Text="{Binding ConvertedCount, Mode=OneTime, FallbackValue=5000}"
+															 FontSize="14"
+															 FontStyle="Oblique"
+															 HorizontalAlignment="Right" />
+									</StackPanel>
+									<StackPanel Orientation="Horizontal"
+															Spacing="105">
+										<TextBlock Text="Success: "
+															 HorizontalAlignment="Left"
+															 FontSize="16"
+															 FontWeight="Bold" />
+										<TextBlock Text="{Binding SuccessCount, Mode=OneTime, FallbackValue=0}"
+															 FontSize="14"
+															 FontStyle="Oblique"
+															 HorizontalAlignment="Right" />
+									</StackPanel>
+									<StackPanel Orientation="Horizontal"
+															Spacing="112">
+										<TextBlock Text="Failure: "
+															 HorizontalAlignment="Left"
+															 FontSize="16"
+															 FontWeight="Bold" />
+										<TextBlock Text="{Binding FailureCount, Mode=OneTime, FallbackValue=0}"
+															 FontSize="14"
+															 FontStyle="Oblique"
+															 HorizontalAlignment="Right" />
+									</StackPanel>
+								
+								</StackPanel>
+							</suki:GroupBox>
+						</StackPanel>
+					</suki:GlassCard>
+
+				</Grid>
+				
+			</StackPanel>
+			<StackPanel>
+				<Grid>
+					<suki:GroupBox Header="Stats"
+												 Margin="10">
+						<suki:GlassCard Margin="10" CornerRadius="8">
+							
+									<lvc:CartesianChart Series="{Binding Series, Mode=OneTime, UpdateSourceTrigger=PropertyChanged}"
+																		 XAxes="{Binding XAxes}"
+																		 LegendPosition="Right"
+																		 Background="#101c35"
+																		 Width="600" 
+																		 Height="400"/>
+							
+				   </suki:GlassCard>
+				</suki:GroupBox>
+				
+				</Grid>
+				
+			</StackPanel>
+		</WrapPanel>
+	</ScrollViewer>
 </UserControl>

@@ -112,6 +112,8 @@ namespace ImageUtility
             services.AddSingleton<IImageConverter, PngConverter>();
             services.AddSingleton<IImageConverter, JpgConverter>();
             services.AddSingleton<IImageConverter, WebpConverter>();
+            services.AddSingleton<IJsonData, JsonDataProviderService>();
+            services.AddSingleton<IChartBuilder, StatsChartBuilderService>();
             services.AddSingleton<ConversionService>();
             services.AddSingleton<SukiColorTheme>();
             services.AddSingleton<IMessenger>(WeakReferenceMessenger.Default);

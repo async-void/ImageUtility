@@ -95,17 +95,19 @@ namespace ImageUtility.Features.Converting
             };
 
             IEnumerable<string> files = Directory.EnumerateFiles(SourceDir!, "*.*", options);
+            int fileCount = files.Count();
 
             foreach (string img in files)
             {
                 processedCount++;
+                int percent = processedCount * 100 / fileCount;
                 var imgBytes = await File.ReadAllBytesAsync(img);
                 await using var stream = new MemoryStream(imgBytes);
                 var fileName = Path.GetFileName(img);
                 var newFilePath = Path.Combine(DestinationDir!, Path.GetFileNameWithoutExtension(img));
                 var ext = $".{SelectedFileType.ToExtensionString()}";
                 var newFileName = $"{newFilePath}{ext}";
-                StatusMessage = $"Converting {processedCount} of {FileCount} files";
+                StatusMessage = $"Converting {percent}% complete.";
                 try
                 {
                     if (SelectedFileType == ImageType.AVIF)
@@ -142,7 +144,7 @@ namespace ImageUtility.Features.Converting
                     //using var _ = SukiMessageBox.ShowDialog(msgBox);
                     continue;
                 }
-}
+            }
 
             await Task.Delay(300);
             StatusMessage = "Conversion complete!";
