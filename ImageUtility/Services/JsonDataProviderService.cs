@@ -1,10 +1,13 @@
 ﻿using ImageUtility.Interfaces;
 using ImageUtility.Models;
+using SkiaSharp;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
@@ -30,10 +33,34 @@ namespace ImageUtility.Services
                 history = new UserStatsHistory();
             }
 
-            var existing = history.Days.FirstOrDefault(d => d.Date.Date == newStats.Date.Date);
+            history.Days ??= new List<Day>();
+
+            var existing = history.Days.FirstOrDefault(d => d != null && d.Date.Date == newStats.Date.Date);
             if (existing != null)
             {
-                existing.Stats = newStats.Stats;
+                existing.Stats ??= new UserStats();
+
+                if (newStats.Stats?.Renamer != null)
+                {
+                    existing.Stats.Renamer ??= new RenamerStats();
+                    existing.Stats.Renamer.Total += newStats.Stats.Renamer.Total;
+                    existing.Stats.Renamer.Success += newStats.Stats.Renamer.Success;
+                }
+
+                if (newStats.Stats?.Resizer != null)
+                {
+                    existing.Stats.Resizer ??= new ResizerStats();
+                    existing.Stats.Resizer.Total += newStats.Stats.Resizer.Total;
+                    existing.Stats.Resizer.Success += newStats.Stats.Resizer.Success;
+                }
+
+                if (newStats.Stats?.Converter != null)
+                {
+                    existing.Stats.Converter ??= new ConverterStats();
+                    existing.Stats.Converter.Total += newStats.Stats.Converter.Total;
+                    existing.Stats.Converter.Success += newStats.Stats.Converter.Success;
+                }
+
             }
             else
             {
@@ -42,16 +69,15 @@ namespace ImageUtility.Services
 
             try
             {
-                await using var stream = File.Create(_path);
-                await JsonSerializer.SerializeAsync(stream, history, _jsonOptions);
-                await stream.FlushAsync();
+                await File.WriteAllTextAsync(_path, JsonSerializer.Serialize(history, _jsonOptions));
                 return Result<bool, string>.Ok(true);
             }
             catch (Exception ex)
             {
                 return Result<bool, string>.Err($"unable to create or update json file.\r\n{ex.Message}");
             }
-           
+
+
         }
 
         public async Task<Result<UserStatsHistory, string>> LoadStatsAsync()

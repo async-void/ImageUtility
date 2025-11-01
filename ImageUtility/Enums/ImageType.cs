@@ -8,9 +8,9 @@ namespace ImageUtility.Enums
 {
     public enum ImageType
     {
-        PNG,
+        AVIF,
         JPEG,
+        PNG,
         WEBP,
-        AVIF
     }
 }

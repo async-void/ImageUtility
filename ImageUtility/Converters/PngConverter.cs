@@ -43,7 +43,7 @@ namespace ImageUtility.Converters
             catch (Exception ex)
             {
                 output.Dispose();
-                return Result<Stream, string>.Err($"Failed to convert image to JPG format\r\n{ex.Message}");
+                return Result<Stream, string>.Err($"Failed to convert image to PNG format\r\n{ex.Message}");
             }
 
         }

@@ -33,9 +33,9 @@ namespace ImageUtility.Services
                 var options = new ParallelOptions { MaxDegreeOfParallelism = 5, CancellationToken = cts.Token };
                 await Parallel.ForEachAsync(sourcePaths, options, async (sourcePath, token) =>
                 {
-                    string destinationPath = GetNewNameWithPattern(sourcePath, destinationDir, p);
-                    await CopyOrMoveAsync(sourcePath, destinationPath, copyFiles, token);
                     int current = Interlocked.Increment(ref completed);
+                    string destinationPath = GetNewNameWithPattern(sourcePath, destinationDir, p, current);
+                    await CopyOrMoveAsync(sourcePath, destinationPath, copyFiles, token); 
                     int percent = current * 100 / fileCount;
                     int prev;
                     do
@@ -93,11 +93,11 @@ namespace ImageUtility.Services
             return Path.Combine(destDir, $"{fileName}{ext}");
         }
 
-        private static string GetNewNameWithPattern(string sourcePath, string destDir, string pattern)
+        private static string GetNewNameWithPattern(string sourcePath, string destDir, string pattern, int increment)
         {
             var fileName = Path.GetFileNameWithoutExtension(sourcePath);
             var ext = Path.GetExtension(sourcePath);
-            return Path.Combine(destDir, $"{fileName}_{pattern}{ext}");
+            return Path.Combine(destDir, $"{pattern}_{increment}{ext}");
         }
 
         private static string GetNewNameWithRenameStrings(string sourcePath, string destinationPath, string renameString)

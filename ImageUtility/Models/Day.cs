@@ -14,6 +14,6 @@ namespace ImageUtility.Models
         public DateTime Date { get; set; }
 
         [JsonPropertyName("Stats")]
-        public UserStats Stats { get; set; } = new();
+        public UserStats? Stats { get; set; }
     }
 }

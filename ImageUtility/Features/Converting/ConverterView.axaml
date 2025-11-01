@@ -186,7 +186,7 @@
                                               VerticalAlignment="Top"
                                               FontSize="12"
                                               FontWeight="Thin"
-                                              Text="Select the file type for the conversion." />
+                                              Text="Select the file type you want to convert to." />
                                       </StackPanel>
                                   </Grid>
                                   <Grid Margin="0,2,0,20">

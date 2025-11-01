@@ -10,7 +10,7 @@
 						 x:DataType="vm:DashboardViewModel">
 
 	<ScrollViewer>
-		<WrapPanel Orientation="Horizontal">
+		<WrapPanel Orientation="Horizontal" Margin="10">
 				<StackPanel>
 					<Grid>
 						<suki:GlassCard Width="300"
@@ -19,52 +19,58 @@
 							<StackPanel>
 								<suki:GroupBox Header="Conversions">
 									<StackPanel>
-										<StackPanel Orientation="Horizontal"
-																Spacing="90">
-											<TextBlock Text="Last Used: "
+										<Grid ColumnDefinitions="150, 150">
+											<TextBlock Grid.Column="0"
+												         Text="Last Used: "
 																 HorizontalAlignment="Left"
 																 FontSize="16"
 																 FontWeight="Bold" />
-											<TextBlock Text="{Binding LastUsed, Mode=OneTime, FallbackValue=Yesterday}"
+											<TextBlock Grid.Column="1"
+												         Text="{Binding LastUsed, Mode=OneTime, FallbackValue=Yesterday}"
 																 FontSize="14"
 																 FontStyle="Oblique"
-																 HorizontalAlignment="Right" />
-										</StackPanel>
-										<StackPanel Orientation="Horizontal"
-																Spacing="86">
-											<TextBlock Text="Converted: "
+																 HorizontalAlignment="Left" 
+																 Margin="20 0 0 0" />
+										</Grid>
+										<Grid ColumnDefinitions="150, 150">
+											<TextBlock Grid.Column="0"
+												         Text="Converted: "
 																 HorizontalAlignment="Left"
 																 FontSize="16"
 																 FontWeight="Bold" />
-											<TextBlock Text="{Binding ConvertedCount, Mode=OneTime, FallbackValue=5000}"
+											<TextBlock Grid.Column="1"
+												         Text="{Binding ConvertedCount, Mode=OneTime, FallbackValue=5000}"
 																 FontSize="14"
 																 FontStyle="Normal"
-																 HorizontalAlignment="Right" />
-										</StackPanel>
-										<StackPanel Orientation="Horizontal"
-																Spacing="105">
-											<TextBlock Text="Success: "
+																 HorizontalAlignment="Left" 
+																 Margin="20 0 0 0" />
+										</Grid>
+										<Grid ColumnDefinitions="150, 150">
+											<TextBlock Grid.Column="0"
+																 Text="Success: "
 																 HorizontalAlignment="Left"
 																 FontSize="16"
 																 FontWeight="Bold" />
-											<TextBlock Text="{Binding SuccessCount, Mode=OneTime, FallbackValue=0}"
+											<TextBlock Grid.Column="1"
+																 Text="{Binding ResizerSuccessCount, Mode=OneTime, FallbackValue=0}"
 																 FontSize="14"
 																 FontStyle="Normal"
-																 HorizontalAlignment="Right" />
-										</StackPanel>
-										<StackPanel Orientation="Horizontal"
-																Spacing="112">
-											<TextBlock Text="Failure: "
+																 HorizontalAlignment="Left"
+																 Margin="20 0 0 0" />
+										</Grid>
+										<Grid ColumnDefinitions="150, 150">
+											<TextBlock Grid.Column="0"
+																 Text="Failure: "
 																 HorizontalAlignment="Left"
 																 FontSize="16"
 																 FontWeight="Bold" />
-											<TextBlock Text="{Binding FailureCount, Mode=OneTime, FallbackValue=0}"
+											<TextBlock Grid.Column="1"
+																 Text="{Binding FailureCount, Mode=OneTime, FallbackValue=0}"
 																 FontSize="14"
 																 FontStyle="Normal"
-																 HorizontalAlignment="Right" />
-										</StackPanel>
-									
-										
+																 HorizontalAlignment="Left"
+																 Margin="20 0 0 0" />
+										</Grid>
 									</StackPanel>
 									
 								</suki:GroupBox>
@@ -80,50 +86,54 @@
 						<StackPanel>
 							<suki:GroupBox Header="Renaming">
 								<StackPanel>
-									<StackPanel Orientation="Horizontal"
-															Spacing="90">
-										<TextBlock Text="Last Used: "
+									<Grid ColumnDefinitions="150, 150">
+										<TextBlock Grid.Column="0"
+															 Text="Last Used: "
 															 HorizontalAlignment="Left"
 															 FontSize="16"
 															 FontWeight="Bold" />
-										<TextBlock Text="{Binding LastUsed, Mode=OneTime, FallbackValue=Yesterday}"
+										<TextBlock Grid.Column="1"
+											         Text="{Binding LastUsed, Mode=OneTime, FallbackValue=Yesterday}"
 															 FontSize="14"
 															 FontStyle="Oblique"
-															 HorizontalAlignment="Right" />
-									</StackPanel>
-									<StackPanel Orientation="Horizontal"
-															Spacing="86">
-										<TextBlock Text="Converted: "
+															 HorizontalAlignment="Left" />
+									</Grid>
+									<Grid ColumnDefinitions="150, 150">
+										<TextBlock Grid.Column="0"
+											         Text="Renamed: "
 															 HorizontalAlignment="Left"
 															 FontSize="16"
 															 FontWeight="Bold" />
-										<TextBlock Text="{Binding ConvertedCount, Mode=OneTime, FallbackValue=5000}"
+										<TextBlock Grid.Column="1"
+											         Text="{Binding RenamerCount, Mode=OneTime, FallbackValue=5000}"
 															 FontSize="14"
 															 FontStyle="Oblique"
-															 HorizontalAlignment="Right" />
-									</StackPanel>
-									<StackPanel Orientation="Horizontal"
-															Spacing="105">
-										<TextBlock Text="Success: "
+															 HorizontalAlignment="Left" />
+									</Grid>
+									<Grid ColumnDefinitions="150, 150">
+										<TextBlock Grid.Column="0"
+											         Text="Success: "
 															 HorizontalAlignment="Left"
 															 FontSize="16"
 															 FontWeight="Bold" />
-										<TextBlock Text="{Binding SuccessCount, Mode=OneTime, FallbackValue=0}"
+										<TextBlock Grid.Column="1"
+											         Text="{Binding RenamerSuccessCount, Mode=OneTime, FallbackValue=0}"
 															 FontSize="14"
 															 FontStyle="Oblique"
-															 HorizontalAlignment="Right" />
-									</StackPanel>
-									<StackPanel Orientation="Horizontal"
-															Spacing="112">
-										<TextBlock Text="Failure: "
+															 HorizontalAlignment="Left" />
+									</Grid>
+									<Grid ColumnDefinitions="150, 150">
+										<TextBlock Grid.Column="0"
+											         Text="Failure: "
 															 HorizontalAlignment="Left"
 															 FontSize="16"
 															 FontWeight="Bold" />
-										<TextBlock Text="{Binding FailureCount, Mode=OneTime, FallbackValue=0}"
+										<TextBlock Grid.Column="1"
+											         Text="{Binding FailureCount, Mode=OneTime, FallbackValue=0}"
 															 FontSize="14"
 															 FontStyle="Oblique"
-															 HorizontalAlignment="Right" />
-									</StackPanel>
+															 HorizontalAlignment="Left" />
+									</Grid>
 								</StackPanel>
 							</suki:GroupBox>
 						</StackPanel>
@@ -132,56 +142,60 @@
 			</StackPanel>
 			<StackPanel>
 				<Grid>
-					<suki:GlassCard Width="400"
+					<suki:GlassCard Width="300"
 													Margin="10"
 													CornerRadius="10">
 						<StackPanel>
 							<suki:GroupBox Header="Resizing">
 								<StackPanel>
-									<StackPanel Orientation="Horizontal"
-															Spacing="90">
-										<TextBlock Text="Last Used: "
+									<Grid ColumnDefinitions="150, 150">
+										<TextBlock Grid.Column="0"
+											         Text="Last Used: "
 															 HorizontalAlignment="Left"
 															 FontSize="16"
 															 FontWeight="Bold" />
-										<TextBlock Text="{Binding LastUsed, Mode=OneTime, FallbackValue=Yesterday}"
+										<TextBlock Grid.Column="1"
+											         Text="{Binding LastUsed, Mode=OneTime, FallbackValue=Yesterday}"
 															 FontSize="14"
 															 FontStyle="Oblique"
-															 HorizontalAlignment="Right" />
-									</StackPanel>
-									<StackPanel Orientation="Horizontal"
-															Spacing="86">
-										<TextBlock Text="Converted: "
+															 HorizontalAlignment="Left" />
+									</Grid>
+									<Grid ColumnDefinitions="150, 150">
+										<TextBlock Grid.Column="0"
+											         Text="Resized: "
 															 HorizontalAlignment="Left"
 															 FontSize="16"
 															 FontWeight="Bold" />
-										<TextBlock Text="{Binding ConvertedCount, Mode=OneTime, FallbackValue=5000}"
+										<TextBlock Grid.Column="1"
+											         Text="{Binding ResizerCount, Mode=OneTime, FallbackValue=5000}"
 															 FontSize="14"
 															 FontStyle="Oblique"
-															 HorizontalAlignment="Right" />
-									</StackPanel>
-									<StackPanel Orientation="Horizontal"
-															Spacing="105">
-										<TextBlock Text="Success: "
+															 HorizontalAlignment="Left" />
+									</Grid>
+									<Grid ColumnDefinitions="150, 150">
+										<TextBlock Grid.Column="0"
+											         Text="Success: "
 															 HorizontalAlignment="Left"
 															 FontSize="16"
 															 FontWeight="Bold" />
-										<TextBlock Text="{Binding SuccessCount, Mode=OneTime, FallbackValue=0}"
+										<TextBlock Grid.Column="1"
+											         Text="{Binding ResizerSuccessCount, Mode=OneTime, FallbackValue=0}"
 															 FontSize="14"
 															 FontStyle="Oblique"
-															 HorizontalAlignment="Right" />
-									</StackPanel>
-									<StackPanel Orientation="Horizontal"
-															Spacing="112">
-										<TextBlock Text="Failure: "
+															 HorizontalAlignment="Left" />
+									</Grid>
+									<Grid ColumnDefinitions="150, 150">
+										<TextBlock Grid.Column="0"
+											         Text="Failure: "
 															 HorizontalAlignment="Left"
 															 FontSize="16"
 															 FontWeight="Bold" />
-										<TextBlock Text="{Binding FailureCount, Mode=OneTime, FallbackValue=0}"
+										<TextBlock Grid.Column="1"
+											         Text="{Binding FailureCount, Mode=OneTime, FallbackValue=0}"
 															 FontSize="14"
 															 FontStyle="Oblique"
-															 HorizontalAlignment="Right" />
-									</StackPanel>
+															 HorizontalAlignment="Left" />
+									</Grid>
 								
 								</StackPanel>
 							</suki:GroupBox>
@@ -193,15 +207,14 @@
 			</StackPanel>
 			<StackPanel>
 				<Grid>
-					<suki:GroupBox Header="Stats"
-												 Margin="10">
-						<suki:GlassCard Margin="10" CornerRadius="8">
+					<suki:GroupBox Header="Stats" Margin="10">
+						<suki:GlassCard CornerRadius="8">
 							
 									<lvc:CartesianChart Series="{Binding Series, Mode=OneTime, UpdateSourceTrigger=PropertyChanged}"
 																		 XAxes="{Binding XAxes}"
 																		 LegendPosition="Right"
 																		 Background="#101c35"
-																		 Width="600" 
+																		 Width="960" 
 																		 Height="400"/>
 							
 				   </suki:GlassCard>

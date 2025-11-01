@@ -91,7 +91,7 @@ namespace ImageUtility.Features.Renamer
             StatusMessage = "Renaming Files... Please Wait";
             IsLoading = true;
             IEnumerable<string> files = [.. Directory.EnumerateFiles(SourceDir!)];
-            var isOk = false;
+
             var result = await _renameService.RenameFilesAsync([.. files], DestinationDir!, CopyFiles, Pattern, filesList);
             var message = result.Match(
                     ok => $"SUCCESS: {ok}",
@@ -100,7 +100,7 @@ namespace ImageUtility.Features.Renamer
 
             var userStat = new Day()
             {
-                Date = DateTime.Now.AddDays(1),
+                Date = DateTime.Now,
                 Stats = new UserStats()
                 {
                     Renamer = new RenamerStats()
@@ -116,7 +116,7 @@ namespace ImageUtility.Features.Renamer
 
             IsLoading = false;
 
-            if ( OpenOnComplete && isOk)
+            if ( OpenOnComplete && result.IsOk)
             {
                 try
                 {

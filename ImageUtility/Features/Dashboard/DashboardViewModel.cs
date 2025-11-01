@@ -10,6 +10,8 @@ using Material.Icons;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using System;
+using Humanizer;
 
 namespace ImageUtility.Features.Dashboard
 {
@@ -25,7 +27,15 @@ namespace ImageUtility.Features.Dashboard
         [ObservableProperty]
         private int? _convertedCount;
         [ObservableProperty]
-        private int? _successCount;
+        private int? _renamerCount;
+        [ObservableProperty]
+        private int? _resizerCount;
+        [ObservableProperty]
+        private int? _convertedSuccessCount;
+        [ObservableProperty]
+        private int? _renamerSuccessCount;
+        [ObservableProperty]
+        private int? _resizerSuccessCount;
         [ObservableProperty]
         private int? _failureCount;
 
@@ -49,33 +59,40 @@ namespace ImageUtility.Features.Dashboard
         {
             var result = await _jsonDataProviderService.LoadStatsAsync();
 
-            var dates = result.Value.Days.Select(d => d.Date).ToArray();
+            if (result.Value is null) return;
+            var dates = result.Value.Days?.Select(d => d.Date).ToArray();
+            
+            LastUsed = dates?.Last().Humanize() ?? DateTime.Now.Humanize();
           
-            var conversions = result.Value.Days.Select(x => x.Stats.Converter).ToList() ;
-            var renamers = result.Value.Days.Select(x => x.Stats.Renamer).ToList();
-            var resizers = result.Value.Days.Select(x => x.Stats.Resizer).ToList();
+            var conversions = result.Value.Days?.Select(x => x.Stats?.Converter).ToList() ;
+            var renamers = result.Value.Days?.Select(x => x.Stats?.Renamer).ToList();
+            var resizers = result.Value.Days?.Select(x => x.Stats?.Resizer).ToList();
 
-            ConvertedCount = conversions?.Where(x => x != null).Sum(x => x.Total) ?? 0;
-
-            SuccessCount = conversions?.Where(x => x != null).Sum(x => x.Success) ?? 0;
-            FailureCount = conversions?.Where(x => x != null).Sum(x => x.Fail) ?? 0;
+            ConvertedCount = conversions?.Where(x => x != null).Sum(x => x?.Total) ?? 0;
+            RenamerCount = renamers?.Where(x => x != null).Sum(x => x?.Total) ?? 0;
+            ResizerCount = resizers?.Where(x => x != null).Sum(x => x?.Total) ?? 0;
+            ConvertedSuccessCount = conversions?.Where(x => x != null).Sum(x => x?.Success) ?? 0;
+            ResizerSuccessCount = resizers?.Where(x => x != null).Sum(x => x?.Success) ?? 0;
+            RenamerSuccessCount = renamers?.Where(x => x != null).Sum(x => x?.Success) ?? 0;
+            
+            FailureCount = conversions?.Where(x => x != null).Sum(x => x?.Fail) ?? 0;
 
             Series =
             [
                 new LineSeries<ObservableValue>
                 {
-                    Values = conversions?.Where(x => x != null).Select(x => new ObservableValue(x.Total)).ToList(),
+                    Values = conversions?.Where(x => x != null).Select(x => new ObservableValue(x?.Total)).ToList(),
                     Name = "Conversions",
 
                 },
                 new LineSeries<ObservableValue>
                 {
-                    Values = renamers?.Where(x => x != null).Select(x => new ObservableValue(x.Total)).ToList(),
-                    Name = "Renamering"
+                    Values = renamers?.Where(x => x != null).Select(x => new ObservableValue(x?.Total)).ToList(),
+                    Name = "Renaming"
                 },
                 new LineSeries<ObservableValue>
                 {
-                    Values = resizers.Where(x => x != null).Select(x => new ObservableValue(x.Total)).ToList(),
+                    Values = resizers?.Where(x => x != null).Select(x => new ObservableValue(x?.Total)).ToList(),
                     Name = "Resizing"
                 },
             ];
@@ -84,9 +101,9 @@ namespace ImageUtility.Features.Dashboard
             [
                 new Axis
                 {
-                    Labels = dates.Select(d => d.ToString("MM-dd")).ToArray(),
-                    Name = "Dates",
-                    LabelsRotation = 0
+                    Labels = dates?.Select(d => d.ToString("MM-dd")).ToArray(),
+                    Name = "Date",
+                    LabelsRotation = 33
                 }
             ];
 

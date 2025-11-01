@@ -9,6 +9,8 @@ namespace ImageUtility.Models
 {
     public class RenamerStats
     {
+        [JsonIgnore]
+        public string Name { get; set; } = string.Empty;
         [JsonPropertyName("Total")]
         public int Total { get; set; }
 

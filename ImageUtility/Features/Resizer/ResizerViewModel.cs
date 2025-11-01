@@ -7,10 +7,13 @@ using CommunityToolkit.Mvvm.Messaging;
 using ImageUtility.Common;
 using ImageUtility.Enums;
 using ImageUtility.Interfaces;
+using ImageUtility.Models;
 using ImageUtility.ViewModels;
 using ImageUtility.Views;
 using Material.Icons;
+using SukiUI.Controls;
 using SukiUI.Dialogs;
+using SukiUI.MessageBox;
 using SukiUI.Toasts;
 using System;
 using System.Collections.Generic;
@@ -31,6 +34,7 @@ namespace ImageUtility.Features.Resizer
         private readonly ISukiToastManager _toastManager;
         private readonly ISukiDialogManager _dialogManager;
         private readonly IMessenger _messenger;
+        private readonly IJsonData _dataService;
 
         [ObservableProperty]
         [NotifyCanExecuteChangedFor(nameof(ResizeCommand))]
@@ -65,9 +69,10 @@ namespace ImageUtility.Features.Resizer
         private string? _selectedFileType;
 
         public ObservableCollection<string> ResizeModes { get; } = ["Stretch", "Crop", "Fill", "Pad", "Max", "Min"];
-        public ObservableCollection<string> FileTypes { get; } = ["All", "PNG", "JPG", "JPEG", "BMP", "GIF", "TIFF"];
+        public ObservableCollection<string> FileTypes { get; } = ["All", "PNG", "JPG", "JPEG", "BMP", "GIF", "TIFF", "WEBP"];
 
-        public ResizerViewModel(MainWindow mWindow, ISukiToastManager toastManager, ISukiDialogManager dialogManager, IResizer resizerService, IMessenger messenger) : base("Resizer", MaterialIconKind.Resize, 3)
+        public ResizerViewModel(MainWindow mWindow, ISukiToastManager toastManager, ISukiDialogManager dialogManager,
+            IResizer resizerService, IMessenger messenger, IJsonData dataService) : base("Resizer", MaterialIconKind.Resize, 3)
         {
             _mWindow = mWindow;
             _resizerService = resizerService;
@@ -76,11 +81,14 @@ namespace ImageUtility.Features.Resizer
             _messenger = messenger;
             _messenger.Register(this);
             CopyFiles = true;
+            _dataService = dataService;
         }
 
         [RelayCommand]
         private async Task SetDestinationDirectory()
         {
+            IsBusy = true;
+            StatusMessage = "Setting Destination Directory...";
             var topLevel = TopLevel.GetTopLevel(_mWindow);
             var startLoc = await topLevel!.StorageProvider.TryGetWellKnownFolderAsync(WellKnownFolder.Documents);
             var options = new FolderPickerOpenOptions
@@ -93,9 +101,13 @@ namespace ImageUtility.Features.Resizer
             if (result is { Count: > 0 })
             {
                 DestinationDir = result[0].Path.LocalPath;
+                IsBusy = false;
+                StatusMessage = string.Empty;
             }
             else
             {
+                IsBusy = false;
+                StatusMessage = string.Empty;
                 _toastManager.CreateToast()
                     .WithTitle("Warning")
                     .WithContent("Destination Directory not selected")
@@ -144,11 +156,29 @@ namespace ImageUtility.Features.Resizer
         private async Task Resize()
         {
             IsBusy = true;
-            StatusMessage = "Resizing images...";
+            StatusMessage = "Resizing images... this may take a moment";
            
             var options = new EnumerationOptions { RecurseSubdirectories = false };
             IEnumerable<string> files = [.. Directory.EnumerateFiles(SourceDir!, "*", options)];
-            
+
+            bool hasAvif = files.Any(f =>
+                    string.Equals(Path.GetExtension(f), ".avif", StringComparison.OrdinalIgnoreCase));
+
+            if (hasAvif)
+            {
+                var msgBox = new SukiMessageBoxHost
+                {
+                    ActionButtonsPreset = SukiMessageBoxButtons.OK,
+                    IconPreset = SukiMessageBoxIcons.Error,
+                    Header = "Unsupported File Type",
+                    Content = "avif file types are not supported.\r\nto resize avif files you need to:\r\n1. convert all avif to png\r\n2. resize\r\n3. convert back to avif"
+                };
+                await SukiMessageBox.ShowDialog(msgBox);
+                IsBusy = false;
+                StatusMessage = string.Empty;
+                return;
+            }
+
             var result = await _resizerService.ResizeImagesAsync(files, DestinationDir!, Width, Height, SelectedResizeMode!, MaintainAspectRatio, CopyFiles);
 
             IsBusy = false;
@@ -158,9 +188,25 @@ namespace ImageUtility.Features.Resizer
                     ok => $"SUCCESS: {ok}",
                     err => $"FAILURE: {err}"
                 );
+
+            var userStat = new Day()
+            {
+                Date = DateTime.Now,
+                Stats = new UserStats()
+                {
+                    Resizer = new ResizerStats()
+                    {
+                        Total = files.Count(),
+                        Success = files.Count(),
+                        Fail = 0
+                    }
+                }
+            };
+            await _dataService.InsertDailyStatsAsync(userStat);
+
             var notificationType = result.IsOk ? NotificationType.Success : NotificationType.Error;
 
-            if (OpenOnCompletion)
+            if (OpenOnCompletion && result.IsOk)
             {
                 Process p = new Process();
                 p.StartInfo = new ProcessStartInfo()
@@ -171,12 +217,16 @@ namespace ImageUtility.Features.Resizer
                 };
                 p.Start();
             }
-           
-            _toastManager.CreateToast()
-                         .WithTitle($"{message}")
-                         .OfType(notificationType)
-                         .Dismiss().After(TimeSpan.FromSeconds(5))
-                         .Queue();
+            else
+            {
+                StatusMessage = string.Empty;
+            }
+
+                _toastManager.CreateToast()
+                             .WithTitle($"{message}")
+                             .OfType(notificationType)
+                             .Dismiss().After(TimeSpan.FromSeconds(5))
+                             .Queue();
         }
 
         [RelayCommand(CanExecute = nameof(CanClear))]

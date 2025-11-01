@@ -24,6 +24,7 @@ using ImageUtility.Views;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
+using SixLabors.ImageSharp;
 using SukiUI.Controls;
 using SukiUI.Dialogs;
 using SukiUI.Models;
