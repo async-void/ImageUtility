@@ -13,6 +13,6 @@ namespace ImageUtility.Interfaces
         int ConvertToAvif(string ffmpegPath, string inputPath, string outputPath, int crf = 30, int cpuUsed = 4);
         int ConvertToPng(string ffmpegPath, string input, string output);
         int ConvertToJpg(string ffmpegPath, string input, string output);
-        int ConvertToWebp(string ffmpegPath, string input, string output);
+        int ConvertToWebp(string ffmpegPath, string input, string output, int quality = 80);
     }
 }

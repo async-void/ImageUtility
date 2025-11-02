@@ -17,8 +17,8 @@ namespace ImageUtility.Features.Dashboard
 {
     public partial class DashboardViewModel : ViewModelBase
     {
-        private readonly IJsonData _jsonDataProviderService;
-        private readonly IChartBuilder _statsChartBuilderService;
+        private readonly IJsonData? _jsonDataProviderService;
+        private readonly IChartBuilder? _statsChartBuilderService;
 
         [ObservableProperty]
         private string? _lastUsed;
@@ -57,7 +57,7 @@ namespace ImageUtility.Features.Dashboard
 
         private async Task LoadStats()
         {
-            var result = await _jsonDataProviderService.LoadStatsAsync();
+            var result = await _jsonDataProviderService!.LoadStatsAsync();
 
             if (result.Value is null) return;
             var dates = result.Value.Days?.Select(d => d.Date).ToArray();

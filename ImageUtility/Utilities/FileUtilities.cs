@@ -116,12 +116,12 @@ namespace ImageUtility.Utilities
             return proc.ExitCode;
         }
 
-        public int ConvertToWebp(string ffmpegPath, string input, string output)
+        public int ConvertToWebp(string ffmpegPath, string input, string output, int quality = 80)
         {
             var args = new StringBuilder();
             args.Append("-y "); 
             args.Append($"-i \"{input}\" "); 
-            args.Append("-qscale 80 "); 
+            args.Append($"-qscale \"{quality}\" "); 
             args.Append($"\"{output}\""); 
 
             var psi = new ProcessStartInfo

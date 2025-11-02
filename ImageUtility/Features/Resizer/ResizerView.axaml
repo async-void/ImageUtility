@@ -102,28 +102,6 @@
 											</StackPanel>
 										</Grid>
 										<Grid>
-											<ComboBox HorizontalAlignment="Right"
-																VerticalAlignment="Center"
-																Width="200"
-																ItemsSource="{Binding FileTypes}"
-																SelectedItem="{Binding SelectedFileType, UpdateSourceTrigger=PropertyChanged}"
-																Margin="10 0 0 0"
-																ToolTip.Placement="Right"
-																ToolTip.Tip="File Types"/>
-											<StackPanel>
-												<TextBlock HorizontalAlignment="Left"
-																	 VerticalAlignment="Top"
-																	 FontWeight="DemiBold"
-																	 Text="File Types" />
-												<TextBlock HorizontalAlignment="Left"
-																	 VerticalAlignment="Top"
-																	 FontWeight="Thin"
-																	 FontSize="12"
-																	 Text="Select the file type. default [ALL]" />
-											</StackPanel>
-										</Grid>
-										
-										<Grid>
 											<NumericUpDown suki:NumericUpDownExtensions.Unit="{icon:MaterialIconExt Kind=NumericOneCircle}"
 																		 HorizontalAlignment="Right"
 																		 VerticalAlignment="Center"

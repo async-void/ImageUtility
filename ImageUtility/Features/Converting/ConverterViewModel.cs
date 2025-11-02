@@ -104,6 +104,7 @@ namespace ImageUtility.Features.Converting
             IEnumerable<string> files = Directory.EnumerateFiles(SourceDir!, "*.*", options);
             int fileCount = files.Count();
             var ffmpegPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "FFMPEG", "ffmpeg", "bin", "ffmpeg.exe");
+          
             foreach (string img in files)
             {
                 processedCount++;
@@ -113,6 +114,7 @@ namespace ImageUtility.Features.Converting
                 var ext = $".{SelectedFileType.ToExtensionString()}";
                 var newFileName = $"{newFilePath}{ext}";
                 StatusMessage = $"Converting {percent}% complete.";
+                await Task.Delay(100);
                 try
                 { 
                     switch (SelectedFileType)
@@ -128,13 +130,13 @@ namespace ImageUtility.Features.Converting
                             isOk = true;
                             break;
                         case ImageType.JPEG:
-                            IsQualityEnabled = false;
+                            IsQualityEnabled = true;
                             _fileUtilities.ConvertToJpg(ffmpegPath, img, newFileName);
                             isOk = true;
                             break;
                         case ImageType.WEBP:
-                            IsQualityEnabled = false;
-                            _fileUtilities.ConvertToWebp(ffmpegPath, img, newFileName);
+                            IsQualityEnabled = true;
+                            _fileUtilities.ConvertToWebp(ffmpegPath, img, newFileName, Quality);
                             isOk = true;
                             break;
                         default:
@@ -142,6 +144,7 @@ namespace ImageUtility.Features.Converting
                             isOk = false;
                             break;
                     }
+
                    
                  }
                 catch(Exception ex) 

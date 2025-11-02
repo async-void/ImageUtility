@@ -65,12 +65,8 @@ namespace ImageUtility.Features.Resizer
         [ObservableProperty]
         [NotifyCanExecuteChangedFor(nameof(ResizeCommand))]
         private string? _selectedResizeMode;
-        [ObservableProperty]
-        private string? _selectedFileType;
-
         public ObservableCollection<string> ResizeModes { get; } = ["Stretch", "Crop", "Fill", "Pad", "Max", "Min"];
-        public ObservableCollection<string> FileTypes { get; } = ["All", "PNG", "JPG", "JPEG", "BMP", "GIF", "TIFF", "WEBP"];
-
+     
         public ResizerViewModel(MainWindow mWindow, ISukiToastManager toastManager, ISukiDialogManager dialogManager,
             IResizer resizerService, IMessenger messenger, IJsonData dataService) : base("Resizer", MaterialIconKind.Resize, 3)
         {

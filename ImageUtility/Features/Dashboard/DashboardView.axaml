@@ -6,215 +6,236 @@
 						 xmlns:suki="https://github.com/kikipoulet/SukiUI"
 						 xmlns:lvc="using:LiveChartsCore.SkiaSharpView.Avalonia"
 						 xmlns:vm="using:ImageUtility.Features.Dashboard"
+						 xmlns:icon="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
              mc:Ignorable="d"
 						 x:DataType="vm:DashboardViewModel">
 
 	<ScrollViewer>
 		<WrapPanel Orientation="Horizontal" Margin="10">
+			<!--CONVERSIONS-->
 				<StackPanel>
 					<Grid>
-						<suki:GlassCard Width="300"
-														Margin="10"
+						<suki:GlassCard Width="340"
+														Margin="15"
+														Classes="Card"
 														CornerRadius="10">
 							<StackPanel>
-								<suki:GroupBox Header="Conversions">
-									<StackPanel>
-										<Grid ColumnDefinitions="150, 150">
-											<TextBlock Grid.Column="0"
-												         Text="Last Used: "
-																 HorizontalAlignment="Left"
-																 FontSize="16"
-																 FontWeight="Bold" />
-											<TextBlock Grid.Column="1"
-												         Text="{Binding LastUsed, Mode=OneTime, FallbackValue=Yesterday}"
-																 FontSize="14"
-																 FontStyle="Oblique"
-																 HorizontalAlignment="Left" 
-																 Margin="20 0 0 0" />
-										</Grid>
-										<Grid ColumnDefinitions="150, 150">
-											<TextBlock Grid.Column="0"
-												         Text="Converted: "
-																 HorizontalAlignment="Left"
-																 FontSize="16"
-																 FontWeight="Bold" />
-											<TextBlock Grid.Column="1"
-												         Text="{Binding ConvertedCount, Mode=OneTime, FallbackValue=5000}"
-																 FontSize="14"
-																 FontStyle="Normal"
-																 HorizontalAlignment="Left" 
-																 Margin="20 0 0 0" />
-										</Grid>
-										<Grid ColumnDefinitions="150, 150">
-											<TextBlock Grid.Column="0"
-																 Text="Success: "
-																 HorizontalAlignment="Left"
-																 FontSize="16"
-																 FontWeight="Bold" />
-											<TextBlock Grid.Column="1"
-																 Text="{Binding ResizerSuccessCount, Mode=OneTime, FallbackValue=0}"
-																 FontSize="14"
-																 FontStyle="Normal"
-																 HorizontalAlignment="Left"
-																 Margin="20 0 0 0" />
-										</Grid>
-										<Grid ColumnDefinitions="150, 150">
-											<TextBlock Grid.Column="0"
-																 Text="Failure: "
-																 HorizontalAlignment="Left"
-																 FontSize="16"
-																 FontWeight="Bold" />
-											<TextBlock Grid.Column="1"
-																 Text="{Binding FailureCount, Mode=OneTime, FallbackValue=0}"
-																 FontSize="14"
-																 FontStyle="Normal"
-																 HorizontalAlignment="Left"
-																 Margin="20 0 0 0" />
-										</Grid>
+								<TextBlock Text="Converting"
+													 FontSize="16"
+													 FontWeight="DemiBold"
+													 HorizontalAlignment="Left"/>
+								<Grid Margin="0, 18, 0, 0">
+									<TextBlock HorizontalAlignment="Left"
+                                       FontSize="12"
+                                       FontWeight="DemiBold"
+                                       Foreground="{DynamicResource SukiLowText}"
+                                       Text="Total" />
+									<StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+										<TextBlock FontSize="13"
+															 Foreground="Green"
+															 Text="{Binding ConvertedCount, Mode=OneTime, FallbackValue=5000}" />
+										<icon:MaterialIcon Margin="5,0,0,0"
+																			 Foreground="Green"
+																			 Kind="ArrowUp" />
 									</StackPanel>
-									
-								</suki:GroupBox>
+								</Grid>
+								<ProgressBar Margin="0,1,0,0" 
+														 Value="{Binding ConvertedCount, Mode=OneTime, FallbackValue=5000}" 
+														 Maximum="10000"/>
+								<Grid Margin="0,13,0,0">
+									<TextBlock HorizontalAlignment="Left"
+														 FontSize="12"
+														 FontWeight="DemiBold"
+														 Foreground="{DynamicResource SukiLowText}"
+														 Text="Success" />
+									<StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+										<TextBlock FontSize="13"
+															 Foreground="Green"
+															 Text="{Binding ConvertedSuccessCount, Mode=OneTime, FallbackValue=4900}" />
+										<icon:MaterialIcon Margin="5,0,0,0"
+																			 Foreground="Green"
+																			 Kind="ArrowUp" />
+									</StackPanel>
+								</Grid>
+								<ProgressBar Margin="0,1,0,0" 
+														 Value="{Binding ConvertedSuccessCount, Mode=OneTime, FallbackValue=4900}" 
+														 Maximum="10000"/>
+								<Grid Margin="0,13,0,0">
+									<TextBlock HorizontalAlignment="Left"
+														 FontSize="12"
+														 FontWeight="DemiBold"
+														 Foreground="{DynamicResource SukiLowText}"
+														 Text="Failure" />
+									<StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+										<TextBlock FontSize="13"
+															 Foreground="Red"
+															 Text="{Binding FailureCount, Mode=OneTime, FallbackValue=100}" />
+										<icon:MaterialIcon Margin="5,0,0,0"
+																			 Foreground="Red"
+																			 Kind="ArrowDown" />
+									</StackPanel>
+								</Grid>
+								<ProgressBar Margin="0,1,0,0"
+														 Value="{Binding FailureCount, Mode=OneTime, FallbackValue=100}"
+														 Maximum="10000"/>
 							</StackPanel>
 						</suki:GlassCard>
-					</Grid>
+				 </Grid>
 				</StackPanel>
+			<!-- END CONVERSIONS -->
+			<!--RENAMING-->
 			<StackPanel>
 				<Grid>
-					<suki:GlassCard Width="300"
-													Margin="10"
+					<suki:GlassCard Width="340"
+													Margin="15"
+													Classes="Card"
 													CornerRadius="10">
 						<StackPanel>
-							<suki:GroupBox Header="Renaming">
-								<StackPanel>
-									<Grid ColumnDefinitions="150, 150">
-										<TextBlock Grid.Column="0"
-															 Text="Last Used: "
-															 HorizontalAlignment="Left"
-															 FontSize="16"
-															 FontWeight="Bold" />
-										<TextBlock Grid.Column="1"
-											         Text="{Binding LastUsed, Mode=OneTime, FallbackValue=Yesterday}"
-															 FontSize="14"
-															 FontStyle="Oblique"
-															 HorizontalAlignment="Left" />
-									</Grid>
-									<Grid ColumnDefinitions="150, 150">
-										<TextBlock Grid.Column="0"
-											         Text="Renamed: "
-															 HorizontalAlignment="Left"
-															 FontSize="16"
-															 FontWeight="Bold" />
-										<TextBlock Grid.Column="1"
-											         Text="{Binding RenamerCount, Mode=OneTime, FallbackValue=5000}"
-															 FontSize="14"
-															 FontStyle="Oblique"
-															 HorizontalAlignment="Left" />
-									</Grid>
-									<Grid ColumnDefinitions="150, 150">
-										<TextBlock Grid.Column="0"
-											         Text="Success: "
-															 HorizontalAlignment="Left"
-															 FontSize="16"
-															 FontWeight="Bold" />
-										<TextBlock Grid.Column="1"
-											         Text="{Binding RenamerSuccessCount, Mode=OneTime, FallbackValue=0}"
-															 FontSize="14"
-															 FontStyle="Oblique"
-															 HorizontalAlignment="Left" />
-									</Grid>
-									<Grid ColumnDefinitions="150, 150">
-										<TextBlock Grid.Column="0"
-											         Text="Failure: "
-															 HorizontalAlignment="Left"
-															 FontSize="16"
-															 FontWeight="Bold" />
-										<TextBlock Grid.Column="1"
-											         Text="{Binding FailureCount, Mode=OneTime, FallbackValue=0}"
-															 FontSize="14"
-															 FontStyle="Oblique"
-															 HorizontalAlignment="Left" />
-									</Grid>
+							<TextBlock Text="Renaming"
+												 FontSize="16"
+												 FontWeight="DemiBold"
+												 HorizontalAlignment="Left"/>
+							<Grid Margin="0, 18, 0, 0">
+								<TextBlock HorizontalAlignment="Left"
+																		 FontSize="12"
+																		 FontWeight="DemiBold"
+																		 Foreground="{DynamicResource SukiLowText}"
+																		 Text="Total" />
+								<StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+									<TextBlock FontSize="13"
+														 Foreground="Green"
+														 Text="{Binding RenamerCount, Mode=OneTime, FallbackValue=5000}" />
+									<icon:MaterialIcon Margin="5,0,0,0"
+																		 Foreground="Green"
+																		 Kind="ArrowUp" />
 								</StackPanel>
-							</suki:GroupBox>
+							</Grid>
+							<ProgressBar Margin="0,1,0,0"
+													 Value="{Binding RenamerCount, Mode=OneTime, FallbackValue=5000}"
+													 Maximum="10000"/>
+							<Grid Margin="0,13,0,0">
+								<TextBlock HorizontalAlignment="Left"
+													 FontSize="12"
+													 FontWeight="DemiBold"
+													 Foreground="{DynamicResource SukiLowText}"
+													 Text="Success" />
+								<StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+									<TextBlock FontSize="13"
+														 Foreground="Green"
+														 Text="{Binding RenamerSuccessCount, Mode=OneTime, FallbackValue=4900}" />
+									<icon:MaterialIcon Margin="5,0,0,0"
+																		 Foreground="Green"
+																		 Kind="ArrowUp" />
+								</StackPanel>
+							</Grid>
+							<ProgressBar Margin="0,1,0,0"
+													 Value="{Binding RenamerSuccessCount, Mode=OneTime, FallbackValue=4900}"
+													 Maximum="10000"/>
+							<Grid Margin="0,13,0,0">
+								<TextBlock HorizontalAlignment="Left"
+													 FontSize="12"
+													 FontWeight="DemiBold"
+													 Foreground="{DynamicResource SukiLowText}"
+													 Text="Failure" />
+								<StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+									<TextBlock FontSize="13"
+														 Foreground="Red"
+														 Text="{Binding FailureCount, Mode=OneTime, FallbackValue=100}" />
+									<icon:MaterialIcon Margin="5,0,0,0"
+																		 Foreground="Red"
+																		 Kind="ArrowDown" />
+								</StackPanel>
+							</Grid>
+							<ProgressBar Margin="0,1,0,0"
+													 Value="{Binding FailureCount, Mode=OneTime, FallbackValue=100}"
+													 Maximum="10000"/>
 						</StackPanel>
 					</suki:GlassCard>
 				</Grid>
 			</StackPanel>
+			<!-- END RENAMING -->
+			<!--RESIZING-->
 			<StackPanel>
 				<Grid>
-					<suki:GlassCard Width="300"
-													Margin="10"
+					<suki:GlassCard Width="340"
+													Margin="15"
+													Classes="Card"
 													CornerRadius="10">
 						<StackPanel>
-							<suki:GroupBox Header="Resizing">
-								<StackPanel>
-									<Grid ColumnDefinitions="150, 150">
-										<TextBlock Grid.Column="0"
-											         Text="Last Used: "
-															 HorizontalAlignment="Left"
-															 FontSize="16"
-															 FontWeight="Bold" />
-										<TextBlock Grid.Column="1"
-											         Text="{Binding LastUsed, Mode=OneTime, FallbackValue=Yesterday}"
-															 FontSize="14"
-															 FontStyle="Oblique"
-															 HorizontalAlignment="Left" />
-									</Grid>
-									<Grid ColumnDefinitions="150, 150">
-										<TextBlock Grid.Column="0"
-											         Text="Resized: "
-															 HorizontalAlignment="Left"
-															 FontSize="16"
-															 FontWeight="Bold" />
-										<TextBlock Grid.Column="1"
-											         Text="{Binding ResizerCount, Mode=OneTime, FallbackValue=5000}"
-															 FontSize="14"
-															 FontStyle="Oblique"
-															 HorizontalAlignment="Left" />
-									</Grid>
-									<Grid ColumnDefinitions="150, 150">
-										<TextBlock Grid.Column="0"
-											         Text="Success: "
-															 HorizontalAlignment="Left"
-															 FontSize="16"
-															 FontWeight="Bold" />
-										<TextBlock Grid.Column="1"
-											         Text="{Binding ResizerSuccessCount, Mode=OneTime, FallbackValue=0}"
-															 FontSize="14"
-															 FontStyle="Oblique"
-															 HorizontalAlignment="Left" />
-									</Grid>
-									<Grid ColumnDefinitions="150, 150">
-										<TextBlock Grid.Column="0"
-											         Text="Failure: "
-															 HorizontalAlignment="Left"
-															 FontSize="16"
-															 FontWeight="Bold" />
-										<TextBlock Grid.Column="1"
-											         Text="{Binding FailureCount, Mode=OneTime, FallbackValue=0}"
-															 FontSize="14"
-															 FontStyle="Oblique"
-															 HorizontalAlignment="Left" />
-									</Grid>
-								
+							<TextBlock Text="Resizing"
+												 FontSize="16"
+												 FontWeight="DemiBold"
+												 HorizontalAlignment="Left"/>
+							<Grid Margin="0, 18, 0, 0">
+								<TextBlock HorizontalAlignment="Left"
+																		 FontSize="12"
+																		 FontWeight="DemiBold"
+																		 Foreground="{DynamicResource SukiLowText}"
+																		 Text="Total" />
+								<StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+									<TextBlock FontSize="13"
+														 Foreground="Green"
+														 Text="{Binding ResizerCount, Mode=OneTime, FallbackValue=5000}" />
+									<icon:MaterialIcon Margin="5,0,0,0"
+																		 Foreground="Green"
+																		 Kind="ArrowUp" />
 								</StackPanel>
-							</suki:GroupBox>
+							</Grid>
+							<ProgressBar Margin="0,1,0,0"
+													 Value="{Binding ResizerCount, Mode=OneTime, FallbackValue=5000}"
+													 Maximum="10000"/>
+							<Grid Margin="0,13,0,0">
+								<TextBlock HorizontalAlignment="Left"
+													 FontSize="12"
+													 FontWeight="DemiBold"
+													 Foreground="{DynamicResource SukiLowText}"
+													 Text="Success" />
+								<StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+									<TextBlock FontSize="13"
+														 Foreground="Green"
+														 Text="{Binding ResizerSuccessCount, Mode=OneTime, FallbackValue=4900}" />
+									<icon:MaterialIcon Margin="5,0,0,0"
+																		 Foreground="Green"
+																		 Kind="ArrowUp" />
+								</StackPanel>
+							</Grid>
+							<ProgressBar Margin="0,1,0,0"
+													 Value="{Binding ResizerSuccessCount, Mode=OneTime, FallbackValue=4900}"
+													 Maximum="10000"/>
+							<Grid Margin="0,13,0,0">
+								<TextBlock HorizontalAlignment="Left"
+													 FontSize="12"
+													 FontWeight="DemiBold"
+													 Foreground="{DynamicResource SukiLowText}"
+													 Text="Failure" />
+								<StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+									<TextBlock FontSize="13"
+														 Foreground="Red"
+														 Text="{Binding FailureCount, Mode=OneTime, FallbackValue=100}" />
+									<icon:MaterialIcon Margin="5,0,0,0"
+																		 Foreground="Red"
+																		 Kind="ArrowDown" />
+								</StackPanel>
+							</Grid>
+							<ProgressBar Margin="0,1,0,0"
+													 Value="{Binding FailureCount, Mode=OneTime, FallbackValue=100}"
+													 Maximum="10000"/>
 						</StackPanel>
 					</suki:GlassCard>
-
 				</Grid>
-				
 			</StackPanel>
+			<!-- END RESIZING -->
+			<!--STATS CHART-->
 			<StackPanel>
 				<Grid>
-					<suki:GroupBox Header="Stats" Margin="10">
+					<suki:GroupBox Header="Stats" Margin="15">
 						<suki:GlassCard CornerRadius="8">
 							
 									<lvc:CartesianChart Series="{Binding Series, Mode=OneTime, UpdateSourceTrigger=PropertyChanged}"
 																		 XAxes="{Binding XAxes}"
 																		 LegendPosition="Right"
 																		 Background="#101c35"
-																		 Width="960" 
+																		 Width="1040" 
 																		 Height="400"/>
 							
 				   </suki:GlassCard>
@@ -223,6 +244,8 @@
 				</Grid>
 				
 			</StackPanel>
+			<!-- END STATS CHART -->
+			
 		</WrapPanel>
 	</ScrollViewer>
 </UserControl>
