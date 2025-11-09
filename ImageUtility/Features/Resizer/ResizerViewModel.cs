@@ -7,10 +7,12 @@ using CommunityToolkit.Mvvm.Messaging;
 using ImageUtility.Common;
 using ImageUtility.Enums;
 using ImageUtility.Interfaces;
+using ImageUtility.Messaging;
 using ImageUtility.Models;
 using ImageUtility.ViewModels;
 using ImageUtility.Views;
 using Material.Icons;
+using Microsoft.Extensions.Logging;
 using SukiUI.Controls;
 using SukiUI.Dialogs;
 using SukiUI.MessageBox;
@@ -35,6 +37,7 @@ namespace ImageUtility.Features.Resizer
         private readonly ISukiDialogManager _dialogManager;
         private readonly IMessenger _messenger;
         private readonly IJsonData _dataService;
+        private readonly ILogger<ResizerViewModel> _logger;
 
         [ObservableProperty]
         [NotifyCanExecuteChangedFor(nameof(ResizeCommand))]
@@ -68,16 +71,18 @@ namespace ImageUtility.Features.Resizer
         public ObservableCollection<string> ResizeModes { get; } = ["Stretch", "Crop", "Fill", "Pad", "Max", "Min"];
      
         public ResizerViewModel(MainWindow mWindow, ISukiToastManager toastManager, ISukiDialogManager dialogManager,
-            IResizer resizerService, IMessenger messenger, IJsonData dataService) : base("Resizer", MaterialIconKind.Resize, 3)
+            IResizer resizerService, IMessenger messenger, IJsonData dataService, ILogger<ResizerViewModel> logger) : base("Resizer", MaterialIconKind.Resize, 3)
         {
             _mWindow = mWindow;
             _resizerService = resizerService;
             _toastManager = toastManager;
             _dialogManager = dialogManager;
+            _dataService = dataService;
             _messenger = messenger;
             _messenger.Register(this);
+            _logger = logger;
             CopyFiles = true;
-            _dataService = dataService;
+            
         }
 
         [RelayCommand]
@@ -159,6 +164,7 @@ namespace ImageUtility.Features.Resizer
 
             bool hasAvif = files.Any(f =>
                     string.Equals(Path.GetExtension(f), ".avif", StringComparison.OrdinalIgnoreCase));
+            var fileCount = files.Count();
 
             if (hasAvif)
             {
@@ -167,16 +173,22 @@ namespace ImageUtility.Features.Resizer
                     ActionButtonsPreset = SukiMessageBoxButtons.OK,
                     IconPreset = SukiMessageBoxIcons.Error,
                     Header = "Unsupported File Type",
-                    Content = "avif file types are not supported.\r\nto resize avif files you need to:\r\n1. convert all avif to png\r\n2. resize\r\n3. convert back to avif"
+                    Content = "resizing avif file types are not supported.\r\nto resize avif files you need to:\r\n1. convert all avif to png\r\n2. resize\r\n3. convert back to avif"
                 };
                 await SukiMessageBox.ShowDialog(msgBox);
                 IsBusy = false;
                 StatusMessage = string.Empty;
+                _logger.LogWarning("User attempted to resize avif files which is not supported.");
                 return;
             }
 
             var result = await _resizerService.ResizeImagesAsync(files, DestinationDir!, Width, Height, SelectedResizeMode!, MaintainAspectRatio, CopyFiles);
-
+            var errorCount = 0;
+            if (!result.IsOk)
+            {
+                var index = result.Error!.IndexOf(" ");
+                errorCount = int.Parse(result.Error.Substring(index));
+            }
             IsBusy = false;
             StatusMessage = string.Empty;
 
@@ -194,14 +206,19 @@ namespace ImageUtility.Features.Resizer
                     {
                         Total = files.Count(),
                         Success = files.Count(),
-                        Fail = 0
+                        Fail = errorCount
                     }
                 }
             };
             await _dataService.InsertDailyStatsAsync(userStat);
+            _messenger.Send(new UserDataActivityMessage(
+                new UserDataPayload()
+                {
+                    RenameCount = fileCount
+                }));
 
             var notificationType = result.IsOk ? NotificationType.Success : NotificationType.Error;
-
+            _logger.LogInformation("Image resize operation completed. file count: {Count}", fileCount);
             if (OpenOnCompletion && result.IsOk)
             {
                 Process p = new Process();

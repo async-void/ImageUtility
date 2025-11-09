@@ -3,14 +3,17 @@ using Avalonia.Controls.Notifications;
 using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using ImageUtility.Enums;
 using ImageUtility.Extensions;
 using ImageUtility.Interfaces;
+using ImageUtility.Messaging;
 using ImageUtility.Models;
 using ImageUtility.Services;
 using ImageUtility.ViewModels;
 using ImageUtility.Views;
 using Material.Icons;
+using Microsoft.Extensions.Logging;
 using SukiUI.Controls;
 using SukiUI.Dialogs;
 using SukiUI.MessageBox;
@@ -33,9 +36,11 @@ namespace ImageUtility.Features.Converting
     {
         private readonly MainWindow _mWindow;
         private readonly ISukiToastManager _toastManager;
+        private readonly IMessenger _messenger;
         private readonly ConversionService _converterService;
         private readonly IFileUtilities _fileUtilities;
         private readonly IJsonData _dataService;
+        private readonly ILogger<ConverterViewModel> _logger;
 
         [ObservableProperty]
         private bool _isBusy;
@@ -72,14 +77,16 @@ namespace ImageUtility.Features.Converting
         public Array FileTypes => Enum.GetValues<ImageType>();
 
         public ConverterViewModel(MainWindow mWindow, ConversionService converterService, IFileUtilities fileUtilities,
-                            ISukiToastManager toastManager, IJsonData dataService) : base("Converter", MaterialIconKind.ImageEdit, 4)
+                            ISukiToastManager toastManager, IJsonData dataService, IMessenger messenger, ILogger<ConverterViewModel> logger) : base("Converter", MaterialIconKind.ImageEdit, 4)
         {
             _mWindow = mWindow;
             _toastManager = toastManager;
             _converterService = converterService;
             _fileUtilities = fileUtilities;
-            CopyFiles = true;
+            _messenger = messenger;
             _dataService = dataService;
+            _logger = logger;
+            CopyFiles = true;
         }
 
         [RelayCommand(CanExecute = nameof(CanConvert))]
@@ -172,6 +179,12 @@ namespace ImageUtility.Features.Converting
                 }
             };
             await _dataService.InsertDailyStatsAsync(userStat);
+           
+            _messenger.Send(new UserDataActivityMessage(
+                new UserDataPayload()
+                {
+                    ConversionCount = fileCount
+                }));
 
             if (OpenOnCompletion && isOk)
             {
@@ -202,6 +215,7 @@ namespace ImageUtility.Features.Converting
            
             if (errors.Any())
             {
+                _logger.LogError("Some images failed to convert: {errors}", string.Join("; ", errors));
                 var errMsg = string.Join("\r\n", errors);
                 _toastManager.CreateToast()
                     .WithTitle("Error")
@@ -212,6 +226,7 @@ namespace ImageUtility.Features.Converting
             }
             else
             {
+                _logger.LogInformation("{type} Conversion completed successfully: {files} total files converted", SelectedFileType, fileCount);
                 _toastManager.CreateToast()
                             .WithTitle($"SUCCESS: all files converted successfully.")
                             .OfType(NotificationType.Success)

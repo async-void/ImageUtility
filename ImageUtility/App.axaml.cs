@@ -29,7 +29,9 @@ using SukiUI.Controls;
 using SukiUI.Dialogs;
 using SukiUI.Models;
 using SukiUI.Toasts;
+using System;
 using System.Linq;
+using Velopack;
 using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace ImageUtility

@@ -28,7 +28,7 @@
 								 MinWidth="800"
 								 MinHeight="600"
 								 mc:Ignorable="d" 
-                 Title="ImageUtility">
+                 Title="{Binding Title}">
 
 	<suki:SukiWindow.TitleBarContextMenu>
 		<ContextMenu>
@@ -98,6 +98,7 @@
 						<avalonia:MaterialIcon Kind="Fullscreen" />
 					</MenuItem.Icon>
 				</MenuItem>
+				
 				<Separator />
 				<MenuItem Header="CanFullscreen"
 									IsChecked="{Binding $parent[suki:SukiWindow].CanFullScreen, Mode=TwoWay}"
@@ -123,7 +124,14 @@
 									IsChecked="{Binding $parent[suki:SukiWindow].CanResize, Mode=TwoWay}"
 									ToggleType="CheckBox" />
 			</MenuItem>
-
+			<Separator />
+			<MenuItem Command="{Binding ShowAboutCommand}"
+										Header="About"
+										ToolTip.Tip="Show About Dialog.">
+				<MenuItem.Icon>
+					<avalonia:MaterialIcon Kind="About" />
+				</MenuItem.Icon>
+			</MenuItem>
 		</MenuItem>
 		<MenuItem Header="Theme">
 			<MenuItem Click="ThemeMenuItem_OnClick"

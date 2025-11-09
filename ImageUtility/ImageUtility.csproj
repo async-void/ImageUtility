@@ -8,7 +8,7 @@
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
     <PackageIcon>image_utility.png</PackageIcon>
   </PropertyGroup>
-
+	
   <ItemGroup>
     <AvaloniaResource Include="Assets\**" />
   </ItemGroup>
@@ -70,6 +70,7 @@
     <PackageReference Include="SixLabors.ImageSharp" Version="3.1.11" />
     <PackageReference Include="SukiUI" Version="6.0.3" />
     <PackageReference Include="SukiUI.Dock" Version="6.0.3" />
+    <PackageReference Include="Velopack" Version="0.0.1298" />
   </ItemGroup>
 
   <ItemGroup>
@@ -93,7 +94,6 @@
       <PackagePath>\</PackagePath>
     </None>
   </ItemGroup>
-
   <ItemGroup>
     <AvaloniaResource Update="Assets\Image_Utility.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -102,4 +102,8 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </AvaloniaResource>
   </ItemGroup>
+
+	<PropertyGroup>
+		<Version>1.0.13</Version>
+	</PropertyGroup>
 </Project>

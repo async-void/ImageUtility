@@ -8,6 +8,7 @@ using ImageUtility.Features.Theming;
 using ImageUtility.Services;
 using ImageUtility.Utilities;
 using ImageUtility.Views;
+using Microsoft.Extensions.Logging;
 using SukiUI;
 using SukiUI.Controls;
 using SukiUI.Dialogs;
@@ -19,11 +20,14 @@ using SukiUI.Toasts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
 
 namespace ImageUtility.ViewModels
 {
     public partial class MainWindowViewModel : ObservableObject
     {
+        private readonly ILogger<MainWindowViewModel> _logger;
         public IAvaloniaReadOnlyList<ViewModelBase> Pages { get; }
         public PageNavigationService PageNavigationService { get; }
 
@@ -41,6 +45,7 @@ namespace ImageUtility.ViewModels
         [ObservableProperty] private SukiBackgroundStyle _backgroundStyle = SukiBackgroundStyle.GradientSoft;
         [ObservableProperty] private bool _animationsEnabled;
         [ObservableProperty] private string? _customShaderFile;
+        [ObservableProperty] private string? _title;
         [ObservableProperty] private bool _transitionsEnabled;
         [ObservableProperty] private double _transitionTime;
 
@@ -50,12 +55,16 @@ namespace ImageUtility.ViewModels
         private readonly SukiTheme _theme;
        // private readonly ThemingViewModel _theming;
 
-        public MainWindowViewModel(IEnumerable<ViewModelBase> demoPages, PageNavigationService pageNavigationService, ISukiToastManager toastManager, ISukiDialogManager dialogManager)
+        public MainWindowViewModel(IEnumerable<ViewModelBase> demoPages, PageNavigationService pageNavigationService, 
+            ISukiToastManager toastManager, ISukiDialogManager dialogManager, ILogger<MainWindowViewModel> logger)
         {
             ToastManager = toastManager;
             DialogManager = dialogManager;
+            _logger = logger;
             Pages = new AvaloniaList<ViewModelBase>(demoPages.OrderBy(x => x.Index).ThenBy(x => x.DisplayName));
             PageNavigationService = pageNavigationService;
+            var version = Assembly.GetEntryAssembly()?.GetName().Version;
+            Title =$"Image Utility ver: {version?.Major}.{version?.Minor}.{version?.Build}";
             //_theming = (ThemingViewModel)Pages.First(x => x is ThemingViewModel);
             //_theming.BackgroundStyleChanged += style => BackgroundStyle = style;
             //_theming.BackgroundAnimationsChanged += enabled => AnimationsEnabled = enabled;
@@ -91,6 +100,10 @@ namespace ImageUtility.ViewModels
                 .WithTitle("Color Changed")
                 .WithContent($"Color has changed to {theme.DisplayName}.")
                 .Queue();
+            _logger.LogInformation("Page Navigation Serice initialized.");
+            _logger.LogInformation("Navigation Pages Loaded.");
+            _logger.LogInformation("Theme Service initialized.");
+           
         }
 
         [RelayCommand]
@@ -114,6 +127,22 @@ namespace ImageUtility.ViewModels
         }
 
         [RelayCommand]
+        private async Task OnShowAbout()
+        {
+            var msgBox = new SukiMessageBoxHost
+            {
+                ActionButtonsPreset = SukiMessageBoxButtons.OK,
+                ShowHeaderContentSeparator = true,
+                IconPreset = SukiMessageBoxIcons.Information,
+                Header = "About Image Utility",
+                Content = "Image Utility is a simple application for basic image renaming, resizing & conversion tasks.\n\n" +
+                          "Developed by Suncoast Software.\n\n" +
+                          "© 2026 All rights reserved."
+            };
+            await SukiMessageBox.ShowDialog(msgBox);
+        }
+
+        [RelayCommand]
         private void ToggleBaseTheme() =>
             _theme.SwitchBaseTheme();
 
@@ -129,15 +158,15 @@ namespace ImageUtility.ViewModels
                 {
                     ActionButtonsPreset = SukiMessageBoxButtons.OK,
                     IconPreset = SukiMessageBoxIcons.Error,
+                    Header = "Unsupported",
+                    Content = "Shadcn theme is currently not supported in this version."
                 };
-                msgBox.Header = "Work In Progress";
-                msgBox.Content = "Shadcn theme is currently not supported in this version.";
                 using var _ = SukiMessageBox.ShowDialog(msgBox);
                 //Shadcn.Configure(Application.Current, Application.Current.ActualThemeVariant);
             }
             catch
             {
-              
+              _logger.LogError("Failed to apply Shadcn theme.");
             }
            
         }

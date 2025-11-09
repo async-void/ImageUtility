@@ -30,9 +30,11 @@ namespace ImageUtility.Utilities
             args.Append("-c:v libaom-av1 ");
             args.Append($"-crf {crf} ");
             args.Append($"-cpu-used {cpuUsed} ");
-            args.Append("-pix_fmt yuv420p ");
-            args.Append("-still-picture 1 ");   // important for single-image AVIF
-            args.Append("-f avif ");            // force AVIF container
+            args.Append("-pix_fmt yuva420p ");
+            args.Append("-color_range 2 ");
+            args.Append("-colorspace bt709 ");
+            args.Append("-still-picture 1 ");   
+            args.Append("-f avif ");            
             args.Append($"\"{outputPath}\"");
 
             var psi = new ProcessStartInfo

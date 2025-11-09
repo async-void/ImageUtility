@@ -1,24 +1,27 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Messaging;
+using Humanizer;
 using ImageUtility.Interfaces;
+using ImageUtility.Messaging;
 using ImageUtility.ViewModels;
 using LiveChartsCore;
 using LiveChartsCore.Defaults;
 using LiveChartsCore.SkiaSharpView;
-using LiveChartsCore.SkiaSharpView.VisualElements;
-using LiveChartsCore.SkiaSharpView.Avalonia;
 using Material.Icons;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
-using System;
-using Humanizer;
 
 namespace ImageUtility.Features.Dashboard
 {
-    public partial class DashboardViewModel : ViewModelBase
+    public partial class DashboardViewModel : ViewModelBase, IRecipient<UserDataActivityMessage>
     {
         private readonly IJsonData? _jsonDataProviderService;
         private readonly IChartBuilder? _statsChartBuilderService;
+        private readonly IMessenger? _messenger;
+        private readonly ILogger<DashboardViewModel> _logger;
 
         [ObservableProperty]
         private string? _lastUsed;
@@ -37,17 +40,24 @@ namespace ImageUtility.Features.Dashboard
         [ObservableProperty]
         private int? _resizerSuccessCount;
         [ObservableProperty]
-        private int? _failureCount;
+        private int? _convertedFailureCount;
+        [ObservableProperty]
+        private int? _renamedFailureCount;
+        [ObservableProperty]
+        private int? _resizedFailureCount;
 
         public ObservableCollection<ISeries> Series { get; set; }
         public ObservableCollection<ISeries> RenamerSeries { get; set; }
         public ObservableCollection<ISeries> ResizerSeries { get; set; }
         public ObservableCollection<Axis> XAxes { get; set; }
 
-        public DashboardViewModel(IJsonData jsonProvider, IChartBuilder chartBuilder) : base("Dashboard", MaterialIconKind.ViewDashboard, 1)
+        public DashboardViewModel(IJsonData jsonProvider, IChartBuilder chartBuilder, IMessenger messenger, ILogger<DashboardViewModel> logger) : base("Dashboard", MaterialIconKind.ViewDashboard, 1)
         {
            _jsonDataProviderService = jsonProvider;
            _statsChartBuilderService = chartBuilder;
+           _messenger = messenger;
+           _logger = logger;
+           _messenger.Register(this);
 
             Task.Run(async () =>
             {
@@ -71,11 +81,14 @@ namespace ImageUtility.Features.Dashboard
             ConvertedCount = conversions?.Where(x => x != null).Sum(x => x?.Total) ?? 0;
             RenamerCount = renamers?.Where(x => x != null).Sum(x => x?.Total) ?? 0;
             ResizerCount = resizers?.Where(x => x != null).Sum(x => x?.Total) ?? 0;
+
             ConvertedSuccessCount = conversions?.Where(x => x != null).Sum(x => x?.Success) ?? 0;
             ResizerSuccessCount = resizers?.Where(x => x != null).Sum(x => x?.Success) ?? 0;
             RenamerSuccessCount = renamers?.Where(x => x != null).Sum(x => x?.Success) ?? 0;
             
-            FailureCount = conversions?.Where(x => x != null).Sum(x => x?.Fail) ?? 0;
+            ConvertedFailureCount = conversions?.Where(x => x != null).Sum(x => x?.Fail) ?? 0;
+            RenamedFailureCount = renamers?.Where(x => x != null).Sum(x => x?.Fail) ?? 0;
+            ResizedFailureCount = resizers?.Where(x => x != null).Sum(x => x?.Fail) ?? 0;
 
             Series =
             [
@@ -107,6 +120,18 @@ namespace ImageUtility.Features.Dashboard
                 }
             ];
 
+            _logger.LogInformation("Dashboard statistics loaded successfully.");
+
+        }
+
+        public void Receive(UserDataActivityMessage message)
+        {
+            ConvertedCount += message.Value.ConversionCount; 
+            ConvertedSuccessCount += message.Value.ConversionCount;
+            RenamerCount += message.Value.RenameCount;
+            RenamerSuccessCount += message.Value.RenameCount;
+            ResizerCount += message.Value.ResizeCount;
+            ResizerSuccessCount += message.Value.ResizeCount;
         }
     }
 }

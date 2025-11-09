@@ -10,10 +10,12 @@ using CommunityToolkit.Mvvm.Messaging;
 using HarfBuzzSharp;
 using ImageUtility.Common;
 using ImageUtility.Interfaces;
+using ImageUtility.Messaging;
 using ImageUtility.Models;
 using ImageUtility.ViewModels;
 using ImageUtility.Views;
 using Material.Icons;
+using Microsoft.Extensions.Logging;
 using SukiUI.MessageBox;
 using SukiUI.Toasts;
 using System;
@@ -33,6 +35,7 @@ namespace ImageUtility.Features.Renamer
         private readonly IRenamer _renameService;
         private readonly ISukiToastManager _toastManager;
         private readonly IJsonData _dataService;
+        private readonly ILogger<RenamerViewModel> _logger;
         private readonly IMessenger _messenger;
 
         [ObservableProperty]
@@ -74,15 +77,17 @@ namespace ImageUtility.Features.Renamer
 
         private List<string> filesList = [];
 
-        public RenamerViewModel(MainWindow mWindow, IRenamer renameService, ISukiToastManager toastManager, IJsonData dataService, IMessenger messenger) : base("Renamer", MaterialIconKind.Rename, 2)
+        public RenamerViewModel(MainWindow mWindow, IRenamer renameService, ISukiToastManager toastManager, 
+            IJsonData dataService, ILogger<RenamerViewModel> logger, IMessenger messenger) : base("Renamer", MaterialIconKind.Rename, 2)
         {
             _mWindow = mWindow;
             _renameService = renameService;
             _dataService = dataService;
             _toastManager = toastManager;
-            CopyFiles = true;
+            _logger = logger;
             _messenger = messenger;
             _messenger.Register(this);
+            CopyFiles = true;
         }
 
         [RelayCommand(CanExecute = nameof(CanRename))]
@@ -91,7 +96,7 @@ namespace ImageUtility.Features.Renamer
             StatusMessage = "Renaming Files... Please Wait";
             IsLoading = true;
             IEnumerable<string> files = [.. Directory.EnumerateFiles(SourceDir!)];
-
+            var fileCount = files.Count();
             var result = await _renameService.RenameFilesAsync([.. files], DestinationDir!, CopyFiles, Pattern, filesList);
             var message = result.Match(
                     ok => $"SUCCESS: {ok}",
@@ -114,6 +119,12 @@ namespace ImageUtility.Features.Renamer
 
             await _dataService.InsertDailyStatsAsync(userStat);
 
+            _messenger.Send(new UserDataActivityMessage(
+                new UserDataPayload()
+                {
+                    RenameCount = fileCount
+                }));
+
             IsLoading = false;
 
             if ( OpenOnComplete && result.IsOk)
@@ -131,6 +142,7 @@ namespace ImageUtility.Features.Renamer
                 }
                 catch (Exception ex)
                 {
+                    _logger.LogError(ex, "Failed to open destination directory after renaming.");
                     _toastManager.CreateToast()
                           .WithContent($"Unable to open {DestinationDir} Directory")
                           .OfType(NotificationType.Warning)
@@ -138,6 +150,7 @@ namespace ImageUtility.Features.Renamer
                           .Queue();
                 }
             }
+            _logger.LogInformation("Renaming completed with message: {Message}", message);
             _toastManager.CreateToast()
                 .WithContent($"{message}")
                 .OfType(NotificationType.Success)
