@@ -14,7 +14,7 @@ namespace ImageUtility.Features.Help
     public partial class HelpViewModel : ViewModelBase
     {
         private readonly IHelpProvider _helpProvider;
-        public HelpViewModel(IHelpProvider helpProvider) : base("Help", MaterialIconKind.Help, 5)
+        public HelpViewModel(IHelpProvider helpProvider) : base("Help", MaterialIconKind.Help, 6)
         {
             _helpProvider = helpProvider;
         }

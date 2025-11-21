@@ -15,35 +15,39 @@
 			<suki:SettingsLayoutItem x:Name="AboutSection" Header="About">
 				<suki:SettingsLayoutItem.Content>
 					<suki:GlassCard Margin="0,0,0,10" Padding="10">
-						<StackPanel Orientation="Horizontal"
-												HorizontalAlignment="Center"
-												Spacing="20">
+						
+							<StackPanel Orientation="Horizontal"
+									HorizontalAlignment="Center"
+									Spacing="20">
+						  <Expander Header="About">
 							<StackPanel Spacing="8">
 								<TextBlock TextWrapping="WrapWithOverflow"
-													 Width="500"
-									         Text="Image Utility "
-													 FontSize="14"
-													 FontStyle="Oblique">
-									<Run Text="is a fast desktop tool that handles large image workflows: bulk resize, bulk rename, &amp; bulk convert. It combines speed with precision, preserving color profiles &amp; metadata while giving power users &amp; casual creators an approachable, polished UI." />
+										   Width="500"
+									       Text="Image Utility "
+										   FontSize="14"
+										   FontStyle="Oblique">
+									<Run Text="is a fast desktop tool that handles large image workflows: bulk resize, bulk rename, &amp; bulk convertions. It combines speed with precision, preserving color profiles &amp; metadata while giving power users &amp; casual creators an approachable, polished UI." />
 								</TextBlock>
 								<TextBlock TextWrapping="WrapWithOverflow"
-													 Width="500"
-													 FontSize="14"
-													 FontStyle="Oblique"
-													 Text="• Resize, Rename &amp; Convert In bulk, without the headache." />
+										   Width="500"
+										   FontSize="14"
+										   FontStyle="Oblique"
+										   Text="• Resize, Rename &amp; Convert In bulk, without the headache." />
 							
 									<TextBlock TextWrapping="WrapWithOverflow"
-														 Width="500"
-														 FontSize="14"
-														 FontStyle="Oblique"
-														 Text="• Batch image work that actually respects your time &amp; pixels." />
+											   Width="500"
+											   FontSize="14"
+											   FontStyle="Oblique"
+											   Text="• Batch image work that actually respects your time &amp; pixels." />
 									<TextBlock TextWrapping="WrapWithOverflow"
-														 Width="500"
-														 FontSize="14"
-														 FontStyle="Oblique"
-														 Text="• From folders to finished files — fast, predictable, &amp; clean" />
+											   Width="500"
+											   FontSize="14"
+											   FontStyle="Oblique"
+											   Text="• From folders to finished files — fast, predictable, &amp; clean" />
 
 							</StackPanel>
+						  </Expander>
+						
 						</StackPanel>
 					</suki:GlassCard>
 				</suki:SettingsLayoutItem.Content>
@@ -125,7 +129,7 @@
 												   FontStyle="Oblique"/>
 								<TextBlock Width="500"
 								           TextWrapping="WrapWithOverflow"
-											     Text="• supported file types."
+											     Text="• supported file types. AVIF, JPEG, PNG &amp; WEBP"
 												   FontSize="14"
 												   FontStyle="Oblique"/>
 
@@ -154,7 +158,7 @@
 													 FontSize="14"
 													 FontStyle="Oblique" />
 								<TextBlock Text="• supported file types -" >
-									<Run Text=" PNG, JPEG, WEBP and AVIF" />
+									<Run Text=" AVIF, JPEG, PNG &amp; WEBP" />
 								</TextBlock>
 								<TextBlock Width="500"
 													 TextWrapping="WrapWithOverflow"

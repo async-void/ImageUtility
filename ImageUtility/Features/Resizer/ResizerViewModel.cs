@@ -156,6 +156,20 @@ namespace ImageUtility.Features.Resizer
         [RelayCommand(CanExecute = nameof(CanResize))]
         private async Task Resize()
         {
+            if (SourceDir!.Equals(DestinationDir, StringComparison.OrdinalIgnoreCase))
+            {
+                var msgBox = new SukiMessageBoxHost
+                {
+                    ActionButtonsPreset = SukiMessageBoxButtons.OK,
+                    ShowHeaderContentSeparator = true,
+                    IconPreset = SukiMessageBoxIcons.Information,
+                    Header = "Image Utility ",
+                    Content = "Source Directory and Destination Directory cannot be the same directory.\r\nPlease choose a different destination directory."
+                };
+                await SukiMessageBox.ShowDialog(msgBox);
+                DestinationDir = string.Empty;
+                return;
+            }
             IsBusy = true;
             StatusMessage = "Resizing images... this may take a moment";
            

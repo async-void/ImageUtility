@@ -31,7 +31,7 @@ public partial class ThemingViewModel : ViewModelBase
 
     private string? _customShader = null;
     
-    public ThemingViewModel() : base("Theming", MaterialIconKind.PaletteOutline, 3)
+    public ThemingViewModel() : base("Theming", MaterialIconKind.PaletteOutline, 4)
     {
         AvailableBackgroundStyles = new AvaloniaList<SukiBackgroundStyle>(Enum.GetValues<SukiBackgroundStyle>());
         AvailableColors = _theme.ColorThemes;

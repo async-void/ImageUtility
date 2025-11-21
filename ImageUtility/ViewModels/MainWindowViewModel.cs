@@ -100,7 +100,7 @@ namespace ImageUtility.ViewModels
                 .WithTitle("Color Changed")
                 .WithContent($"Color has changed to {theme.DisplayName}.")
                 .Queue();
-            _logger.LogInformation("Page Navigation Serice initialized.");
+            _logger.LogInformation("Page Navigation Service initialized.");
             _logger.LogInformation("Navigation Pages Loaded.");
             _logger.LogInformation("Theme Service initialized.");
            
@@ -136,7 +136,7 @@ namespace ImageUtility.ViewModels
                 IconPreset = SukiMessageBoxIcons.Information,
                 Header = "About Image Utility",
                 Content = "Image Utility is a simple application for basic image renaming, resizing & conversion tasks.\n\n" +
-                          "Developed by Suncoast Software.\n\n" +
+                          "see Help for more details\r\nDeveloped by Suncoast Software.\n\n" +
                           "© 2026 All rights reserved."
             };
             await SukiMessageBox.ShowDialog(msgBox);

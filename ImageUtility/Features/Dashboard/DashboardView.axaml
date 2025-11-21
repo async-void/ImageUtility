@@ -34,14 +34,14 @@
 									<StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
 										<TextBlock FontSize="13"
 															 Foreground="Green"
-															 Text="{Binding ConvertedCount, Mode=TwoWay, FallbackValue=5000}" />
+															 Text="{Binding ConvertedCount, Mode=TwoWay}" />
 										<icon:MaterialIcon Margin="5,0,0,0"
 																			 Foreground="Green"
 																			 Kind="ArrowUp" />
 									</StackPanel>
 								</Grid>
 								<ProgressBar Margin="0,1,0,0" 
-														 Value="{Binding ConvertedCount, Mode=TwoWay, FallbackValue=5000}" 
+														 Value="{Binding ConvertedCount, Mode=TwoWay}" 
 														 Maximum="10000"/>
 								<Grid Margin="0,13,0,0">
 									<TextBlock HorizontalAlignment="Left"
@@ -52,14 +52,14 @@
 									<StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
 										<TextBlock FontSize="13"
 															 Foreground="Green"
-															 Text="{Binding ConvertedSuccessCount, Mode=TwoWay, FallbackValue=4900}" />
+															 Text="{Binding ConvertedSuccessCount, Mode=TwoWay}" />
 										<icon:MaterialIcon Margin="5,0,0,0"
 																			 Foreground="Green"
 																			 Kind="ArrowUp" />
 									</StackPanel>
 								</Grid>
 								<ProgressBar Margin="0,1,0,0" 
-														 Value="{Binding ConvertedSuccessCount, Mode=TwoWay, FallbackValue=4900}" 
+														 Value="{Binding ConvertedSuccessCount, Mode=TwoWay}" 
 														 Maximum="10000"/>
 								<Grid Margin="0,13,0,0">
 									<TextBlock HorizontalAlignment="Left"
@@ -70,14 +70,14 @@
 									<StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
 										<TextBlock FontSize="13"
 															 Foreground="Red"
-															 Text="{Binding ConvertedFailureCount, Mode=TwoWay, FallbackValue=100}" />
+															 Text="{Binding ConvertedFailureCount, Mode=TwoWay}" />
 										<icon:MaterialIcon Margin="5,0,0,0"
 																			 Foreground="Red"
 																			 Kind="ArrowDown" />
 									</StackPanel>
 								</Grid>
 								<ProgressBar Margin="0,1,0,0"
-														 Value="{Binding ConvertedFailureCount, Mode=OneTime, FallbackValue=100}"
+														 Value="{Binding ConvertedFailureCount, Mode=OneTime}"
 														 Maximum="10000"/>
 							</StackPanel>
 						</suki:GlassCard>
@@ -106,14 +106,14 @@
 								<StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
 									<TextBlock FontSize="13"
 														 Foreground="Green"
-														 Text="{Binding RenamerCount, Mode=TwoWay, FallbackValue=5000}" />
+														 Text="{Binding RenamerCount, Mode=TwoWay}" />
 									<icon:MaterialIcon Margin="5,0,0,0"
 																		 Foreground="Green"
 																		 Kind="ArrowUp" />
 								</StackPanel>
 							</Grid>
 							<ProgressBar Margin="0,1,0,0"
-													 Value="{Binding RenamerCount, Mode=TwoWay, FallbackValue=5000}"
+													 Value="{Binding RenamerCount, Mode=TwoWay}"
 													 Maximum="10000"/>
 							<Grid Margin="0,13,0,0">
 								<TextBlock HorizontalAlignment="Left"
@@ -124,14 +124,14 @@
 								<StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
 									<TextBlock FontSize="13"
 														 Foreground="Green"
-														 Text="{Binding RenamerSuccessCount, Mode=TwoWay, FallbackValue=4900}" />
+														 Text="{Binding RenamerSuccessCount, Mode=TwoWay}" />
 									<icon:MaterialIcon Margin="5,0,0,0"
 																		 Foreground="Green"
 																		 Kind="ArrowUp" />
 								</StackPanel>
 							</Grid>
 							<ProgressBar Margin="0,1,0,0"
-													 Value="{Binding RenamerSuccessCount, Mode=TwoWay, FallbackValue=4900}"
+													 Value="{Binding RenamerSuccessCount, Mode=TwoWay}"
 													 Maximum="10000"/>
 							<Grid Margin="0,13,0,0">
 								<TextBlock HorizontalAlignment="Left"
@@ -142,14 +142,14 @@
 								<StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
 									<TextBlock FontSize="13"
 														 Foreground="Red"
-														 Text="{Binding RenamedFailureCount, Mode=TwoWay, FallbackValue=100}" />
+														 Text="{Binding RenamedFailureCount, Mode=TwoWay}" />
 									<icon:MaterialIcon Margin="5,0,0,0"
 																		 Foreground="Red"
 																		 Kind="ArrowDown" />
 								</StackPanel>
 							</Grid>
 							<ProgressBar Margin="0,1,0,0"
-													 Value="{Binding RenamedFailureCount, Mode=TwoWay, FallbackValue=100}"
+													 Value="{Binding RenamedFailureCount, Mode=TwoWay}"
 													 Maximum="10000"/>
 						</StackPanel>
 					</suki:GlassCard>
@@ -178,14 +178,14 @@
 								<StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
 									<TextBlock FontSize="13"
 														 Foreground="Green"
-														 Text="{Binding ResizerCount, Mode=TwoWay, FallbackValue=5000}" />
+														 Text="{Binding ResizerCount, Mode=TwoWay}" />
 									<icon:MaterialIcon Margin="5,0,0,0"
 																		 Foreground="Green"
 																		 Kind="ArrowUp" />
 								</StackPanel>
 							</Grid>
 							<ProgressBar Margin="0,1,0,0"
-													 Value="{Binding ResizerCount, Mode=TwoWay, FallbackValue=5000}"
+													 Value="{Binding ResizerCount, Mode=TwoWay}"
 													 Maximum="10000"/>
 							<Grid Margin="0,13,0,0">
 								<TextBlock HorizontalAlignment="Left"
@@ -196,14 +196,14 @@
 								<StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
 									<TextBlock FontSize="13"
 														 Foreground="Green"
-														 Text="{Binding ResizerSuccessCount, Mode=TwoWay, FallbackValue=4900}" />
+														 Text="{Binding ResizerSuccessCount, Mode=TwoWay}" />
 									<icon:MaterialIcon Margin="5,0,0,0"
 																		 Foreground="Green"
 																		 Kind="ArrowUp" />
 								</StackPanel>
 							</Grid>
 							<ProgressBar Margin="0,1,0,0"
-													 Value="{Binding ResizerSuccessCount, Mode=TwoWay, FallbackValue=4900}"
+													 Value="{Binding ResizerSuccessCount, Mode=TwoWay}"
 													 Maximum="10000"/>
 							<Grid Margin="0,13,0,0">
 								<TextBlock HorizontalAlignment="Left"
@@ -214,14 +214,14 @@
 								<StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
 									<TextBlock FontSize="13"
 														 Foreground="Red"
-														 Text="{Binding ResizedFailureCount, Mode=TwoWay, FallbackValue=100}" />
+														 Text="{Binding ResizedFailureCount, Mode=TwoWay}" />
 									<icon:MaterialIcon Margin="5,0,0,0"
 																		 Foreground="Red"
 																		 Kind="ArrowDown" />
 								</StackPanel>
 							</Grid>
 							<ProgressBar Margin="0,1,0,0"
-													 Value="{Binding ResizedFailureCount, Mode=TwoWay, FallbackValue=100}"
+													 Value="{Binding ResizedFailureCount, Mode=TwoWay}"
 													 Maximum="10000"/>
 						</StackPanel>
 					</suki:GlassCard>

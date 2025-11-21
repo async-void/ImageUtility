@@ -1,15 +1,15 @@
 <suki:SukiWindow x:Class="ImageUtility.Views.MainWindow"
-	               xmlns="https://github.com/avaloniaui"
+	             xmlns="https://github.com/avaloniaui"
                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                  xmlns:vm="using:ImageUtility.ViewModels"
                  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-			           xmlns:suki="https://github.com/kikipoulet/SukiUI"
-								 xmlns:converters="clr-namespace:ImageUtility.Converters"
+			     xmlns:suki="https://github.com/kikipoulet/SukiUI"
+				 xmlns:converters="clr-namespace:ImageUtility.Converters"
                  xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
                  x:DataType="vm:MainWindowViewModel"
                  Icon="/Assets/Image_Utility.ico"
-								 BackgroundAnimationEnabled="{Binding AnimationsEnabled}"
+				 BackgroundAnimationEnabled="{Binding AnimationsEnabled}"
                  BackgroundShaderFile="{Binding CustomShaderFile}"
                  BackgroundStyle="{Binding BackgroundStyle}"
                  BackgroundTransitionsEnabled="{Binding TransitionsEnabled}"
@@ -18,16 +18,16 @@
                  CanMove="{Binding !WindowLocked}"
                  CanPin="True"
                  CanResize="{Binding !WindowLocked}"
-								 IsMenuVisible="True"
+				 IsMenuVisible="True"
                  IsTitleBarVisible="{Binding TitleBarVisible, Mode=TwoWay}"
                  ShowBottomBorder="{Binding ShowBottomBar}"
                  ShowTitlebarBackground="{Binding ShowTitleBar}"
-								 WindowStartupLocation="CenterScreen"
-								 Height="1000"
-								 Width="1500"
-								 MinWidth="800"
-								 MinHeight="600"
-								 mc:Ignorable="d" 
+				 WindowStartupLocation="CenterScreen"
+				 Height="1000"
+				 Width="1500"
+				 MinWidth="800"
+				 MinHeight="600"
+				 mc:Ignorable="d" 
                  Title="{Binding Title}">
 
 	<suki:SukiWindow.TitleBarContextMenu>
@@ -41,10 +41,10 @@
 	</suki:SukiWindow.Hosts>
 	<suki:SukiWindow.LogoContent>
 		<avalonia:MaterialIcon Width="20"
-													 Height="20"
-													 VerticalAlignment="Center"
-													 Foreground="{DynamicResource SukiPrimaryColor}"
-													 Kind="Image360">
+							   Height="20"
+							   VerticalAlignment="Center"
+							   Foreground="{DynamicResource SukiPrimaryColor}"
+							   Kind="Image360">
 			<avalonia:MaterialIcon.Transitions>
 				<Transitions>
 					<BrushTransition Property="Foreground" Duration="{DynamicResource ShortAnimationDuration}" />
@@ -172,7 +172,7 @@
 			<Style Selector="Image.AppIcon">
 				<Setter Property="Transitions">
 					<Transitions>
-						<DoubleTransition Property="Opacity" Duration="0.1" />
+						<DoubleTransition Property="Opacity" Duration="1" />
 					</Transitions>
 				</Setter>
 				<Style Selector="^:pointerover">

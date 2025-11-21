@@ -51,7 +51,7 @@ namespace ImageUtility.Features.Dashboard
         public ObservableCollection<ISeries> ResizerSeries { get; set; }
         public ObservableCollection<Axis> XAxes { get; set; }
 
-        public DashboardViewModel(IJsonData jsonProvider, IChartBuilder chartBuilder, IMessenger messenger, ILogger<DashboardViewModel> logger) : base("Dashboard", MaterialIconKind.ViewDashboard, 1)
+        public DashboardViewModel(IJsonData jsonProvider, IChartBuilder chartBuilder, IMessenger messenger, ILogger<DashboardViewModel> logger) : base("Dashboard", MaterialIconKind.ViewDashboard, 0)
         {
            _jsonDataProviderService = jsonProvider;
            _statsChartBuilderService = chartBuilder;

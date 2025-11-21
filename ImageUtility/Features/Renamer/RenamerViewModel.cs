@@ -1,21 +1,21 @@
-﻿using Avalonia;
+﻿
+using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Controls.Notifications;
-using Avalonia.LogicalTree;
 using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
-using HarfBuzzSharp;
 using ImageUtility.Common;
 using ImageUtility.Interfaces;
 using ImageUtility.Messaging;
 using ImageUtility.Models;
 using ImageUtility.ViewModels;
 using ImageUtility.Views;
+using Markdown.Avalonia;
 using Material.Icons;
 using Microsoft.Extensions.Logging;
+using SukiUI.Controls;
 using SukiUI.MessageBox;
 using SukiUI.Toasts;
 using System;
@@ -37,6 +37,10 @@ namespace ImageUtility.Features.Renamer
         private readonly IJsonData _dataService;
         private readonly ILogger<RenamerViewModel> _logger;
         private readonly IMessenger _messenger;
+
+        [ObservableProperty] private bool _useAlternativeHeaderStyle = true;
+        [ObservableProperty] private bool _showHeaderContentSeparator = true;
+        [ObservableProperty] private bool _useNativeWindow;
 
         [ObservableProperty]
         [Required]
@@ -77,6 +81,7 @@ namespace ImageUtility.Features.Renamer
 
         private List<string> filesList = [];
 
+
         public RenamerViewModel(MainWindow mWindow, IRenamer renameService, ISukiToastManager toastManager, 
             IJsonData dataService, ILogger<RenamerViewModel> logger, IMessenger messenger) : base("Renamer", MaterialIconKind.Rename, 2)
         {
@@ -93,6 +98,20 @@ namespace ImageUtility.Features.Renamer
         [RelayCommand(CanExecute = nameof(CanRename))]
         private async Task Rename()
         {
+            if (SourceDir!.Equals(DestinationDir, StringComparison.OrdinalIgnoreCase))
+            {
+                var msgBox = new SukiMessageBoxHost
+                {
+                    ActionButtonsPreset = SukiMessageBoxButtons.OK,
+                    ShowHeaderContentSeparator = true,
+                    IconPreset = SukiMessageBoxIcons.Information,
+                    Header = "Image Utility ",
+                    Content = "Source Directory and Destination Directory cannot be the same directory.\r\nPlease choose a different destination directory."
+                };
+                await SukiMessageBox.ShowDialog(msgBox);
+                DestinationDir = string.Empty;
+                return;
+            }
             StatusMessage = "Renaming Files... Please Wait";
             IsLoading = true;
             IEnumerable<string> files = [.. Directory.EnumerateFiles(SourceDir!)];
@@ -244,14 +263,14 @@ namespace ImageUtility.Features.Renamer
                 Title = "Select a File",
                 SuggestedStartLocation = startLoc,
                 AllowMultiple = false,
-                FileTypeFilter = new List<FilePickerFileType>
-                {
-                    new FilePickerFileType("Text Files")
+                FileTypeFilter =
+                [
+                    new("Text Files")
                     {
-                        Patterns = new List<string> { "*.txt" },
-                        AppleUniformTypeIdentifiers = new List<string> { "public.plain-text" }
+                        Patterns = ["*.txt"],
+                        AppleUniformTypeIdentifiers = ["public.plain-text"]
                     }
-                }
+                ]
             };
             var result = await topLevel.StorageProvider.OpenFilePickerAsync(options);
            
@@ -269,6 +288,63 @@ namespace ImageUtility.Features.Renamer
             IsLoading = false;
         }
 
+        [RelayCommand]
+        private async Task ShowHelpDialog()
+        {
+            var okButton = SukiMessageBoxButtonsFactory.CreateButton(SukiMessageBoxResult.OK);
+            var result = await SukiMessageBox.ShowDialog(new SukiMessageBoxHost
+            {
+                IconPresetSize = 48,
+                IconPreset = SukiMessageBoxIcons.Information,
+                UseAlternativeHeaderStyle = UseAlternativeHeaderStyle,
+                ShowHeaderContentSeparator = ShowHeaderContentSeparator,
+                Header = "Renamer Help",
+                Margin = new Thickness(10),
+                Content = new MarkdownScrollViewer()
+                {
+                    Markdown = """
+                           ## Using External Text File:
+
+                           - if the "use external file" option is selected, the application will read filenames from a user-provided text file.
+                           - "load external file" button will be enabled.
+                           - clicking the button will open a file dialog where you can navigate to the naming file.
+                           - naming file should be a plain text file (.txt) with oldfilename|newfilename pattern on a new line.
+                           - the naming file will be loaded into memory and used for renaming files.
+                           - pattern and numbering options will be disabled to avoid conflicts.
+
+                           ## Pattern:
+
+                           - the new filename example "renamed_".
+                           - default pattern is "renamed_" if not specified.
+
+                           ## Numbering:
+                            - add a starting number after the renaming pattern.
+                            - the numbering will increment by 1 for each file renamed.
+                            - default numbering starts at 1 if not specified.
+
+                           ## Copy Files:
+
+                           - When enabled, the application will copy files from the source directory to the destination directory with the new names.
+
+                           ## Open On Completion:
+
+                           - When enabled, this will open the destination directory when file processing is complete
+
+                           For any feedback or support, please reach out to our support team at support@example.com.
+                           """
+                },
+                
+                ActionButtonsSource = [okButton],
+            }, new SukiMessageBoxOptions
+            {
+                UseNativeWindow = UseNativeWindow,
+            });
+
+            if (result is SukiMessageBoxResult.OK)
+            {
+                
+            }
+        }
         public bool CanRename() => !string.IsNullOrEmpty(Pattern) || !string.IsNullOrEmpty(SourceDir) && !string.IsNullOrEmpty(DestinationDir);
         public bool CanClear() => !string.IsNullOrEmpty(Pattern) || !string.IsNullOrEmpty(SourceDir) && !string.IsNullOrEmpty(DestinationDir);
 

@@ -1,9 +1,6 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Data.Core;
-using Avalonia.Data.Core.Plugins;
-using Avalonia.Logging;
 using Avalonia.Markup.Xaml;
 using CommunityToolkit.Mvvm.Messaging;
 using ImageUtility.Common;
@@ -15,7 +12,6 @@ using ImageUtility.Features.Dashboard;
 using ImageUtility.Features.Help;
 using ImageUtility.Features.Renamer;
 using ImageUtility.Features.Resizer;
-using ImageUtility.Features.Theming;
 using ImageUtility.Interfaces;
 using ImageUtility.Services;
 using ImageUtility.Utilities;
@@ -24,15 +20,14 @@ using ImageUtility.Views;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
-using SixLabors.ImageSharp;
 using SukiUI.Controls;
 using SukiUI.Dialogs;
+using SukiUI.MessageBox;
 using SukiUI.Models;
 using SukiUI.Toasts;
 using System;
-using System.Linq;
+using System.Threading.Tasks;
 using Velopack;
-using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace ImageUtility
 {
@@ -40,9 +35,10 @@ namespace ImageUtility
     {
         public override void Initialize()
         {
+            VelopackApp.Build().Run();
             AvaloniaXamlLoader.Load(this);
+            Task.Run(async () => await UpdateApp());
         }
-
         public override void OnFrameworkInitializationCompleted()
         {
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
@@ -78,6 +74,7 @@ namespace ImageUtility
             }
 
             base.OnFrameworkInitializationCompleted();
+           // async Task AppUpdateTask() => await UpdateApp();
         }
 
         private static SukiViews ConfigureViews(ServiceCollection services)
@@ -93,14 +90,13 @@ namespace ImageUtility
              .AddView<ConverterView, ConverterViewModel>(services)
              //.AddView<ThemingView, ThemingViewModel>(services)
              .AddView<ResizerView, ResizerViewModel>(services)
-             .AddView<HelpView, HelpViewModel>(services)
+             .AddView<HelpView, HelpViewModel>(services)  
             // Add additional views
             .AddView<DialogView, DialogViewModel>(services)
             //.AddView<VmDialogView, VmDialogViewModel>(services)
             //.AddView<RecursiveView, RecursiveViewModel>(services)
             .AddView<CustomThemeDialogView, CustomThemeDialogViewModel>(services);
         }
-
         private static ServiceProvider ConfigureServices(ServiceCollection services)
         {
             //services.AddSingleton<ClipboardService>();
@@ -125,7 +121,7 @@ namespace ImageUtility
                 loggerBuilder.ClearProviders();
                 loggerBuilder.AddSerilog(new LoggerConfiguration()
                     .MinimumLevel.Debug()
-                    .WriteTo.File("Logs/log.txt", rollingInterval: RollingInterval.Day, outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}")
+                    .WriteTo.File("Logs/log.txt", rollingInterval: RollingInterval.Day, outputTemplate: "[{Timestamp:MM/dd/yyyy HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}")
                     .CreateLogger());
             });
             //services.AddDbContextFactory<AppDbContext>(options =>
@@ -141,6 +137,31 @@ namespace ImageUtility
             //});
 
             return services.BuildServiceProvider();
+        }
+
+        private static async Task UpdateApp()
+        {
+            var mrg = new UpdateManager(@"C:\Users\glaro\OneDrive\Desktop\ImageUtility_Suki_Publish\Releases");
+
+            // Check for updates
+            var newVersion = await mrg.CheckForUpdatesAsync();
+            if (newVersion == null) return;
+
+            var msgBox = new SukiMessageBoxHost
+            {
+                ActionButtonsPreset = SukiMessageBoxButtons.YesNo,
+                IconPreset = SukiMessageBoxIcons.Information,
+                Header = "New Version Available",
+                Content = "There is a new version available, would you like to update?"
+            };
+            var msgBoxResult = await SukiMessageBox.ShowDialog(msgBox);
+            if (msgBoxResult is SukiMessageBoxResult.Yes)
+            {
+                // Apply updates
+                await mrg.DownloadUpdatesAsync(newVersion);
+                // install new version
+                mrg.ApplyUpdatesAndRestart(newVersion);
+            }
         }
     }
 }

@@ -23,7 +23,26 @@
 												   BusyText="{Binding StatusMessage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
 							<suki:GroupBox Header="Source/Destination Directories">
 								<StackPanel Spacing="10" Margin="10">
-
+									<StackPanel>
+										<Grid>
+											<StackPanel>
+												<TextBlock FontWeight="DemiBold"
+												   Text="Renamer Help"
+												   VerticalAlignment="Top"/>
+										        <TextBlock Text="get help using the Renamer"
+						                                   VerticalAlignment="Bottom"
+														   Foreground="{DynamicResource SukiLowText}"/>
+											</StackPanel>
+											<Button HorizontalAlignment="Right"
+										            Command="{Binding ShowHelpDialogCommand}"
+										            Classes="Flat Rounded Primary"
+										            Content="HELP"
+										            Padding="4"
+										            Height="30"
+										            Width="60"/>
+										</Grid>
+										
+									</StackPanel>
 									<StackPanel Spacing="10" Orientation="Horizontal">
 										<TextBox Text="{Binding SourceDir, UpdateSourceTrigger=PropertyChanged}" 
 													 Watermark="Source Directory" 
@@ -71,7 +90,7 @@
 											<ToggleSwitch HorizontalAlignment="Right"
 																		VerticalAlignment="Top"
 																		Classes="Switch"
-																		IsChecked="{Binding UseExternalFile}" />
+																		IsChecked="{Binding UseExternalFile, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 											<TextBlock HorizontalAlignment="Left"
 																	VerticalAlignment="Top"
 																	FontWeight="DemiBold"
@@ -83,20 +102,20 @@
 																 FontSize="12"
 																 Foreground="{DynamicResource SukiLowText}"
 																 Text="Use an external text file for the renaming pattern."
-																 TextWrapping="Wrap" />
+																 />
 										</Grid>
 										<Grid Margin="0, 10,0,0">
 											<TextBlock HorizontalAlignment="Left"
 																 VerticalAlignment="Top"
 																 FontWeight="DemiBold"
 																 Text="Load External File" />
-											<TextBlock Text="Load an external file for renaming patter."
+											<TextBlock Text="Load an external file for renaming pattern."
 																 VerticalAlignment="Bottom"
 																 FontSize="12"
 																 Margin="0, 16, 0, 0"/>
 											<Button Command="{Binding LoadExternalCommand}"
 															HorizontalAlignment="Right"
-															Margin="0 ,0,10,0"
+															Margin="0,0,10,0"
 															Content="..."
 															Padding="6"
 															Height="30"
@@ -123,21 +142,9 @@
 																		 Maximum="100000"
 																		 Increment="1"
 																		 FormatString="F0"
-																		 IsEnabled="{Binding !UseExternalFile}"/>
+																		 IsEnabled="{Binding !UseExternalFile, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 										</Expander>
-										<Grid Margin="0 10">
-											<StackPanel>
-												<TextBlock FontWeight="DemiBold"
-																	 Text="Open On Completion"/>
-												<TextBlock Foreground="{DynamicResource SukiLowText}"
-																	 FontSize="12"
-																	 Text="Open the destination folder when the renaming operation is complete."/>
-											</StackPanel>
-											<ToggleSwitch HorizontalAlignment="Right"
-																		VerticalAlignment="Center"
-																		Classes="Switch"
-																		IsChecked="{Binding OpenOnComplete, Mode=TwoWay}"/>
-										</Grid>
+
 										<Grid Margin="0 10">
 											<StackPanel>
 												<TextBlock FontWeight="DemiBold"
@@ -154,6 +161,20 @@
 																		Classes="Switch"
 																		IsChecked="{Binding CopyFiles, Mode=TwoWay}"/>
 										</Grid>
+										<Grid Margin="0 10, 0, 30">
+											<StackPanel>
+												<TextBlock FontWeight="DemiBold"
+														   Text="Open On Completion"/>
+												<TextBlock Foreground="{DynamicResource SukiLowText}"
+														   FontSize="12"
+														   Text="Open the destination folder when the renaming operation is complete."/>
+											</StackPanel>
+											<ToggleSwitch HorizontalAlignment="Right"
+														  VerticalAlignment="Center"
+														  Classes="Switch"
+														  IsChecked="{Binding OpenOnComplete, Mode=TwoWay}"/>
+										</Grid>
+										
 									</StackPanel>
 								</suki:GlassCard>
 								</suki:BusyArea>
@@ -162,27 +183,34 @@
 						<!--End Options-->
 
 						<!-- Commands -->
-						<Grid Width="300" Margin="0 -20 0 0"
+						<Grid Width="400" Margin="0 -20 0 0"
 						      VerticalAlignment="Bottom">
-							<Button Command="{Binding RenameCommand}"
-											HorizontalAlignment="Left"
-											VerticalAlignment="Bottom"
-											Classes="Flat Rounded"
-											Content="APPLY"
-											Padding="6"
-											Height="40"
-											Width="140"
-											IsEnabled="{Binding CanRename}"/>
-							<Button Grid.Column="1"
-											Command="{Binding ClearCommand}"
-											HorizontalAlignment="Right"
-											VerticalAlignment="Bottom"
-											Classes="Flat Rounded Danger"
-											Content="CLEAR"
-											Padding="6"
-											Height="40"
-											Width="140"
-											IsEnabled="{Binding CanClear}"/>
+							<StackPanel HorizontalAlignment="Center"
+										VerticalAlignment="Bottom"
+										Orientation="Horizontal"
+										Spacing="20">
+								<Button Command="{Binding RenameCommand}"
+										HorizontalAlignment="Left"
+										VerticalAlignment="Bottom"
+										Classes="Flat Rounded"
+										Content="APPLY"
+										Padding="6"
+										Height="40"
+										Width="140"
+										IsEnabled="{Binding CanRename}"/>
+
+								<Button HorizontalAlignment="Right"
+										VerticalAlignment="Bottom"
+										Command="{Binding ClearCommand}"
+										Classes="Flat Rounded Danger"
+										Content="CLEAR"
+										Padding="6"
+										Height="40"
+										Width="140"
+										IsEnabled="{Binding CanClear}"/>
+
+								
+							</StackPanel>
 						</Grid>
 						<!-- End Commands -->
 				</StackPanel>		

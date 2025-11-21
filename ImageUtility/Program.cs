@@ -1,5 +1,8 @@
-﻿using System;
-using Avalonia;
+﻿using Avalonia;
+using SukiUI.Controls;
+using SukiUI.MessageBox;
+using System;
+using System.Threading.Tasks;
 using Velopack;
 
 namespace ImageUtility
@@ -10,9 +13,9 @@ namespace ImageUtility
         // SynchronizationContext-reliant code before AppMain is called: things aren't initialized
         // yet and stuff might break.
         [STAThread]
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
-            VelopackApp.Build().Run();
+           
             BuildAvaloniaApp()
             .StartWithClassicDesktopLifetime(args);
         }
@@ -23,5 +26,7 @@ namespace ImageUtility
                 .UsePlatformDetect()
                 .WithInterFont()
                 .LogToTrace();
+
+       
     }
 }

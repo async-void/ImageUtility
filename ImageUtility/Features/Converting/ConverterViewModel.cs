@@ -1,4 +1,11 @@
-﻿using Avalonia.Controls;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using Avalonia.Controls;
 using Avalonia.Controls.Notifications;
 using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -9,25 +16,13 @@ using ImageUtility.Extensions;
 using ImageUtility.Interfaces;
 using ImageUtility.Messaging;
 using ImageUtility.Models;
-using ImageUtility.Services;
 using ImageUtility.ViewModels;
 using ImageUtility.Views;
 using Material.Icons;
 using Microsoft.Extensions.Logging;
 using SukiUI.Controls;
-using SukiUI.Dialogs;
 using SukiUI.MessageBox;
 using SukiUI.Toasts;
-using System;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.ComponentModel.DataAnnotations;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Tmds.DBus.Protocol;
 using Path = System.IO.Path;
 
 namespace ImageUtility.Features.Converting
@@ -37,7 +32,6 @@ namespace ImageUtility.Features.Converting
         private readonly MainWindow _mWindow;
         private readonly ISukiToastManager _toastManager;
         private readonly IMessenger _messenger;
-        private readonly ConversionService _converterService;
         private readonly IFileUtilities _fileUtilities;
         private readonly IJsonData _dataService;
         private readonly ILogger<ConverterViewModel> _logger;
@@ -76,12 +70,12 @@ namespace ImageUtility.Features.Converting
 
         public Array FileTypes => Enum.GetValues<ImageType>();
 
-        public ConverterViewModel(MainWindow mWindow, ConversionService converterService, IFileUtilities fileUtilities,
-                            ISukiToastManager toastManager, IJsonData dataService, IMessenger messenger, ILogger<ConverterViewModel> logger) : base("Converter", MaterialIconKind.ImageEdit, 4)
+        public ConverterViewModel(MainWindow mWindow, IFileUtilities fileUtilities,
+                            ISukiToastManager toastManager, IJsonData dataService, IMessenger messenger, ILogger<ConverterViewModel> logger) : base("Converter", MaterialIconKind.ImageEdit, 1)
         {
             _mWindow = mWindow;
             _toastManager = toastManager;
-            _converterService = converterService;
+           
             _fileUtilities = fileUtilities;
             _messenger = messenger;
             _dataService = dataService;
@@ -92,6 +86,20 @@ namespace ImageUtility.Features.Converting
         [RelayCommand(CanExecute = nameof(CanConvert))]
         private async Task Convert()
         {
+            if (SourceDir!.Equals(DestinationDir, StringComparison.OrdinalIgnoreCase))
+            {
+                var msgBox = new SukiMessageBoxHost
+                {
+                    ActionButtonsPreset = SukiMessageBoxButtons.OK,
+                    ShowHeaderContentSeparator = true,
+                    IconPreset = SukiMessageBoxIcons.Information,
+                    Header = "Image Utility ",
+                    Content = "Source Directory and Destination Directory cannot be the same directory.\r\nPlease choose a different destination directory."
+                };
+                await SukiMessageBox.ShowDialog(msgBox);
+                DestinationDir = string.Empty;
+                return;
+            }
             var errors = new List<string>();
             IsBusy = true;
             var isOk = false;
@@ -103,12 +111,13 @@ namespace ImageUtility.Features.Converting
                             { ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tif", ".tiff", ".webp", ".avif" };
             var options = new EnumerationOptions
             {
-                RecurseSubdirectories = true,
-                IgnoreInaccessible = true,
+                RecurseSubdirectories = false,
+                IgnoreInaccessible = false,
                 ReturnSpecialDirectories = false
             };
 
-            IEnumerable<string> files = Directory.EnumerateFiles(SourceDir!, "*.*", options);
+            IEnumerable<string> files = Directory.EnumerateFiles(SourceDir!, "*.*", options)
+                                                 .Where(f => imageExts.Contains(Path.GetExtension(f)));
             int fileCount = files.Count();
             var ffmpegPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "FFMPEG", "ffmpeg", "bin", "ffmpeg.exe");
           
@@ -153,7 +162,7 @@ namespace ImageUtility.Features.Converting
                     }
 
                    
-                 }
+                }
                 catch(Exception ex) 
                 {
                     errors.Add($"{ex.Message}");
@@ -315,10 +324,7 @@ namespace ImageUtility.Features.Converting
 
         partial void OnSelectedFileTypeChanged(ImageType value)
         {
-            if (value == ImageType.AVIF || value == ImageType.PNG)
-                IsQualityEnabled = false;
-            else
-                IsQualityEnabled = true;
+            IsQualityEnabled = value is not (ImageType.AVIF or ImageType.PNG);
         }
 
         public bool CanConvert() => !string.IsNullOrWhiteSpace(SourceDir) && !string.IsNullOrWhiteSpace(DestinationDir);
